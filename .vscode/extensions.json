@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    // Language and framework supports.
+    "mf.vscode-styled-components",
+    // Configuration file supports.
+    "redhat.vscode-yaml",
+    // Formatter and linter.
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode"
+  ]
+}

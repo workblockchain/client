@@ -1,0 +1,26 @@
+{
+  // General normalizations.
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "editor.tabSize": 2,
+  "editor.rulers": [80],
+  // Auto format on save.
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "always"
+  },
+  // File nesting. To enable, you must also
+  // enable `"explorer.fileNesting.enabled": true,` in your user settings.
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "*.tsx": "${capture}.stories.ts,${capture}.test.ts",
+    "package.json": "pnpm-lock.yaml",
+    "tsconfig.json": "tsconfig.*.json"
+  },
+  "[ignore]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
