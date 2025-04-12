@@ -1,104 +1,83 @@
-import {useEffect, useRef, useState} from "react"
+import ReactSelect, {StylesConfig} from "react-select"
 import styled from "styled-components"
-import {styledCommon} from "../../styles/common"
-import {Dropdown} from "./Dropdown"
+import {colors} from "../../styles"
 
 const SelectWrapper = styled.div`
   position: relative;
-`
-
-const SelectButton = styled.div<{disabled?: boolean}>`
-  ${styledCommon.base}
-  height: 48px;
-  padding: 0 16px;
-  border-radius: 24px;
   font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: ${({disabled}) => (disabled ? "not-allowed" : "pointer")};
-  user-select: none;
-
-  &:focus {
-    ${styledCommon.focus}
-  }
-
-  &:disabled {
-    ${styledCommon.disabled}
-  }
 `
 
-const ValueText = styled.span`
-  flex: 1;
-  text-align: center;
-`
+interface SelectOption {
+  value: string
+  label: string
+}
 
 interface SelectProps {
-  options: Array<{value: string; label: string}>
+  options: SelectOption[]
   value?: string
-  onChange?: (value: string) => void
+  onChange?: (value: string | null) => void
   disabled?: boolean
 }
 
+const customStyles: StylesConfig<SelectOption, false> = {
+  control: (base, {isDisabled}) => ({
+    ...base,
+    backgroundColor: "#f5f5f5",
+    padding: "0 16px",
+    border: "none",
+    outline: "none",
+    boxShadow: "0 0 0 1px rgba(0, 0, 0, 0.1)",
+    height: "48px",
+    borderRadius: "24px",
+    cursor: isDisabled ? "not-allowed" : "pointer",
+    opacity: isDisabled ? 0.6 : 1,
+  }),
+  singleValue: (base) => ({
+    ...base,
+    textAlign: "center",
+    width: "100%",
+  }),
+  indicatorsContainer: (base) => ({
+    ...base,
+    paddingRight: "8px",
+  }),
+  menu: (base) => ({
+    ...base,
+    borderRadius: "12px",
+    overflow: "hidden",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+    marginTop: "4px",
+  }),
+  option: (base, {isSelected}) => ({
+    ...base,
+    cursor: "pointer",
+    color: isSelected ? colors.Red700 : colors.Neutral700,
+    backgroundColor: isSelected ? colors.Yellow100 : "transparent",
+    padding: "8px 16px",
+    "&:hover": {
+      backgroundColor: "#f5f5f5",
+    },
+  }),
+}
+
 const Select = ({options, value, onChange, disabled}: SelectProps) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const wrapperRef = useRef<HTMLDivElement>(null)
-  const selectedLabel =
-    options.find((opt) => opt.value === value)?.label || "Select..."
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false)
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
-
-  const handleSelect = (value: string) => {
-    onChange?.(value)
-    setIsOpen(false)
-  }
+  const selectedOption = options.find((opt) => opt.value === value)
 
   return (
-    <SelectWrapper ref={wrapperRef}>
-      <SelectButton
-        role="button"
-        aria-haspopup="listbox"
-        onClick={() => !disabled && setIsOpen(!isOpen)}
-        onKeyDown={(e) => !disabled && e.key === "Enter" && setIsOpen(!isOpen)}
-        tabIndex={0}
-        disabled={disabled}
-      >
-        <ValueText>{selectedLabel}</ValueText>
-        <span>{isOpen ? "▲" : "▼"}</span>
-      </SelectButton>
-
-      <Dropdown visible={isOpen && !disabled}>
-        {options.map((option) => (
-          <div
-            key={option.value}
-            onClick={() => handleSelect(option.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSelect(option.value)}
-            role="option"
-            aria-selected={value === option.value}
-            tabIndex={0}
-            style={{
-              backgroundColor:
-                value === option.value ? "#f0f0f0" : "transparent",
-              cursor: "pointer",
-              padding: "8px 16px",
-            }}
-          >
-            {option.label}
-          </div>
-        ))}
-      </Dropdown>
+    <SelectWrapper>
+      <ReactSelect
+        options={options}
+        value={selectedOption}
+        onChange={(selected) => onChange?.(selected?.value ?? null)}
+        isDisabled={disabled}
+        styles={customStyles}
+        components={{
+          IndicatorSeparator: () => null,
+        }}
+        aria-label="选择框"
+        menuPortalTarget={document.body}
+        menuPosition="fixed"
+      />
     </SelectWrapper>
   )
 }

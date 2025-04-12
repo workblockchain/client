@@ -1,57 +1,49 @@
-import {useEffect, useLayoutEffect, useState} from "react"
+import {useEffect} from "react"
 import {createPortal} from "react-dom"
 import styled from "styled-components"
-import {usePortalStore} from "./usePortalStore"
 
 type PortalProps = {
   id?: string
   children: React.ReactNode
 }
 
-export const Portal = ({id = "root", children}: PortalProps) => {
-  const {addPortal, removePortal} = usePortalStore()
-  const [element, setElement] = useState<HTMLElement | null>(null)
-
-  useLayoutEffect(() => {
-    addPortal(id)
-    return () => removePortal(id)
-  }, [id, addPortal, removePortal])
-
+export const Portal = ({id = PORTAL_CONTAINER_ID, children}: PortalProps) => {
   useEffect(() => {
+    const rootContainer = document.getElementById(PORTAL_CONTAINER_ID)
     let container = document.getElementById(id)
-    if (!container) {
+
+    if (import.meta.env.DEV && !rootContainer) {
+      console.error(
+        `Portal根容器未找到。\n` +
+          `请确保在应用根组件中包含 <PortalContainers/> 组件`
+      )
+      return
+    }
+
+    if (!container && rootContainer) {
       container = document.createElement("div")
       container.id = id
-      document.body.appendChild(container)
+      rootContainer.appendChild(container)
     }
-    setElement(container)
 
     return () => {
-      if (container && container.childElementCount === 0) {
-        container.remove()
+      if (container && rootContainer?.contains(container)) {
+        rootContainer.removeChild(container)
       }
     }
   }, [id])
 
-  return element ? createPortal(children, element) : null
+  const container = document.getElementById(id)
+  return container ? createPortal(children, container) : null
 }
 
+const PORTAL_CONTAINER_ID = "root-portal-container"
 export const PortalContainers = () => {
-  const {getPortals} = usePortalStore()
-  return (
-    <Container>
-      {Array.from(getPortals()).map((id) => (
-        <PortalElement key={id} id={id} />
-      ))}
-    </Container>
-  )
+  return <Container id={PORTAL_CONTAINER_ID} />
 }
 
-const Container = styled.div``
-
-const PortalElement = styled.div`
+const Container = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1;
 `
