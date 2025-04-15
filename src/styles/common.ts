@@ -20,4 +20,10 @@ export const styledCommon = {
     opacity: 0.8;
     box-shadow: none;
   `,
+  timerText: css`
+    font-size: 4rem;
+    font-weight: 700;
+    color: ${colors.Red400};
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  `,
 }

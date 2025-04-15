@@ -26,8 +26,6 @@ const StyledTextarea = styled.textarea`
 
 type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement>
 
-const Textarea = ({...rest}: TextareaProps) => {
+export const Textarea = ({...rest}: TextareaProps) => {
   return <StyledTextarea {...rest} />
 }
-
-export default Textarea
