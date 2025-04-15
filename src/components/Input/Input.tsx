@@ -25,8 +25,6 @@ const StyledInput = styled.input`
 
 type InputProps = InputHTMLAttributes<HTMLInputElement>
 
-const Input = ({...rest}: InputProps) => {
+export const Input = ({...rest}: InputProps) => {
   return <StyledInput {...rest} />
 }
-
-export default Input

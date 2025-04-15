@@ -14,8 +14,12 @@
   },
   "dependencies": {
     "axios": "^1.8.4",
+    "dayjs": "^1.11.13",
+    "i18next": "^24.2.3",
+    "polished": "^4.3.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-i18next": "^15.4.1",
     "react-markdown": "^10.1.0",
     "react-select": "^5.10.1",
     "styled-components": "^6.1.16",
