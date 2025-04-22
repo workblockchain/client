@@ -8,6 +8,7 @@ interface TimerState {
   // 计时器状态
   status: "idle" | "running" | "paused"
   remainingTime: number // 剩余时间(秒)
+  intervalId?: NodeJS.Timeout // 定时器引用
 
   // 计时器配置
   workDuration: number // 工作时长(分钟)
@@ -34,18 +35,40 @@ export const usePomodoroTimer = create<TimerState>((set, get) => ({
 
   // 开始计时
   startTimer: () => {
-    if (get().status === "running") return
-    set({status: "running"})
+    const state = get()
+    if (state.status === "running") return
+
+    // 清除已有定时器
+    if (state.intervalId) {
+      clearInterval(state.intervalId)
+    }
+
+    // 启动新定时器
+    const intervalId = setInterval(() => {
+      get().tick()
+    }, 1000)
+
+    set({status: "running", intervalId})
   },
 
   // 暂停计时
   pauseTimer: () => {
-    if (get().status !== "running") return
-    set({status: "paused"})
+    const state = get()
+    if (state.status !== "running") return
+
+    if (state.intervalId) {
+      clearInterval(state.intervalId)
+    }
+    set({status: "paused", intervalId: undefined})
   },
 
   // 重置计时器
   resetTimer: (timerPhase: TimerPhaseType = get().timerPhase) => {
+    const state = get()
+    if (state.intervalId) {
+      clearInterval(state.intervalId)
+    }
+
     let remainingTime = 0
     switch (timerPhase) {
       case "work":
@@ -72,7 +95,23 @@ export const usePomodoroTimer = create<TimerState>((set, get) => ({
       return
     }
 
-    set({remainingTime: remainingTime - 1})
+    // 更新时间并检查是否需要重启定时器
+    set((state) => {
+      const newTime = remainingTime - 1
+
+      // 当剩余时间变化到0时需要重启定时器
+      if (newTime === 0) {
+        if (state.intervalId) {
+          clearInterval(state.intervalId)
+        }
+        const newIntervalId = setInterval(() => {
+          get().tick()
+        }, 1000)
+        return {remainingTime: newTime, intervalId: newIntervalId}
+      }
+
+      return {remainingTime: newTime}
+    })
   },
 
   // 切换工作/休息阶段
