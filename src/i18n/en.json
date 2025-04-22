@@ -1,0 +1,7 @@
+{
+  "app.title": "Pomodoro Timer",
+  "timer.start": "Start",
+  "timer.pause": "Pause",
+  "timer.skip": "Skip",
+  "timer.commit": "Commit"
+}
