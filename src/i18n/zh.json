@@ -3,5 +3,7 @@
   "timer.start": "开始",
   "timer.pause": "暂停",
   "timer.skip": "跳过",
-  "timer.commit": "提交"
+  "timer.commit": "提交",
+  "description.placeholder": "description.placeholder",
+  "common.cancel": "common.cancel"
 }

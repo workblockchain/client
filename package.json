@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "i18n": "tsx scripts/i18n-check.ts"
   },
   "dependencies": {
     "axios": "^1.8.4",
@@ -35,6 +36,7 @@
     "@storybook/react": "8.6.8",
     "@storybook/react-vite": "8.6.8",
     "@storybook/test": "8.6.8",
+    "@types/minimist": "^1.2.5",
     "@types/node": "^22.13.13",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
@@ -46,10 +48,12 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "eslint-plugin-storybook": "^0.11.6",
     "globals": "^15.15.0",
+    "minimist": "^1.2.8",
     "playwright": "^1.51.1",
     "prettier": "^3.5.3",
     "prettier-plugin-sh": "^0.16.0",
     "storybook": "8.6.8",
+    "tsx": "^4.19.3",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0",

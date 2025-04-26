@@ -3,5 +3,7 @@
   "timer.start": "Start",
   "timer.pause": "Pause",
   "timer.skip": "Skip",
-  "timer.commit": "Commit"
+  "timer.commit": "Commit",
+  "description.placeholder": "description.placeholder",
+  "common.cancel": "common.cancel"
 }
