@@ -22,6 +22,18 @@ const Red = {
   Red900: "#26140A",
 } as const
 
+const Blue = {
+  Blue100: "#E0F5FF",
+  Blue200: "#C2EBFF",
+  Blue300: "#A3E0FF",
+  Blue400: "#85D6FF",
+  Blue500: "#66CCFF",
+  Blue600: "#1FB4FF",
+  Blue700: "#008FD6",
+  Blue800: "#005F8F",
+  Blue900: "#003047",
+} as const
+
 const Neutral = {
   Neutral100: "#E9E9E9",
   Neutral200: "#D3D3D3",
@@ -37,5 +49,6 @@ const Neutral = {
 export const colors = {
   ...Yellow,
   ...Red,
+  ...Blue,
   ...Neutral,
 } as const

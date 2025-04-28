@@ -28,7 +28,6 @@ const DescriptionBox = styled.div`
   flex-direction: column;
   gap: 1rem;
   padding: 1.5rem;
-  background: ${colors.Neutral100}; // 直接使用颜色变量
   border-radius: 6px;
   width: 100%;
   max-width: 400px;
@@ -69,20 +68,20 @@ export const CommitLayout = ({
       />
       <ButtomRow>
         <ButtonGroup>
-          <Button size="small" onClick={onCommitConfirm}>
+          <Button $size="small" onClick={onCommitConfirm}>
             {t`commit.confirm`}
           </Button>
           <Button
-            size="small"
+            $size="small"
             style={{color: colors.Neutral400}}
-            variant="text"
+            $variant="text"
             onClick={handleClickAbort}
           >
             {t`commit.abort`}
           </Button>
           <Button
-            size="small"
-            variant="text"
+            $size="small"
+            $variant="text"
             style={{
               opacity: abortConfirm ? 1 : 0,
               pointerEvents: abortConfirm ? "auto" : "none",

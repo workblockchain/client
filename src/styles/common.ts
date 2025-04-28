@@ -1,5 +1,4 @@
 import {css} from "styled-components"
-import {colors} from "./colors"
 
 export const styledCommon = {
   base: css`
@@ -16,7 +15,6 @@ export const styledCommon = {
   timerText: css`
     font-size: 4rem;
     font-weight: 700;
-    color: ${colors.Red400};
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   `,
 }

@@ -14,10 +14,6 @@ const meta = {
       control: {type: "radio"},
       options: ["small", "medium", "large"],
     },
-    colorScheme: {
-      control: {type: "radio"},
-      options: ["primary"],
-    },
     disabled: {
       control: "boolean",
     },

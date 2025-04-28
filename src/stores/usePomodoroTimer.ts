@@ -2,7 +2,7 @@ import {create} from "zustand"
 
 const MINUTE = 60 as const
 
-type TimerPhaseType = "break" | "work"
+export type TimerPhaseType = "break" | "work"
 
 interface TimerState {
   // 计时器状态
@@ -13,15 +13,15 @@ interface TimerState {
   // 计时器配置
   workDuration: number // 工作时长(分钟)
   breakDuration: number // 休息时长(分钟)
-  timerPhase: TimerPhaseType // 当前是否是工作阶段
+  timerPhase: TimerPhaseType // 当前阶段状态
 
   // 方法
   startTimer: () => void
   pauseTimer: () => void
   resetTimer: (phase?: TimerPhaseType) => void
   tick: () => void
-  timePassed: (type?: TimerPhaseType) => number
-  togglePhase: () => void
+  timePassed: () => number
+  togglePhase: (nextPhase?: TimerPhaseType) => void
   setWorkDuration: (minutes: number) => void
   setBreakDuration: (minutes: number) => void
 }
@@ -115,18 +115,22 @@ export const usePomodoroTimer = create<TimerState>((set, get) => ({
     })
   },
 
-  timePassed: (type = "work") => {
-    const {remainingTime, workDuration, breakDuration} = get()
-    switch (type) {
+  timePassed: () => {
+    const {remainingTime, timerPhase, workDuration, breakDuration} = get()
+    switch (timerPhase) {
       case "work":
         return workDuration * MINUTE - remainingTime
       case "break":
         return breakDuration * MINUTE - remainingTime
     }
   },
-  // 切换工作/休息阶段
-  togglePhase: () => {
+  // 切换工作/休息阶段，或指定下一阶段
+  togglePhase: (nextPhase) => {
     const {timerPhase, resetTimer} = get()
+    if (nextPhase) {
+      resetTimer(nextPhase)
+      return
+    }
     const phase = timerPhase === "work" ? "break" : "work"
     resetTimer(phase)
   },

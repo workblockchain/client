@@ -1,56 +1,54 @@
 import {darken, transparentize} from "polished"
-import {ButtonHTMLAttributes} from "react"
 import styled, {css} from "styled-components"
 import {colors} from "../../styles/colors"
 import {styledCommon} from "../../styles/common"
 
 export type VariantType = "solid" | "outline" | "text"
-const $variantStyles = (color: string) => css<{$variant?: VariantType}>`
-  ${({$variant}) =>
-    $variant === "solid" &&
-    css`
-      background-color: ${color};
-      color: ${colors.Neutral100};
+const $variantStyles = ($variant: VariantType = "solid", color: string) => css`
+  ${$variant === "solid" &&
+  css`
+    background-color: ${color};
+    color: ${colors.Neutral100};
 
-      &:hover:not(:disabled) {
-        background-color: ${darken(0.1, color)};
-      }
-    `}
+    &:hover:not(:disabled) {
+      background-color: ${darken(0.1, color)};
+    }
+  `}
 
-  ${({$variant}) =>
-    $variant === "outline" &&
-    css`
-      background-color: transparent;
-      color: ${color};
-      box-shadow: 0 0 0 1px ${color};
+  ${$variant === "outline" &&
+  css`
+    background-color: transparent;
+    color: ${color};
+    box-shadow: 0 0 0 1px ${color};
 
-      &:hover:not(:disabled) {
-        background-color: ${transparentize(0.9, color)};
-      }
-    `}
+    &:hover:not(:disabled) {
+      background-color: ${transparentize(0.9, color)};
+    }
+  `}
 
-  ${({$variant}) =>
-    $variant === "text" &&
-    css`
-      background-color: transparent;
-      color: ${color};
-      box-shadow: none;
-      padding: 0;
-      height: auto;
+  ${$variant === "text" &&
+  css`
+    background-color: transparent;
+    color: ${color};
+    box-shadow: none;
+    padding: 0;
+    height: auto;
 
-      &:hover:not(:disabled) {
-        filter: brightness(1.2);
-      }
-    `}
+    &:hover:not(:disabled) {
+      filter: brightness(1.2);
+    }
+  `}
 `
 
 type ButtonStyleProps = {
   $variant?: VariantType
   $size?: "small" | "medium" | "large"
+  $primaryColor?: string
 }
 
-const StyledButton = styled.button<ButtonStyleProps>`
+export const Button = styled.button<ButtonStyleProps>`
   ${styledCommon.base}
+  white-space: nowrap;
   ${({$size = "medium"}) => {
     switch ($size) {
       case "small":
@@ -77,7 +75,8 @@ const StyledButton = styled.button<ButtonStyleProps>`
   cursor: pointer;
   transition: all 0.2s ease;
 
-  ${$variantStyles(colors.Red400)}
+  ${({$primaryColor, $variant}) =>
+    $variantStyles($variant, $primaryColor ?? colors.Red400)}
 
   &:active:not(:disabled) {
     transform: scale(0.98);
@@ -88,13 +87,3 @@ const StyledButton = styled.button<ButtonStyleProps>`
     cursor: not-allowed;
   }
 `
-
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: VariantType
-  size?: "small" | "medium" | "large"
-}
-
-export const Button = ({variant = "solid", ...rest}: ButtonProps) => {
-  console.log(rest.children, variant)
-  return <StyledButton $variant={variant} {...rest} />
-}

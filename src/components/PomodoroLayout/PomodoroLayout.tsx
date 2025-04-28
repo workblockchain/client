@@ -1,7 +1,10 @@
 import {useState} from "react"
 import styled from "styled-components"
 import {Layout} from ".."
-import {usePomodoroTimer} from "../../stores/usePomodoroTimer"
+import {
+  type TimerPhaseType,
+  usePomodoroTimer,
+} from "../../stores/usePomodoroTimer"
 import {colors} from "../../styles"
 import {secondToHMS} from "../../utils"
 import {CommitLayout} from "./CommitLayout"
@@ -13,14 +16,15 @@ import {TimerLayout} from "./TimerLayout"
 //   margin: 0;
 // `
 
-const Container = styled(Layout)<{$phase: "work" | "break"}>`
+const Container = styled(Layout)<{$phase: TimerPhaseType}>`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2rem;
   background-color: ${({$phase}) =>
-    $phase === "work" ? colors.Neutral200 : colors.Neutral100};
-  transition: background-color 0.3s ease;
+    $phase === "work" ? colors.Red100 : colors.Blue100};
+  color: ${({$phase}) => ($phase === "work" ? colors.Red800 : colors.Blue900)};
+  transition: background-color 0.2s ease;
   width: auto;
   height: unset;
   min-height: unset;
@@ -33,33 +37,44 @@ export const PomodoroLayout = () => {
   )
   const [description, setDescription] = useState("")
 
+  const {status, remainingTime, timePassed, timerPhase} = usePomodoroTimer()
+  const {startTimer, pauseTimer, togglePhase} = usePomodoroTimer()
+
+  // Timer buttons
+  const handleSkip = () => {
+    setDescription("")
+    pauseTimer()
+    setCurrentLayout("commit")
+  }
+
+  // Commit buttons
+  function goNextPhase() {
+    setDescription("")
+    togglePhase()
+    setCurrentLayout("timer")
+  }
   const handleCommitConfirm = () => {
     const timestamp = new Date().toISOString()
     console.log({
       timestamp,
       description,
     })
-    setDescription("")
-    setCurrentLayout("timer")
+    goNextPhase()
   }
 
   const handleAbort = () => {
-    setDescription("")
-    pauseTimer()
-    setCurrentLayout("commit")
+    goNextPhase()
   }
 
-  const {startTimer, pauseTimer, status, remainingTime, timePassed} =
-    usePomodoroTimer()
-
   return (
-    <Container $phase={currentLayout === "timer" ? "work" : "break"}>
+    <Container $phase={timerPhase}>
       {currentLayout === "timer" && (
         <TimerLayout
           onCountStart={startTimer}
           onCountPause={pauseTimer}
-          onSkip={handleAbort}
+          onSkip={handleSkip}
           status={status}
+          phase={timerPhase}
           remainingTime={remainingTime}
         />
       )}
