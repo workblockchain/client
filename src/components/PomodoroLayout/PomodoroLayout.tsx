@@ -3,6 +3,7 @@ import styled from "styled-components"
 import {Layout} from ".."
 import {usePomodoroTimer} from "../../stores/usePomodoroTimer"
 import {colors} from "../../styles"
+import {secondToHMS} from "../../utils"
 import {CommitLayout} from "./CommitLayout"
 import {TimerLayout} from "./TimerLayout"
 
@@ -33,7 +34,6 @@ export const PomodoroLayout = () => {
   const [description, setDescription] = useState("")
 
   const handleCommitConfirm = () => {
-    // 提交逻辑保持不变
     const timestamp = new Date().toISOString()
     console.log({
       timestamp,
@@ -45,25 +45,31 @@ export const PomodoroLayout = () => {
 
   const handleAbort = () => {
     setDescription("")
-    setCurrentLayout("timer")
+    pauseTimer()
+    setCurrentLayout("commit")
   }
 
-  const {startTimer, pauseTimer} = usePomodoroTimer()
+  const {startTimer, pauseTimer, status, remainingTime, timePassed} =
+    usePomodoroTimer()
 
   return (
     <Container $phase={currentLayout === "timer" ? "work" : "break"}>
-      {currentLayout === "timer" ? (
+      {currentLayout === "timer" && (
         <TimerLayout
           onCountStart={startTimer}
           onCountPause={pauseTimer}
           onSkip={handleAbort}
+          status={status}
+          remainingTime={remainingTime}
         />
-      ) : (
+      )}
+      {currentLayout === "commit" && (
         <CommitLayout
           description={description}
           onDescriptionChange={setDescription}
           onCommitConfirm={handleCommitConfirm}
           onAbort={handleAbort}
+          timePassed={secondToHMS(timePassed())}
         />
       )}
     </Container>

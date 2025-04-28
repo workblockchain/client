@@ -20,6 +20,7 @@ interface TimerState {
   pauseTimer: () => void
   resetTimer: (phase?: TimerPhaseType) => void
   tick: () => void
+  timePassed: (type?: TimerPhaseType) => number
   togglePhase: () => void
   setWorkDuration: (minutes: number) => void
   setBreakDuration: (minutes: number) => void
@@ -114,6 +115,15 @@ export const usePomodoroTimer = create<TimerState>((set, get) => ({
     })
   },
 
+  timePassed: (type = "work") => {
+    const {remainingTime, workDuration, breakDuration} = get()
+    switch (type) {
+      case "work":
+        return workDuration * MINUTE - remainingTime
+      case "break":
+        return breakDuration * MINUTE - remainingTime
+    }
+  },
   // 切换工作/休息阶段
   togglePhase: () => {
     const {timerPhase, resetTimer} = get()

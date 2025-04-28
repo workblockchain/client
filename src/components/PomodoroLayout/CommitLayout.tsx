@@ -1,12 +1,26 @@
+import {useState} from "react"
 import {useTranslation} from "react-i18next"
 import styled from "styled-components"
-import {Button} from ".."
-import {colors} from "../../styles" // 添加颜色导入
-import {Textarea} from "../Textarea/Textarea" // 修正导入路径
+import {Button, Textarea} from ".."
+import {colors} from "../../styles"
 
 const ButtonGroup = styled.div`
   display: flex;
   gap: 1rem;
+`
+
+const ButtomRow = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`
+
+const HintText = styled.div`
+  font-size: 12px;
+  line-height: 12px;
+  color: ${colors.Neutral500};
+  transition: opacity 0.3s ease-out;
 `
 
 const DescriptionBox = styled.div`
@@ -25,6 +39,7 @@ export type CommitLayoutProps = {
   onDescriptionChange: (value: string) => void
   onCommitConfirm: () => void
   onAbort: () => void
+  timePassed: string
 }
 
 export const CommitLayout = ({
@@ -32,11 +47,19 @@ export const CommitLayout = ({
   onDescriptionChange,
   onCommitConfirm,
   onAbort,
+  timePassed,
 }: CommitLayoutProps) => {
   const {t} = useTranslation()
+  const [abortConfirm, setAbortConfirm] = useState(false)
+  const hintText = t("commit.hintText", {timePassed})
+
+  const handleClickAbort = () => {
+    setAbortConfirm(true)
+  }
 
   return (
     <DescriptionBox>
+      <HintText>{hintText}</HintText>
       <Textarea
         value={description}
         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
@@ -44,14 +67,38 @@ export const CommitLayout = ({
         } // 添加类型注解
         placeholder={t`description.placeholder`}
       />
-      <ButtonGroup>
-        <Button size="small" onClick={onCommitConfirm}>
-          {t`timer.commit`}
-        </Button>
-        <Button size="small" variant="text" onClick={onAbort}>
-          {t`common.cancel`}
-        </Button>
-      </ButtonGroup>
+      <ButtomRow>
+        <ButtonGroup>
+          <Button size="small" onClick={onCommitConfirm}>
+            {t`commit.confirm`}
+          </Button>
+          <Button
+            size="small"
+            style={{color: colors.Neutral400}}
+            variant="text"
+            onClick={handleClickAbort}
+          >
+            {t`commit.abort`}
+          </Button>
+          <Button
+            size="small"
+            variant="text"
+            style={{
+              opacity: abortConfirm ? 1 : 0,
+              pointerEvents: abortConfirm ? "auto" : "none",
+              color: colors.Red600,
+              textDecoration: "underline",
+              marginLeft: "auto",
+            }}
+            onClick={onAbort}
+          >
+            {t`commit.confirm-abort`}
+          </Button>
+        </ButtonGroup>
+        <HintText
+          style={{opacity: abortConfirm ? 1 : 0}}
+        >{t`commit.abort-hint`}</HintText>
+      </ButtomRow>
     </DescriptionBox>
   )
 }

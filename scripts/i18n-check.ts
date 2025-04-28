@@ -48,42 +48,68 @@ async function main() {
 
   // 5. 更新语言文件
   const addedKeys = new Set<string>()
+  const removedKeys = new Set<string>()
   for (const langFile of langFiles) {
     const fullPath = path.join(rootDir, langFile)
     const data: I18nData = JSON.parse(await fs.readFile(fullPath, "utf-8"))
     const existingKeys = new Set(Object.keys(data))
     const langAddedKeys = new Set<string>()
+    const langRemovedKeys = new Set<string>()
 
+    // 找出并移除未使用的键
+    for (const key of existingKeys) {
+      if (!keys.has(key)) {
+        langRemovedKeys.add(key)
+        removedKeys.add(key)
+        delete data[key]
+      }
+    }
+
+    // 添加新键
     for (const key of keys) {
       if (!existingKeys.has(key)) {
         data[key] = key // 设置默认值与key相同
-        existingKeys.add(key)
         langAddedKeys.add(key)
         addedKeys.add(key)
       }
     }
 
-    if (langAddedKeys.size > 0) {
-      await fs.writeFile(fullPath, JSON.stringify(data, null, 2) + "\n")
+    // 按字典序排序键
+    const sortedData = Object.keys(data)
+      .sort((a, b) => a.localeCompare(b))
+      .reduce((acc: I18nData, key) => {
+        acc[key] = data[key]
+        return acc
+      }, {})
+
+    if (langAddedKeys.size > 0 || langRemovedKeys.size > 0) {
+      await fs.writeFile(fullPath, JSON.stringify(sortedData, null, 2) + "\n")
       console.log(
-        `[${path.basename(langFile)}] 新增 ${langAddedKeys.size} 个键`
+        `[${path.basename(langFile)}] 操作完成：` +
+          `新增 ${langAddedKeys.size} 个键，` +
+          `移除 ${langRemovedKeys.size} 个未使用键`
       )
     }
   }
 
   // 6. 输出统计
   console.log(`
-统计结果：
-- 共扫描文件：${tsxFiles.length} 个
-- 发现i18n键：${keys.size} 个
-- 新增键总数：${addedKeys.size} 个
-- 已检查语言文件：${langFiles.join(", ")}
-  `)
+ 统计结果：
+ - 共扫描文件：${tsxFiles.length} 个
+ - 发现i18n键：${keys.size} 个
+ - 新增键总数：${addedKeys.size} 个
+ - 移除未使用键：${removedKeys.size} 个
+ - 已检查语言文件：${langFiles.join(", ")}
+   `)
 
-  // 提示需要手动处理的新增键
+  // 提示需要手动处理的信息
   if (addedKeys.size > 0) {
-    console.log("\n请手动更新以下键的翻译值：")
+    console.log("\n请手动更新以下新增键的翻译值：")
     addedKeys.forEach((key) => console.log(`- ${key}`))
+  }
+  if (removedKeys.size > 0) {
+    console.log("\n以下未使用键已被移除：")
+    removedKeys.forEach((key) => console.log(`- ${key}`))
   }
 }
 

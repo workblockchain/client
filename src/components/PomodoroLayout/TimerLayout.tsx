@@ -1,7 +1,6 @@
 import {useTranslation} from "react-i18next"
 import styled from "styled-components"
 import {Button} from ".."
-import {usePomodoroTimer} from "../../stores/usePomodoroTimer"
 import {TimeDisplay} from "../TimeDisplay/TimeDisplay"
 
 const ButtonGroup = styled.div`
@@ -13,15 +12,18 @@ export type TimerLayoutProps = {
   onCountStart: () => void
   onCountPause: () => void
   onSkip: () => void
+  status: "idle" | "running" | "paused"
+  remainingTime: number
 }
 
 export const TimerLayout = ({
   onCountStart,
   onCountPause,
   onSkip,
+  status,
+  remainingTime,
 }: TimerLayoutProps) => {
   const {t} = useTranslation()
-  const {status, remainingTime} = usePomodoroTimer()
 
   return (
     <>

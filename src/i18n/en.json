@@ -1,9 +1,11 @@
 {
-  "app.title": "Pomodoro Timer",
-  "timer.start": "Start",
+  "commit.abort": "Abort",
+  "commit.abort-hint": "Are you sure to abort? Your work will not be recorded.",
+  "commit.confirm": "Confirm",
+  "commit.confirm-abort": "Comfirm Abort",
+  "commit.hintText": "You've worked for {{timePassed}} seconds",
+  "description.placeholder": "Work description...",
   "timer.pause": "Pause",
   "timer.skip": "Skip",
-  "timer.commit": "Commit",
-  "description.placeholder": "description.placeholder",
-  "common.cancel": "common.cancel"
+  "timer.start": "Start"
 }
