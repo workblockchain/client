@@ -124,7 +124,7 @@ export const usePomodoroTimer = create<TimerState>((set, get) => ({
         return breakDuration * MINUTE - remainingTime
     }
   },
-  // 切换工作/休息阶段，或指定下一阶段
+  // 切换工作/休息阶段，或指定下一阶段，并重设定时器
   togglePhase: (nextPhase) => {
     const {timerPhase, resetTimer} = get()
     if (nextPhase) {
