@@ -4,11 +4,6 @@ import {Button} from ".."
 import {colors} from "../../styles" // 添加颜色导入
 import {Textarea} from "../Textarea/Textarea" // 修正导入路径
 
-const SmallButton = styled(Button)`
-  padding: 0.5rem 1rem;
-  font-size: 0.8rem;
-`
-
 const ButtonGroup = styled.div`
   display: flex;
   gap: 1rem;
@@ -25,7 +20,7 @@ const DescriptionBox = styled.div`
   max-width: 400px;
 `
 
-type CommitLayoutProps = {
+export type CommitLayoutProps = {
   description: string
   onDescriptionChange: (value: string) => void
   onCommitConfirm: () => void
@@ -47,13 +42,15 @@ export const CommitLayout = ({
         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
           onDescriptionChange(e.target.value)
         } // 添加类型注解
-        placeholder={t("description.placeholder")}
+        placeholder={t`description.placeholder`}
       />
       <ButtonGroup>
-        <SmallButton onClick={onCommitConfirm}>{t("timer.commit")}</SmallButton>
-        <SmallButton $variant="text" onClick={onAbort}>
-          {t("common.cancel")}
-        </SmallButton>
+        <Button size="small" onClick={onCommitConfirm}>
+          {t`timer.commit`}
+        </Button>
+        <Button size="small" variant="text" onClick={onAbort}>
+          {t`common.cancel`}
+        </Button>
       </ButtonGroup>
     </DescriptionBox>
   )

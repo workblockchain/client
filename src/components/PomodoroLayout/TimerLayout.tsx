@@ -4,12 +4,6 @@ import {Button} from ".."
 import {usePomodoroTimer} from "../../stores/usePomodoroTimer"
 import {TimeDisplay} from "../TimeDisplay/TimeDisplay"
 
-const SmallButton = styled(Button)`
-  padding: 0 1rem;
-  font-size: 0.8rem;
-  height: 28px;
-`
-
 const ButtonGroup = styled.div`
   display: flex;
   gap: 1rem;
@@ -34,13 +28,22 @@ export const TimerLayout = ({
       <TimeDisplay seconds={remainingTime} />
       <ButtonGroup>
         {status === "running" ? (
-          <SmallButton onClick={onCountPause}>{t("timer.pause")}</SmallButton>
+          <Button size="small" onClick={onCountPause}>
+            {t`timer.pause`}
+          </Button>
         ) : (
-          <SmallButton onClick={onCountStart}>{t("timer.start")}</SmallButton>
+          <Button size="small" onClick={onCountStart}>
+            {t`timer.start`}
+          </Button>
         )}
-        <SmallButton $variant="text" onClick={onSkip}>
-          {t("timer.skip")}
-        </SmallButton>
+        <Button
+          size="small"
+          variant="text"
+          onClick={onSkip}
+          style={{padding: "0 20px"}}
+        >
+          {t`timer.skip`}
+        </Button>
       </ButtonGroup>
     </>
   )

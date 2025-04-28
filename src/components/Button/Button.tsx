@@ -4,8 +4,8 @@ import styled, {css} from "styled-components"
 import {colors} from "../../styles/colors"
 import {styledCommon} from "../../styles/common"
 
-type Variant = "solid" | "outline" | "text"
-const $variantStyles = (color: string) => css<{$variant?: Variant}>`
+export type VariantType = "solid" | "outline" | "text"
+const $variantStyles = (color: string) => css<{$variant?: VariantType}>`
   ${({$variant}) =>
     $variant === "solid" &&
     css`
@@ -45,9 +45,8 @@ const $variantStyles = (color: string) => css<{$variant?: Variant}>`
 `
 
 type ButtonStyleProps = {
-  $variant?: Variant
+  $variant?: VariantType
   $size?: "small" | "medium" | "large"
-  colorScheme?: "primary"
 }
 
 const StyledButton = styled.button<ButtonStyleProps>`
@@ -75,14 +74,10 @@ const StyledButton = styled.button<ButtonStyleProps>`
     }
   }}
   border-radius: 24px;
-  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 
-  ${({colorScheme = "primary"}) =>
-    colorScheme === "primary"
-      ? $variantStyles(colors.Red400)
-      : $variantStyles(colors.Yellow500)}
+  ${$variantStyles(colors.Red400)}
 
   &:active:not(:disabled) {
     transform: scale(0.98);
@@ -94,8 +89,12 @@ const StyledButton = styled.button<ButtonStyleProps>`
   }
 `
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & ButtonStyleProps
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: VariantType
+  size?: "small" | "medium" | "large"
+}
 
-export const Button = ({$variant = "solid", ...rest}: ButtonProps) => {
-  return <StyledButton $variant={$variant} {...rest} />
+export const Button = ({variant = "solid", ...rest}: ButtonProps) => {
+  console.log(rest.children, variant)
+  return <StyledButton $variant={variant} {...rest} />
 }
