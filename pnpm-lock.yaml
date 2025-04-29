@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@noble/ed25519':
+        specifier: ^2.2.3
+        version: 2.2.3
       axios:
         specifier: ^1.8.4
         version: 1.8.4
@@ -589,6 +592,9 @@ packages:
   '@mswjs/interceptors@0.37.6':
     resolution: {integrity: sha512-wK+5pLK5XFmgtH3aQ2YVvA3HohS3xqV/OxuVOdNx9Wpnz7VE/fnC+e1A7ln6LFYeck7gOJ/dsZV6OLplOtAJ2w==}
     engines: {node: '>=18'}
+
+  '@noble/ed25519@2.2.3':
+    resolution: {integrity: sha512-iHV8eI2mRcUmOx159QNrU8vTpQ/Xm70yJ2cTk3Trc86++02usfqFoNl6x0p3JN81ZDS/1gx6xiK0OwrgqCT43g==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -3603,6 +3609,8 @@ snapshots:
       is-node-process: 1.2.0
       outvariant: 1.4.3
       strict-event-emitter: 0.5.1
+
+  '@noble/ed25519@2.2.3': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
