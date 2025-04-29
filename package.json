@@ -20,6 +20,7 @@
     "review": "prettier --check . && oxlint && vite-node scripts/license.ts -c"
   },
   "dependencies": {
+    "@noble/ed25519": "^2.2.3",
     "axios": "^1.8.4",
     "dayjs": "^1.11.13",
     "i18next": "^25.0.2",
