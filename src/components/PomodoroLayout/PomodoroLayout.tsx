@@ -40,11 +40,26 @@ export const PomodoroLayout = () => {
   const {status, remainingTime, timePassed, timerPhase} = usePomodoroTimer()
   const {startTimer, pauseTimer, togglePhase} = usePomodoroTimer()
 
+  // TODO: record to store and read to sign
+  const handleRecord = () => {
+    console.log({
+      timestamp: new Date().toISOString(),
+      description,
+      phase: timerPhase,
+    })
+  }
+
   // Timer buttons
   const handleSkip = () => {
     setDescription("")
     pauseTimer()
-    setCurrentLayout("commit")
+
+    if (timerPhase === "break") {
+      handleRecord()
+      goNextPhase()
+    } else {
+      setCurrentLayout("commit")
+    }
   }
 
   // Commit buttons
@@ -54,11 +69,7 @@ export const PomodoroLayout = () => {
     setCurrentLayout("timer")
   }
   const handleCommitConfirm = () => {
-    const timestamp = new Date().toISOString()
-    console.log({
-      timestamp,
-      description,
-    })
+    handleRecord()
     goNextPhase()
   }
 
@@ -85,6 +96,10 @@ export const PomodoroLayout = () => {
           onCommitConfirm={handleCommitConfirm}
           onAbort={handleAbort}
           timePassed={secondToHMS(timePassed())}
+          remainingTime={remainingTime}
+          onBack={() => {
+            setCurrentLayout("timer")
+          }}
         />
       )}
     </Container>

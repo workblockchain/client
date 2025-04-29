@@ -3,6 +3,7 @@ import {useTranslation} from "react-i18next"
 import styled from "styled-components"
 import {Button, Textarea} from ".."
 import {colors} from "../../styles"
+import {LeftArrow} from "../Icons/LeftArrow"
 
 const ButtonGroup = styled.div`
   display: flex;
@@ -39,6 +40,8 @@ export type CommitLayoutProps = {
   onCommitConfirm: () => void
   onAbort: () => void
   timePassed: string
+  onBack: () => void
+  remainingTime: number
 }
 
 export const CommitLayout = ({
@@ -47,6 +50,8 @@ export const CommitLayout = ({
   onCommitConfirm,
   onAbort,
   timePassed,
+  remainingTime,
+  onBack,
 }: CommitLayoutProps) => {
   const {t} = useTranslation()
   const [abortConfirm, setAbortConfirm] = useState(false)
@@ -58,6 +63,20 @@ export const CommitLayout = ({
 
   return (
     <DescriptionBox>
+      {remainingTime > 0 && (
+        <Button
+          $variant="text"
+          onClick={onBack}
+          style={{
+            position: "absolute",
+            left: "1rem",
+            top: "1rem",
+            padding: "0.5rem",
+          }}
+        >
+          <LeftArrow width={24} height={24} color={colors.Neutral700} />
+        </Button>
+      )}
       <HintText>{hintText}</HintText>
       <Textarea
         value={description}
