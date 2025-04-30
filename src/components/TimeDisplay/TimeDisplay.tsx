@@ -15,9 +15,9 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {CSSProperties, styled} from "styled-components"
-import {styledCommon} from "../../styles/common"
-import {secondToHMS} from "../../utils/secondToHMS"
+import { CSSProperties, styled } from "styled-components"
+import { styledCommon } from "../../styles/common"
+import { secondToHMS } from "../../utils/secondToHMS"
 
 interface TimeDisplayProps {
   seconds: number
