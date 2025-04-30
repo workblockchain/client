@@ -24,6 +24,9 @@ interface StoryControls {
   messageCommit: string
   messageAbort: string
   defaultDescription: string
+  remainingTime: number
+  timePassed: string
+  onBack: () => void
 }
 
 const meta: Meta<CommitLayoutProps & StoryControls> = {
@@ -47,6 +50,18 @@ const meta: Meta<CommitLayoutProps & StoryControls> = {
       control: "text",
       description: "默认描述内容",
     },
+    remainingTime: {
+      control: "number",
+      description: "剩余时间（秒）",
+    },
+    timePassed: {
+      control: "text",
+      description: "已用时间显示文本",
+    },
+    onBack: {
+      action: "onBack",
+      description: "返回按钮回调",
+    },
   },
 }
 
@@ -61,10 +76,14 @@ export const Default: Story = {
     messageCommit: "提交记录",
     messageAbort: "取消操作",
     defaultDescription: "示例描述内容",
+    remainingTime: 1500, // 25分钟
+    timePassed: "25:00",
   },
   render: (args) => (
     <CommitLayout
       description={args.defaultDescription}
+      remainingTime={args.remainingTime}
+      timePassed={args.timePassed}
       onDescriptionChange={(value) =>
         console.log(`[CommitLayout] 描述更新: ${value}`)
       }
@@ -72,12 +91,7 @@ export const Default: Story = {
         console.log(`[CommitLayout] ${args.messageCommit}`)
       }
       onAbort={() => console.log(`[CommitLayout] ${args.messageAbort}`)}
-      // Placeholder below.
-      timePassed={""}
-      onBack={function (): void {
-        throw new Error("Function not implemented.")
-      }}
-      remainingTime={0}
+      onBack={() => console.log("[CommitLayout] onBack")}
     />
   ),
 }
