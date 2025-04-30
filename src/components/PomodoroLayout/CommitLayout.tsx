@@ -4,6 +4,7 @@ import styled from "styled-components"
 import {Button, Textarea} from ".."
 import {colors} from "../../styles"
 import {LeftArrow} from "../Icons/LeftArrow"
+import {Row} from "../Layout"
 
 const ButtonGroup = styled.div`
   display: flex;
@@ -15,6 +16,7 @@ const ButtomRow = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  padding-top: 8px;
 `
 
 const HintText = styled.div`
@@ -28,7 +30,6 @@ const DescriptionBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1.5rem;
   border-radius: 6px;
   width: 100%;
   max-width: 400px;
@@ -63,21 +64,14 @@ export const CommitLayout = ({
 
   return (
     <DescriptionBox>
-      {remainingTime > 0 && (
-        <Button
-          $variant="text"
-          onClick={onBack}
-          style={{
-            position: "absolute",
-            left: "1rem",
-            top: "1rem",
-            padding: "0.5rem",
-          }}
-        >
-          <LeftArrow width={24} height={24} color={colors.Neutral700} />
-        </Button>
-      )}
-      <HintText>{hintText}</HintText>
+      <Row>
+        {remainingTime > 0 && (
+          <Button $variant="icon" onClick={onBack}>
+            <LeftArrow width={18} height={18} color={colors.Neutral700} />
+          </Button>
+        )}
+        <HintText>{hintText}</HintText>
+      </Row>
       <Textarea
         value={description}
         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
