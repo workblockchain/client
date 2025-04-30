@@ -1,9 +1,10 @@
-import {styled} from "styled-components"
+import {CSSProperties, styled} from "styled-components"
 import {styledCommon} from "../../styles/common"
 import {secondToHMS} from "../../utils/secondToHMS"
 
 interface TimeDisplayProps {
   seconds: number
+  style?: CSSProperties
 }
 
 const TimeDisplayContainer = styled.div`
@@ -12,8 +13,10 @@ const TimeDisplayContainer = styled.div`
   line-height: 1;
 `
 
-export const TimeDisplay = ({seconds}: TimeDisplayProps) => {
+export const TimeDisplay = ({seconds, style}: TimeDisplayProps) => {
   const formattedTime = secondToHMS(seconds)
 
-  return <TimeDisplayContainer>{formattedTime}</TimeDisplayContainer>
+  return (
+    <TimeDisplayContainer style={style}>{formattedTime}</TimeDisplayContainer>
+  )
 }

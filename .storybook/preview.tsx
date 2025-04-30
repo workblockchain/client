@@ -1,6 +1,7 @@
 import type {Preview} from "@storybook/react"
 import React from "react"
 import {ThemeProvider} from "styled-components"
+import "../src/i18n"
 import {GlobalStyles} from "../src/styles/globalStyles"
 import {theme} from "../src/styles/theme"
 

@@ -1,5 +1,11 @@
+import {PomodoroLayout} from "./components/PomodoroLayout/PomodoroLayout"
+
 function App() {
-  return <></>;
+  return (
+    <>
+      <PomodoroLayout />
+    </>
+  )
 }
 
-export default App;
+export default App

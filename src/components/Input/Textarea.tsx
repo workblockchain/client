@@ -2,11 +2,11 @@ import styled from "styled-components"
 import {styledCommon} from "../../styles/common"
 import {inputCommon, type InputVariantType} from "./common.styles"
 
-export const Input = styled.input<InputVariantType>`
+export const Textarea = styled.textarea<InputVariantType>`
   ${styledCommon.base}
   ${inputCommon()}
-  height: 48px;
-  padding: 0 16px;
-  border-radius: 24px;
-  text-align: center;
+  height: 120px;
+  padding: 16px;
+  border-radius: 12px;
+  resize: none;
 `
