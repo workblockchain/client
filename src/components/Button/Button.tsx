@@ -1,57 +1,54 @@
 import {darken, transparentize} from "polished"
-import {ButtonHTMLAttributes} from "react"
 import styled, {css} from "styled-components"
 import {colors} from "../../styles/colors"
 import {styledCommon} from "../../styles/common"
 
-type Variant = "solid" | "outline" | "text"
-const $variantStyles = (color: string) => css<{$variant?: Variant}>`
-  ${({$variant}) =>
-    $variant === "solid" &&
-    css`
-      background-color: ${color};
-      color: ${colors.Neutral100};
+export type VariantType = "solid" | "outline" | "text"
+const $variantStyles = ($variant: VariantType = "solid", color: string) => css`
+  ${$variant === "solid" &&
+  css`
+    background-color: ${color};
+    color: ${colors.Neutral100};
 
-      &:hover:not(:disabled) {
-        background-color: ${darken(0.1, color)};
-      }
-    `}
+    &:hover:not(:disabled) {
+      background-color: ${darken(0.1, color)};
+    }
+  `}
 
-  ${({$variant}) =>
-    $variant === "outline" &&
-    css`
-      background-color: transparent;
-      color: ${color};
-      box-shadow: 0 0 0 1px ${color};
+  ${$variant === "outline" &&
+  css`
+    background-color: transparent;
+    color: ${color};
+    box-shadow: 0 0 0 1px ${color};
 
-      &:hover:not(:disabled) {
-        background-color: ${transparentize(0.9, color)};
-      }
-    `}
+    &:hover:not(:disabled) {
+      background-color: ${transparentize(0.9, color)};
+    }
+  `}
 
-  ${({$variant}) =>
-    $variant === "text" &&
-    css`
-      background-color: transparent;
-      color: ${color};
-      box-shadow: none;
-      padding: 0;
-      height: auto;
+  ${$variant === "text" &&
+  css`
+    background-color: transparent;
+    color: ${color};
+    box-shadow: none;
+    padding: 0;
+    height: auto;
 
-      &:hover:not(:disabled) {
-        filter: brightness(1.2);
-      }
-    `}
+    &:hover:not(:disabled) {
+      filter: brightness(1.2);
+    }
+  `}
 `
 
 type ButtonStyleProps = {
-  $variant?: Variant
+  $variant?: VariantType
   $size?: "small" | "medium" | "large"
-  colorScheme?: "primary"
+  $primaryColor?: string
 }
 
-const StyledButton = styled.button<ButtonStyleProps>`
+export const Button = styled.button<ButtonStyleProps>`
   ${styledCommon.base}
+  white-space: nowrap;
   ${({$size = "medium"}) => {
     switch ($size) {
       case "small":
@@ -75,14 +72,11 @@ const StyledButton = styled.button<ButtonStyleProps>`
     }
   }}
   border-radius: 24px;
-  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 
-  ${({colorScheme = "primary"}) =>
-    colorScheme === "primary"
-      ? $variantStyles(colors.Red400)
-      : $variantStyles(colors.Yellow500)}
+  ${({$primaryColor, $variant}) =>
+    $variantStyles($variant, $primaryColor ?? colors.Red400)}
 
   &:active:not(:disabled) {
     transform: scale(0.98);
@@ -93,9 +87,3 @@ const StyledButton = styled.button<ButtonStyleProps>`
     cursor: not-allowed;
   }
 `
-
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & ButtonStyleProps
-
-export const Button = ({$variant = "solid", ...rest}: ButtonProps) => {
-  return <StyledButton $variant={$variant} {...rest} />
-}
