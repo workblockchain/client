@@ -27,6 +27,7 @@
   // Check spelling (requires recommended extensions).
   "cSpell.ignorePaths": [".git", "dist", "node_modules", "pnpm-lock.yaml"],
   "cSpell.words": [
+    "autodocs",
     "dbaeumer",
     "esbenp",
     "foxundermoon",
