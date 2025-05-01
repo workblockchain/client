@@ -15,6 +15,10 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-/// <reference types="vite/client" />
-/// <reference types="vite-plugin-svgr/client" />
-/// <reference types="./utils/css-units.d.ts" />
+declare global {
+  interface Number {
+    get px(): string
+  }
+}
+
+export {}

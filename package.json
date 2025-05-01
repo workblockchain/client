@@ -7,6 +7,7 @@
   "scripts": {
     "prepare": "pnpm exec playwright install",
     "dev": "vite",
+    "test": "vitest",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "i18n": "tsx scripts/i18n-check.ts",

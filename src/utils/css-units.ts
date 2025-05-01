@@ -15,6 +15,10 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-/// <reference types="vite/client" />
-/// <reference types="vite-plugin-svgr/client" />
-/// <reference types="./utils/css-units.d.ts" />
+Object.defineProperty(Number.prototype, "px", {
+  get: function (): string {
+    return `${this}px`
+  },
+  enumerable: false,
+  configurable: false,
+})

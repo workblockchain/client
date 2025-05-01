@@ -15,6 +15,12 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-/// <reference types="vite/client" />
-/// <reference types="vite-plugin-svgr/client" />
-/// <reference types="./utils/css-units.d.ts" />
+import {expect, test} from "vitest"
+import "./css-units"
+import "./css-units.d"
+
+test("number to px", () => {
+  const num = 123
+  expect(num.px).toBe("123px")
+  expect((123).px).toBe("123px")
+})
