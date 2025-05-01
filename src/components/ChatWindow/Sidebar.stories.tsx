@@ -15,9 +15,8 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {center, full} from "@/styles/shared"
 import type {Meta, StoryObj} from "@storybook/react"
-import {SidebarContainer} from "./SidebarContainer"
+import {SidebarContainer} from "./Sidebar"
 
 const meta: Meta<typeof SidebarContainer> = {
   component: SidebarContainer,
@@ -25,6 +24,8 @@ const meta: Meta<typeof SidebarContainer> = {
   argTypes: {
     left: {control: "boolean"},
     sidebarWidth: {control: "text"},
+    resizeWidth: {control: "text"},
+    resizeColor: {control: "color"},
     sidebarBackground: {control: "color"},
     sidebarForeground: {control: "color"},
     sidebar: {control: "object"},
@@ -40,7 +41,7 @@ const foreground = "#171819"
 const background = "#f6f2e9"
 const defaultSidebarWidth = "300px"
 function placeholder(message: string) {
-  return <div style={{...full, ...center}}>{message}</div>
+  return <div className="full center">{message}</div>
 }
 
 function DefaultStory(options: {left: boolean; sidebarMessage: string}): Story {
@@ -48,6 +49,8 @@ function DefaultStory(options: {left: boolean; sidebarMessage: string}): Story {
     args: {
       left: options.left,
       sidebarWidth: defaultSidebarWidth,
+      resizeWidth: undefined,
+      resizeColor: undefined,
       sidebarBackground: background,
       sidebarForeground: foreground,
       sidebar: placeholder(options.sidebarMessage),

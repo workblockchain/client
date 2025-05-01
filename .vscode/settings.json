@@ -14,8 +14,8 @@
   // enable `"explorer.fileNesting.enabled": true,` in your user settings.
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {
-    "*.tsx": "${capture}.stories.tsx, ${capture}.test.ts",
-    "*.ts": "${capture}.d.ts, ${capture}.test.ts",
+    "*.tsx": "${capture}.stories.tsx,${capture}.test.ts,${capture}.module.css",
+    "*.ts": "${capture}.d.ts,${capture}.test.ts",
     "package.json": "pnpm-lock.yaml",
     "tsconfig.json": "tsconfig.*.json"
   },

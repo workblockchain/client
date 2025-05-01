@@ -17,6 +17,7 @@
 
 export * from "./Button/Button"
 export * from "./ChatWindow/Layout"
+export * from "./ChatWindow/Sidebar"
 export * from "./Icons"
 export * from "./Input/Input"
 export * from "./Input/Textarea"
