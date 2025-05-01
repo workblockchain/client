@@ -1,3 +1,6 @@
 {
-  "rules": {}
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-empty-file": "allow"
+  }
 }
