@@ -40,7 +40,7 @@ const Container = styled(Layout)<{$phase: TimerPhaseType}>`
   color: ${({$phase}) => ($phase === "work" ? colors.Red800 : colors.Blue900)};
   transition: background-color 0.2s ease;
   width: auto;
-  height: unset;
+  height: 100vh;
   min-height: unset;
   padding: 2rem;
 `
