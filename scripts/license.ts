@@ -15,8 +15,10 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import chalk from "chalk"
 import {readdirSync, readFileSync, statSync, writeFileSync} from "node:fs"
 import {join, normalize} from "node:path"
+import {argv} from "node:process"
 
 class LicenseNotationGenerator {
   constructor(options: {
@@ -33,6 +35,31 @@ class LicenseNotationGenerator {
   separator: string
   options: FileCommentOptions
 
+  reviewDir(root: string) {
+    const extensions = this.options.fileExtensions
+    readdirSync(root, {recursive: true})
+      .map((path) => path.toString())
+      .map((path) => join(root, path))
+      .filter((path) => extensions.some((ext) => path.endsWith(ext)))
+      .filter((path) => statSync(path).isFile())
+      .forEach((path) => this.reviewFile(path))
+
+    console.log(
+      `${chalk.green("license notation unchanged in")}${chalk.dim(`: ${root}`)}`
+    )
+  }
+
+  reviewFile(path: string) {
+    const raw = readFileSync(path).toString()
+    const updated = this.update(raw)
+    if (raw !== updated) {
+      console.warn(
+        `${chalk.yellow("invalid license notation")}${chalk.dim(`: ${path}`)}`
+      )
+      throw new Error(`invalid license notation at ${path}`)
+    }
+  }
+
   updateDir(root: string) {
     const extensions = this.options.fileExtensions
     readdirSync(root, {recursive: true})
@@ -41,6 +68,10 @@ class LicenseNotationGenerator {
       .filter((path) => extensions.some((ext) => path.endsWith(ext)))
       .filter((path) => statSync(path).isFile())
       .forEach((path) => this.updateFile(path))
+
+    console.log(
+      `${chalk.green("license notation updated")}${chalk.dim(`: ${root}`)}`
+    )
   }
 
   updateFile(path: string) {
@@ -48,6 +79,9 @@ class LicenseNotationGenerator {
     const updated = this.update(raw)
     if (raw !== updated) {
       writeFileSync(path, updated)
+      console.log(`${chalk.blue("updated")}: ${path}`)
+    } else {
+      console.log(`${chalk.magenta("unchanged")}${chalk.dim(`: ${path}`)}`)
     }
   }
 
@@ -108,7 +142,9 @@ function main() {
       fileExtensions: [".ts", ".tsx"],
     }),
   })
-  generator.updateDir(join(root, "src"))
-  generator.updateDir(join(root, "scripts"))
+  const codes = ["src", "scripts"].map((path) => join(root, path))
+  argv.includes("-c")
+    ? codes.forEach((code) => generator.reviewDir(code))
+    : codes.forEach((code) => generator.updateDir(code))
 }
 main()
