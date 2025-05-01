@@ -1,8 +1,5 @@
 {
   "recommendations": [
-    // Languages and frameworks.
-    "mf.vscode-styled-components",
-
     // Configurations.
     "redhat.vscode-yaml",
 

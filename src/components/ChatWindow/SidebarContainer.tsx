@@ -1,0 +1,60 @@
+// Copyright (c) 2025-present WorkBlockChain Team.
+//
+// WorkBlockChain Client is licensed under Mulan PSL v2.
+// You can use this software according to the terms
+// and conditions of the Mulan PSL v2.
+// You may obtain a copy of Mulan PSL v2 at:
+//
+//   http://license.coscl.org.cn/MulanPSL2
+//
+// THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS,
+// WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+// INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+// MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+// See the Mulan PSL v2 for more details.
+//
+// === Auto generated, DO NOT EDIT ABOVE ===
+
+import * as css from "csstype"
+import {ReactNode} from "react"
+
+const full: css.Properties = {
+  position: "absolute",
+  width: "100%",
+  height: "100%",
+}
+
+export function SidebarContainer(props: {
+  sidebar: ReactNode
+  child: ReactNode
+  left: boolean
+  sidebarWidth?: string
+  sidebarBackground?: string
+  sidebarForeground?: string
+}) {
+  const sidebarArea: css.Properties = {
+    position: "absolute",
+    top: "0",
+    left: props.left ? "0" : "auto",
+    right: props.left ? "auto" : "0",
+    bottom: "0",
+    width: props.sidebarWidth,
+    color: props.sidebarForeground ?? "black",
+    backgroundColor: props.sidebarBackground ?? "#ffff",
+  }
+
+  const mainArea: css.Properties = {
+    position: "absolute",
+    top: "0",
+    left: props.left ? props.sidebarWidth : "0",
+    right: props.left ? "0" : props.sidebarWidth,
+    bottom: "0",
+  }
+
+  return (
+    <div style={full}>
+      <div style={sidebarArea}>{props.sidebar}</div>
+      <div style={mainArea}>{props.child}</div>
+    </div>
+  )
+}

@@ -17,4 +17,3 @@
 
 /// <reference types="vite/client" />
 /// <reference types="vite-plugin-svgr/client" />
-/// <reference types="./utils/css-units.d.ts" />
