@@ -17,10 +17,10 @@
     "package.json": "pnpm-lock.yaml",
     "tsconfig.json": "tsconfig.*.json"
   },
-  "[ignore]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  "[ignore]": {"editor.defaultFormatter": "foxundermoon.shell-format"},
+  "[jsonc]": {"editor.defaultFormatter": "esbenp.prettier-vscode"},
+
+  // Check spelling (requires recommended extensions).
+  "cSpell.ignorePaths": [".git", "dist", "node_modules", "pnpm-lock.yaml"],
+  "cSpell.words": ["dbaeumer", "esbenp", "foxundermoon", "workchain"]
 }
