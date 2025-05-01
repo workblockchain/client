@@ -28,7 +28,6 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "3",
-    "@eslint/js": "^9.21.0",
     "@storybook/addon-essentials": "8.6.8",
     "@storybook/addon-onboarding": "8.6.8",
     "@storybook/blocks": "8.6.8",
@@ -43,10 +42,6 @@
     "@vitejs/plugin-react-swc": "^3.8.0",
     "@vitest/browser": "^3.0.9",
     "@vitest/coverage-v8": "^3.0.9",
-    "eslint": "^9.21.0",
-    "eslint-plugin-react-hooks": "^5.1.0",
-    "eslint-plugin-react-refresh": "^0.4.19",
-    "eslint-plugin-storybook": "^0.11.6",
     "globals": "^15.15.0",
     "minimist": "^1.2.8",
     "oxlint": "^0.16.8",
@@ -56,15 +51,9 @@
     "storybook": "8.6.8",
     "tsx": "^4.19.3",
     "typescript": "~5.7.2",
-    "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0",
     "vite-plugin-svgr": "^4.3.0",
     "vitest": "^3.0.9"
-  },
-  "eslintConfig": {
-    "extends": [
-      "plugin:storybook/recommended"
-    ]
   },
   "pnpm": {
     "ignoredBuiltDependencies": [
