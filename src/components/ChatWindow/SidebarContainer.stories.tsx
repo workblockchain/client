@@ -20,7 +20,6 @@ import type {Meta, StoryObj} from "@storybook/react"
 import {SidebarContainer} from "./SidebarContainer"
 
 const meta: Meta<typeof SidebarContainer> = {
-  title: "Components/SidebarContainer",
   component: SidebarContainer,
   parameters: {layout: "fullscreen"},
   argTypes: {
