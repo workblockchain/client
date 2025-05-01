@@ -8,5 +8,8 @@
 
 # Node.
 node_modules/
+
+# Compilation output.
 dist/
 dist-ssr/
+storybook-static/
