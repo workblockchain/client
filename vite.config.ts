@@ -1,6 +1,5 @@
 import react from "@vitejs/plugin-react-swc"
 import {join} from "node:path"
-import {fileURLToPath, URL} from "node:url"
 import {defineConfig} from "vite"
 import svgr from "vite-plugin-svgr"
 
@@ -12,7 +11,7 @@ export default defineConfig({
   base: "./",
   resolve: {
     alias: {
-      "@": fileURLToPath(new URL("./src", root)),
+      "@": "./src",
     },
   },
   build: {
