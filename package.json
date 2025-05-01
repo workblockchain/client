@@ -7,11 +7,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "review": "oxlint",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "i18n": "tsx scripts/i18n-check.ts"
+    "i18n": "tsx scripts/i18n-check.ts",
+    "format": "prettier --write .",
+    "review": "prettier --check . && oxlint"
   },
   "dependencies": {
     "axios": "^1.8.4",
