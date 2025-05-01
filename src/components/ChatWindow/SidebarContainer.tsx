@@ -15,22 +15,17 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {full} from "@/styles/shared"
 import * as css from "csstype"
 import {ReactNode} from "react"
 
-const full: css.Properties = {
-  position: "absolute",
-  width: "100%",
-  height: "100%",
-}
-
 export function SidebarContainer(props: {
-  sidebar: ReactNode
-  child: ReactNode
   left: boolean
   sidebarWidth?: string
   sidebarBackground?: string
   sidebarForeground?: string
+  sidebar: ReactNode
+  child: ReactNode
 }) {
   const sidebarArea: css.Properties = {
     position: "absolute",

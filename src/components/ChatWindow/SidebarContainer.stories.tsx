@@ -15,6 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {center, full} from "@/styles/shared"
 import type {Meta, StoryObj} from "@storybook/react"
 import {SidebarContainer} from "./SidebarContainer"
 
@@ -23,12 +24,12 @@ const meta: Meta<typeof SidebarContainer> = {
   component: SidebarContainer,
   parameters: {layout: "fullscreen"},
   argTypes: {
-    sidebar: {control: "text"},
-    child: {control: "text"},
     left: {control: "boolean"},
     sidebarWidth: {control: "text"},
     sidebarBackground: {control: "color"},
     sidebarForeground: {control: "color"},
+    sidebar: {control: "object"},
+    child: {control: "object"},
   },
 }
 
@@ -38,25 +39,30 @@ type Story = StoryObj<typeof SidebarContainer>
 
 const foreground = "#171819"
 const background = "#f6f2e9"
-
-export const Left: Story = {
-  args: {
-    sidebar: "Sidebar on Left",
-    child: "Main Area",
-    left: true,
-    sidebarWidth: "300px",
-    sidebarBackground: background,
-    sidebarForeground: foreground,
-  },
+const defaultSidebarWidth = "300px"
+function placeholder(message: string) {
+  return <div style={{...full, ...center}}>{message}</div>
 }
 
-export const Right: Story = {
-  args: {
-    sidebar: "Sidebar on Right",
-    child: "Main Area",
-    left: false,
-    sidebarWidth: "300px",
-    sidebarBackground: background,
-    sidebarForeground: foreground,
-  },
+function DefaultStory(options: {left: boolean; sidebarMessage: string}): Story {
+  return {
+    args: {
+      left: options.left,
+      sidebarWidth: defaultSidebarWidth,
+      sidebarBackground: background,
+      sidebarForeground: foreground,
+      sidebar: placeholder(options.sidebarMessage),
+      child: placeholder("Main Area"),
+    },
+  }
 }
+
+export const Left = DefaultStory({
+  sidebarMessage: "Sidebar on Left",
+  left: true,
+})
+
+export const Right = DefaultStory({
+  sidebarMessage: "Sidebar on Right",
+  left: false,
+})
