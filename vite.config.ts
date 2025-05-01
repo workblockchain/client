@@ -11,7 +11,7 @@ export default defineConfig({
   base: "./",
   resolve: {
     alias: {
-      "@": "./src",
+      "@": join(root, "src"),
     },
   },
   build: {

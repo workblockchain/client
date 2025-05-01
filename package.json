@@ -5,6 +5,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "prepare": "npx playwright install",
     "dev": "vite",
     "test": "vitest",
     "preview": "vite preview",
@@ -14,7 +15,9 @@
     "build": "npm run build.web && npm run build.stories",
     "build.web": "tsc -b && vite build",
     "build.stories": "storybook build",
-    "review": "npm run review.quality && npm run review.license",
+    "review": "npm run review.code && npm run review.test",
+    "review.test": "vitest run",
+    "review.code": "npm run review.quality && npm run review.license",
     "review.quality": "prettier --check . && oxlint",
     "review.license": "vite-node scripts/license.ts -c"
   },
