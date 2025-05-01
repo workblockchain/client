@@ -55,6 +55,12 @@ export const Default: Story = {
         console.log(`[CommitLayout] ${args.messageCommit}`)
       }
       onAbort={() => console.log(`[CommitLayout] ${args.messageAbort}`)}
+      // Placeholder below.
+      timePassed={""}
+      onBack={function (): void {
+        throw new Error("Function not implemented.")
+      }}
+      remainingTime={0}
     />
   ),
 }
