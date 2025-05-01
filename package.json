@@ -5,7 +5,6 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "prepare": "pnpm exec playwright install",
     "dev": "vite",
     "test": "vitest",
     "preview": "vite preview",
