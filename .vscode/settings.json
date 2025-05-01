@@ -19,6 +19,11 @@
     "tsconfig.json": "tsconfig.*.json"
   },
 
+  // Special file names.
+  "files.associations": {
+    ".env.development": "dotenv"
+  },
+
   // Check spelling (requires recommended extensions).
   "cSpell.ignorePaths": [".git", "dist", "node_modules", "pnpm-lock.yaml"],
   "cSpell.words": ["dbaeumer", "esbenp", "foxundermoon", "oxlint", "workchain"]

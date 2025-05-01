@@ -4,3 +4,6 @@ trailingComma: es5
 
 plugins:
   - prettier-plugin-sh
+
+overrides:
+  - {files: ".env.development", options: {parser: "sh"}}
