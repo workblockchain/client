@@ -4,11 +4,12 @@
   "files.eol": "\n",
   "editor.tabSize": 2,
   "editor.rulers": [80],
-  // Auto format on save.
+
+  // Auto format on save (requires recommended extensions).
   "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.organizeImports": "always"
-  },
+  "editor.codeActionsOnSave": {"source.organizeImports": "always"},
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
   // File nesting. To enable, you must also
   // enable `"explorer.fileNesting.enabled": true,` in your user settings.
   "explorer.fileNesting.expand": false,
@@ -17,8 +18,6 @@
     "package.json": "pnpm-lock.yaml",
     "tsconfig.json": "tsconfig.*.json"
   },
-  "[ignore]": {"editor.defaultFormatter": "foxundermoon.shell-format"},
-  "[jsonc]": {"editor.defaultFormatter": "esbenp.prettier-vscode"},
 
   // Check spelling (requires recommended extensions).
   "cSpell.ignorePaths": [".git", "dist", "node_modules", "pnpm-lock.yaml"],
