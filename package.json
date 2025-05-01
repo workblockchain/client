@@ -12,7 +12,8 @@
     "build-storybook": "storybook build",
     "i18n": "tsx scripts/i18n-check.ts",
     "format": "prettier --write . && vite-node scripts/license.ts",
-    "review": "prettier --check . && oxlint && vite-node scripts/license.ts -c"
+    "review": "prettier --check . && oxlint && vite-node scripts/license.ts -c",
+    "build-all": "npm run build && npm run build-storybook"
   },
   "dependencies": {
     "axios": "^1.8.4",
