@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  height: 100vh;
+  user-select: none;
+  overflow: hidden;
+}
+
+body > div#app {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+:root div {
+  box-sizing: border-box;
+}

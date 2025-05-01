@@ -20,7 +20,7 @@ import {createRoot} from "react-dom/client"
 import {ThemeProvider} from "styled-components"
 import App from "./App.tsx"
 import "./i18n"
-import "./index.css"
+import "./root.css"
 import {GlobalStyles} from "./styles/globalStyles"
 import {theme} from "./styles/theme"
 
