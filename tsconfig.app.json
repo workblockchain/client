@@ -7,7 +7,7 @@
     "module": "ESNext",
     "skipLibCheck": true,
 
-    /* Bundler mode */
+    // Bundle mode.
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
@@ -15,12 +15,18 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* Linting */
+    // Lints.
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    // Path aliases.
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src"]
 }
