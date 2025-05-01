@@ -17,11 +17,11 @@
 
 import {full, HoverColor} from "@/styles/shared"
 import * as css from "csstype"
-import {ReactNode} from "react"
+import {MouseEvent, ReactNode, useRef, useState} from "react"
 
 export function SidebarContainer(props: {
   left: boolean
-  sidebarWidth?: string
+  sidebarWidth?: number
   sidebarBackground?: string
   sidebarForeground?: string
   resizeWidth?: string
@@ -29,13 +29,44 @@ export function SidebarContainer(props: {
   sidebar: ReactNode
   child: ReactNode
 }) {
+  const [width, setWidth] = useState(props.sidebarWidth!)
+  const hover = useRef(false)
+  const delta = useRef(0)
+  const dragging = useRef(false)
+  const root = useRef<HTMLDivElement>(null)
+
+  function computeSide(event: MouseEvent): number {
+    const rect = root.current!.getBoundingClientRect()
+    return props.left ? event.clientX - rect.left : rect.right - event.clientX
+  }
+
+  function mouseDown(event: MouseEvent) {
+    if (hover.current) {
+      delta.current = width - computeSide(event)
+      dragging.current = true
+    }
+  }
+
+  function mouseMove(event: MouseEvent) {
+    if (dragging.current) {
+      setWidth(computeSide(event) + delta.current)
+    }
+  }
+
+  function mouseUp(event: MouseEvent) {
+    if (dragging.current) {
+      setWidth(computeSide(event) + delta.current)
+      dragging.current = false
+    }
+  }
+
   const sidebarArea: css.Properties = {
     position: "absolute",
     top: 0,
     left: props.left ? 0 : "auto",
     right: props.left ? "auto" : 0,
     bottom: 0,
-    width: props.sidebarWidth,
+    width: `${width}px`,
     color: props.sidebarForeground ?? "black",
     backgroundColor: props.sidebarBackground ?? "#ffff",
   }
@@ -43,12 +74,11 @@ export function SidebarContainer(props: {
   const mainArea: css.Properties = {
     position: "absolute",
     top: 0,
-    left: props.left ? props.sidebarWidth : 0,
-    right: props.left ? 0 : props.sidebarWidth,
+    left: props.left ? `${width}px` : 0,
+    right: props.left ? 0 : `${width}px`,
     bottom: 0,
   }
 
-  const resizeHoverColor = props.resizeColor ?? "#0f9dda"
   const resizeBar: css.Properties = {
     position: "absolute",
     top: 0,
@@ -63,10 +93,21 @@ export function SidebarContainer(props: {
   }
 
   return (
-    <div style={full}>
+    <div
+      ref={root}
+      style={full}
+      onMouseDown={mouseDown}
+      onMouseMove={mouseMove}
+      onMouseUp={mouseUp}
+    >
       <div style={sidebarArea}>
         <div style={full}>{props.sidebar}</div>
-        <HoverColor color={resizeHoverColor} style={resizeBar}></HoverColor>
+        <HoverColor
+          color={props.resizeColor ?? "#0f9dda"}
+          style={resizeBar}
+          onMouseEnter={() => (hover.current = true)}
+          onMouseLeave={() => (hover.current = false)}
+        />
       </div>
       <div style={mainArea}>{props.child}</div>
     </div>
