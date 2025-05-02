@@ -1,3 +1,4 @@
+import GearIcon from "@/assets/gear.svg?react"
 import type {Meta, StoryObj} from "@storybook/react"
 import {Button} from "./Button"
 
@@ -8,7 +9,7 @@ const meta = {
   argTypes: {
     $variant: {
       control: {type: "radio"},
-      options: ["solid", "outline", "text"],
+      options: ["solid", "outline", "text", "icon"],
     },
     $size: {
       control: {type: "radio"},
@@ -51,5 +52,13 @@ export const Disabled: Story = {
   args: {
     ...Primary.args,
     disabled: true,
+  },
+}
+
+export const Icon: Story = {
+  args: {
+    ...Primary.args,
+    $variant: "icon",
+    children: <GearIcon />,
   },
 }

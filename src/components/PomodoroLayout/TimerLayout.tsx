@@ -8,13 +8,21 @@ import {TimeDisplay} from "../TimeDisplay/TimeDisplay"
 const ButtonGroup = styled.div`
   display: flex;
   gap: 1rem;
+  height: fit-content;
+
+  @media screen and (min-width: 768px) {
+    gap: 2rem;
+  }
 `
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  justify-content: space-around;
   align-items: center;
+  width: 100%;
+  height: 100%;
+  max-height: 600px;
 `
 
 export type TimerLayoutProps = {
