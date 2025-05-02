@@ -2,12 +2,12 @@
   "recommendations": [
     // Languages and frameworks.
     "mf.vscode-styled-components",
+    "rust-lang.rust-analyzer",
 
     // Configurations.
     "redhat.vscode-yaml",
 
     // Code qualities.
-    "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
     "oxc.oxc-vscode",
     "streetsidesoftware.code-spell-checker"
