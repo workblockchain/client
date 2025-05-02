@@ -9,6 +9,7 @@
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {"source.organizeImports": "always"},
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[rust]": {"editor.defaultFormatter": "rust-lang.rust-analyzer"},
 
   // File nesting. To enable, you must also
   // enable `"explorer.fileNesting.enabled": true,` in your user settings.
