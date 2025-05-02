@@ -1,11 +1,15 @@
 {
   "recommendations": [
-    // Language and framework supports.
+    // Languages and frameworks.
     "mf.vscode-styled-components",
-    // Configuration file supports.
+    "rust-lang.rust-analyzer",
+
+    // Configurations.
     "redhat.vscode-yaml",
-    // Formatter and linter.
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode"
+
+    // Code qualities.
+    "esbenp.prettier-vscode",
+    "oxc.oxc-vscode",
+    "streetsidesoftware.code-spell-checker"
   ]
 }

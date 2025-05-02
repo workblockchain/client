@@ -4,23 +4,45 @@
   "files.eol": "\n",
   "editor.tabSize": 2,
   "editor.rulers": [80],
-  // Auto format on save.
+
+  // Auto format on save (requires recommended extensions).
   "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.organizeImports": "always"
-  },
+  "editor.codeActionsOnSave": {"source.organizeImports": "always"},
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[rust]": {"editor.defaultFormatter": "rust-lang.rust-analyzer"},
+
   // File nesting. To enable, you must also
   // enable `"explorer.fileNesting.enabled": true,` in your user settings.
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {
-    "*.tsx": "${capture}.stories.ts,${capture}.test.ts",
+    "*.tsx": "${capture}.stories.tsx,${capture}.test.ts",
     "package.json": "pnpm-lock.yaml",
     "tsconfig.json": "tsconfig.*.json"
   },
-  "[ignore]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format"
+
+  // Special file names.
+  "files.associations": {
+    ".env.development": "dotenv"
   },
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+
+  // Check spelling (requires recommended extensions).
+  "cSpell.ignorePaths": [".git", "dist", "node_modules", "pnpm-lock.yaml"],
+  "cSpell.words": [
+    "autodocs",
+    "cdylib",
+    "dbaeumer",
+    "esbenp",
+    "foxundermoon",
+    "icns",
+    "mulan",
+    "oxlint",
+    "Pomodoro",
+    "rlib",
+    "serde",
+    "staticlib",
+    "tauri",
+    "vite",
+    "workblockchain",
+    "workchain"
+  ]
 }
