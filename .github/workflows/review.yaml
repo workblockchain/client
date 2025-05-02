@@ -11,6 +11,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: {node-version: 23}
+      - run: cargo build
+        working-directory: ./src-tauri
+
       - run: npm install
       - run: npm run review
       - run: npm run build.all
