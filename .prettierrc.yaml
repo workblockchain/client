@@ -1,6 +1,9 @@
 semi: false
-trailingComma: es5
 bracketSpacing: false
+trailingComma: es5
 
 plugins:
   - prettier-plugin-sh
+
+overrides:
+  - {files: ".env.development", options: {parser: "sh"}}

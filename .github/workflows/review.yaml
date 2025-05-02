@@ -1,0 +1,16 @@
+name: review
+
+on:
+  pull_request: {branches: [main]}
+  push: {branches: [main]}
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 23}
+      - run: npm install
+      - run: npm run review
+      - run: npm run build.review
