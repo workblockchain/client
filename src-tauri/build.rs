@@ -67,8 +67,11 @@ mod license {
 
     pub fn update_file(&self, path: &Path) -> std::io::Result<()> {
       let content = read_to_string(path)?;
-      let result = self.update(&content);
-      write(path, result)
+      let new_content = self.update(&content);
+      if new_content != content {
+        write(path, new_content)?;
+      }
+      Ok(())
     }
 
     pub fn update(&self, raw: &str) -> String {
