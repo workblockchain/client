@@ -4,6 +4,11 @@ const MINUTE = 60 as const
 
 export type TimerPhaseType = "break" | "work"
 
+interface TimerConfig {
+  workDuration: number
+  breakDuration: number
+}
+
 interface TimerState {
   // 计时器状态
   status: "idle" | "running" | "paused"
@@ -14,6 +19,10 @@ interface TimerState {
   workDuration: number // 工作时长(分钟)
   breakDuration: number // 休息时长(分钟)
   timerPhase: TimerPhaseType // 当前阶段状态
+
+  // 保存配置
+  export: () => TimerConfig
+  import: (data: TimerConfig) => void
 
   // 方法
   startTimer: () => void
@@ -137,8 +146,7 @@ export const usePomodoroTimer = create<TimerState>((set, get) => ({
 
   // 设置工作时长(分钟)
   setWorkDuration: (minutes) => {
-    const duration = minutes * MINUTE
-    set({workDuration: duration})
+    set({workDuration: minutes})
     if (get().timerPhase === "work") {
       get().resetTimer()
     }
@@ -146,11 +154,22 @@ export const usePomodoroTimer = create<TimerState>((set, get) => ({
 
   // 设置休息时长(分钟)
   setBreakDuration: (minutes) => {
-    const duration = minutes * MINUTE
-    set({breakDuration: duration})
+    set({breakDuration: minutes})
     if (get().timerPhase === "break") {
       get().resetTimer()
     }
+  },
+
+  export: () => ({
+    workDuration: get().workDuration,
+    breakDuration: get().breakDuration,
+  }),
+
+  import: (data) => {
+    set({
+      workDuration: data.workDuration,
+      breakDuration: data.breakDuration,
+    })
   },
 }))
 
