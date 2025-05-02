@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "tauri": "tauri dev",
     "build": "tsc -b && vite build",
+    "build.tauri": "tauri build",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",

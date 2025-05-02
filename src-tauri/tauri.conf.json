@@ -2,9 +2,9 @@
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "workchain-web",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.example.wbc",
   "build": {
-    "frontendDist": "./dist",
+    "frontendDist": "../dist",
     "devUrl": "http://localhost:5173",
     "beforeDevCommand": "pnpm dev",
     "beforeBuildCommand": "pnpm build"

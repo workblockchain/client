@@ -28,14 +28,20 @@
   "cSpell.ignorePaths": [".git", "dist", "node_modules", "pnpm-lock.yaml"],
   "cSpell.words": [
     "autodocs",
+    "cdylib",
     "dbaeumer",
     "esbenp",
     "foxundermoon",
+    "icns",
     "mulan",
     "oxlint",
     "Pomodoro",
+    "rlib",
+    "serde",
+    "staticlib",
     "tauri",
     "vite",
+    "workblockchain",
     "workchain"
   ]
 }
