@@ -28,6 +28,10 @@ const TimeDisplayContainer = styled.div`
   ${styledCommon.timerText}
   text-align: center;
   line-height: 1;
+
+  @media screen and (min-width: 768px) {
+    font-size: 6rem;
+  }
 `
 
 export const TimeDisplay = ({seconds, style}: TimeDisplayProps) => {

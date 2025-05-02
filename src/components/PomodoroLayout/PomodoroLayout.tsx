@@ -15,6 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import GearIcon from "@/assets/gear.svg?react"
 import {useState} from "react"
 import styled from "styled-components"
 import {Layout} from ".."
@@ -25,6 +26,7 @@ import {
 import {colors} from "../../styles"
 import {secondToHMS} from "../../utils"
 import {CommitLayout} from "./CommitLayout"
+import {ConfigLayout} from "./ConfigLayout"
 import {TimerLayout} from "./TimerLayout"
 
 // const PhaseTitle = styled.h2`
@@ -36,6 +38,7 @@ import {TimerLayout} from "./TimerLayout"
 const Container = styled(Layout)<{$phase: TimerPhaseType}>`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 2rem;
   background-color: ${({$phase}) =>
@@ -49,13 +52,21 @@ const Container = styled(Layout)<{$phase: TimerPhaseType}>`
 `
 
 export const PomodoroLayout = () => {
-  const [currentLayout, setCurrentLayout] = useState<"timer" | "commit">(
-    "timer"
-  )
+  const [currentLayout, setCurrentLayout] = useState<
+    "timer" | "commit" | "config"
+  >("timer")
   const [description, setDescription] = useState("")
 
   const {status, remainingTime, timePassed, timerPhase} = usePomodoroTimer()
   const {startTimer, pauseTimer, togglePhase} = usePomodoroTimer()
+  const {workDuration, setWorkDuration, breakDuration, setBreakDuration} =
+    usePomodoroTimer()
+  const configProps = {
+    workDuration,
+    breakDuration,
+    setWorkDuration,
+    setBreakDuration,
+  }
 
   // TODO: record to store and read to sign
   const handleRecord = () => {
@@ -94,8 +105,25 @@ export const PomodoroLayout = () => {
     goNextPhase()
   }
 
+  // 配置按钮点击处理
+  const handleConfigClick = () => {
+    setCurrentLayout("config")
+  }
+
   return (
     <Container $phase={timerPhase}>
+      {currentLayout === "timer" && (
+        <GearIcon
+          onClick={handleConfigClick}
+          style={{
+            position: "absolute",
+            top: "1rem",
+            right: "1rem",
+            cursor: "pointer",
+            opacity: 0.6,
+          }}
+        />
+      )}
       {currentLayout === "timer" && (
         <TimerLayout
           onCountStart={startTimer}
@@ -117,6 +145,12 @@ export const PomodoroLayout = () => {
           onBack={() => {
             setCurrentLayout("timer")
           }}
+        />
+      )}
+      {currentLayout === "config" && (
+        <ConfigLayout
+          {...configProps}
+          onClose={() => setCurrentLayout("timer")}
         />
       )}
     </Container>
