@@ -16,4 +16,4 @@ jobs:
 
       - run: npm install
       - run: npm run review
-      - run: npm run build.all
+      - run: npm run build.review

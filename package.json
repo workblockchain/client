@@ -13,6 +13,7 @@
     "build": "tauri build",
     "build.all": "npm run build && npm run build.storybook",
     "build.web": "tsc -b && vite build",
+    "build.review": "npm run build.web && npm run build.storybook",
     "build.storybook": "storybook build",
     "i18n": "tsx scripts/i18n-check.ts",
     "format": "prettier --write . && vite-node scripts/license.ts",
