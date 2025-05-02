@@ -20,7 +20,7 @@ import styled, {css} from "styled-components"
 import {colors} from "../../styles/colors"
 import {styledCommon} from "../../styles/common"
 
-export type VariantType = "solid" | "outline" | "text"
+export type VariantType = "solid" | "outline" | "text" | "icon"
 const $variantStyles = ($variant: VariantType = "solid", color: string) => css`
   ${$variant === "solid" &&
   css`
@@ -53,6 +53,21 @@ const $variantStyles = ($variant: VariantType = "solid", color: string) => css`
 
     &:hover:not(:disabled) {
       filter: brightness(1.2);
+    }
+  `}
+
+  ${$variant === "icon" &&
+  css`
+    padding: 8px;
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+    display: inline-flex;
+    box-shadow: none;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    &:hover:not(:disabled) {
+      background-color: ${transparentize(0.9, color)};
     }
   `}
 `
@@ -88,7 +103,7 @@ export const Button = styled.button<ButtonStyleProps>`
         `
     }
   }}
-  border-radius: 24px;
+  border-radius: ${({$variant}) => ($variant === "icon" ? "50%" : "24px")};
   cursor: pointer;
   transition: all 0.2s ease;
 
