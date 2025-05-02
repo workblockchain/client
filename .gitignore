@@ -9,6 +9,10 @@
 # Node.
 node_modules/
 
+# Tauri.
+src-tauri/target/
+src-tauri/gen/schemas
+
 # Compilation output.
 dist/
 dist-ssr/
