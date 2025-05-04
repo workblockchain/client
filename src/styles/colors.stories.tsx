@@ -62,4 +62,5 @@ const ColorPalette = ({colorGroup}: {colorGroup: string}) => (
 
 export const YellowColors = () => <ColorPalette colorGroup="Yellow" />
 export const RedColors = () => <ColorPalette colorGroup="Red" />
+export const BlueColors = () => <ColorPalette colorGroup="Blue" />
 export const NeutralColors = () => <ColorPalette colorGroup="Neutral" />

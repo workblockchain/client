@@ -48,7 +48,6 @@ const Container = styled(Layout)<{$phase: TimerPhaseType}>`
   width: auto;
   height: 100vh;
   min-height: unset;
-  padding: 2rem;
 `
 
 export const PomodoroLayout = () => {

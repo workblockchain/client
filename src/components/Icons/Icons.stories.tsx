@@ -15,9 +15,13 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import Clock from "@/assets/clock.svg?react"
+import Gear from "@/assets/gear.svg?react"
+import ReactIcon from "@/assets/react.svg?react"
 import type {Meta} from "@storybook/react"
 import styled from "styled-components"
 import * as icons from "."
+import {colors} from "../../styles"
 
 const meta: Meta = {
   title: "assets/Icons",
@@ -26,12 +30,16 @@ const meta: Meta = {
 export default meta
 
 const IconWrapper = styled.div`
-  width: 64px;
-  height: 64px;
+  display: flex;
+  gap: 1rem;
+  color: ${colors.Red300};
 `
 
 export const Pomodoro = () => (
   <IconWrapper>
     <icons.Pomodoro />
+    <Clock />
+    <Gear />
+    <ReactIcon />
   </IconWrapper>
 )
