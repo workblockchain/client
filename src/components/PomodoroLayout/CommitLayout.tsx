@@ -50,6 +50,7 @@ const DescriptionBox = styled.div`
   border-radius: 6px;
   width: 100%;
   max-width: 400px;
+  padding: 2rem;
 `
 
 export type CommitLayoutProps = {

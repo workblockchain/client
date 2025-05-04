@@ -42,6 +42,7 @@
     "staticlib",
     "tauri",
     "vite",
+    "wechat",
     "workblockchain",
     "workchain"
   ]
