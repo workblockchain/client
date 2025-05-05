@@ -15,62 +15,30 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import Clock from "@/assets/clock.svg?react"
+import {t} from "i18next"
 import styled from "styled-components"
 import {colors} from "../../styles"
 import {Button} from "../Button/Button"
-import {Row} from "../Layout"
+import {LeftArrow} from "../Icons/LeftArrow"
+import {HintText, Row} from "../Layout"
 import Select from "../Select/Select"
 
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
   position: relative;
   min-height: 100%;
   width: 100%;
   height: 100%;
-  padding: 0 2rem;
-`
-
-const NavigationText = styled.span``
-
-const Sidebar = styled.div`
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 120px;
-  border-radius: 4px;
-  border-right: 1px solid ${colors.Neutral200};
-  background: rgba(255, 255, 255, 0.5);
-  @media (max-width: 600px) {
-    width: 2rem;
-    padding-top: 6px;
-    gap: 6px;
-
-    ${NavigationText} {
-      display: none;
-    }
-  }
-`
-
-const Content = styled.div`
-  overflow-y: auto;
-  width: 100%;
-  margin-left: 120px;
-  padding-top: 1rem;
-  @media (max-width: 600px) {
-    margin-left: 2rem;
-  }
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  padding: 8px;
+  gap: 4px;
 `
 
 const TimerConfig = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  padding: 0 1rem;
 `
 
 const Label = styled.label`
@@ -78,6 +46,7 @@ const Label = styled.label`
   color: ${colors.Neutral700};
   font-weight: 500;
   line-height: 1;
+  width: 120px;
 `
 
 const AdvancedOptions = styled.div`
@@ -114,50 +83,41 @@ export const ConfigLayout = ({
 }: ConfigLayoutProps) => {
   return (
     <Container>
-      <Sidebar>
-        <Button
-          onClick={() =>
-            document.getElementById("timer-config")?.scrollIntoView()
-          }
-          $variant="text"
-          $size="medium"
-          style={{width: "100%", justifyContent: "flex-start"}}
-        >
-          <Clock />
-          <NavigationText>计时器配置</NavigationText>
+      <Row>
+        <Button $variant="icon" onClick={onClose}>
+          <LeftArrow width={18} height={18} color={colors.Neutral700} />
         </Button>
-      </Sidebar>
-      <Content>
-        <TimerConfig id="timer-config">
-          <Row>
-            <Label>工作时长</Label>
-            <Select
-              options={workOptions}
-              value={workDuration.toString()}
-              onChange={(v) => v && setWorkDuration(parseInt(v))}
-            />
-          </Row>
-          <Row>
-            <Label>休息时长</Label>
-            <Select
-              options={breakOptions}
-              value={breakDuration.toString()}
-              onChange={(v) => v && setBreakDuration(parseInt(v))}
-            />
-          </Row>
+        <HintText>{t`general.back`}</HintText>
+      </Row>
+      <TimerConfig id="timer-config">
+        <Row>
+          <Label>工作时长</Label>
+          <Select
+            options={workOptions}
+            value={workDuration.toString()}
+            onChange={(v) => v && setWorkDuration(parseInt(v))}
+            containerStyle={{width: "100%"}}
+            size="small"
+          />
+        </Row>
+        <Row>
+          <Label>休息时长</Label>
+          <Select
+            options={breakOptions}
+            value={breakDuration.toString()}
+            onChange={(v) => v && setBreakDuration(parseInt(v))}
+            containerStyle={{width: "100%"}}
+            size="small"
+          />
+        </Row>
 
-          <AdvancedOptions>
-            <Label>高级设置</Label>
-            <div style={{color: colors.Neutral500, fontSize: "0.875rem"}}>
-              自定义计时模板（开发中）
-            </div>
-          </AdvancedOptions>
-
-          <Button onClick={onClose} $variant="solid" $size="medium">
-            返回计时器
-          </Button>
-        </TimerConfig>
-      </Content>
+        <AdvancedOptions>
+          <Label>高级设置</Label>
+          <div style={{color: colors.Neutral500, fontSize: "0.875rem"}}>
+            自定义计时模板（开发中）
+          </div>
+        </AdvancedOptions>
+      </TimerConfig>
     </Container>
   )
 }

@@ -20,8 +20,20 @@ import styled, {css} from "styled-components"
 import {colors} from "../../styles/colors"
 import {styledCommon} from "../../styles/common"
 
-export type VariantType = "solid" | "outline" | "text" | "icon"
-const $variantStyles = ($variant: VariantType = "solid", color: string) => css`
+export type VariantType =
+  | "solid"
+  | "outline"
+  | "text"
+  | "icon"
+  | "iconWithLabel"
+  | "largeIconWithLabel"
+const $variantStyles = (
+  $variant: VariantType = "solid",
+  color: string,
+  $animated?: boolean
+) => css`
+  position: relative;
+  border-radius: 24px;
   ${$variant === "solid" &&
   css`
     background-color: ${color};
@@ -70,12 +82,108 @@ const $variantStyles = ($variant: VariantType = "solid", color: string) => css`
       background-color: ${transparentize(0.9, color)};
     }
   `}
+
+  ${$variant === "iconWithLabel" &&
+  css`
+    height: 40px;
+    padding: 8px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background-color: transparent;
+    transition: ${$animated ? "all 0.2s ease, border-radius 0s" : "none"};
+    overflow: hidden;
+    max-width: 40px;
+    border-radius: 20px;
+
+    &:hover:not(:disabled) {
+      background-color: ${transparentize(0.9, color)};
+      ${$animated &&
+      css`
+        padding-right: 12px;
+        max-width: 200px;
+      `}
+    }
+
+    span {
+      font-size: 12px;
+      line-height: 12px;
+      color: ${colors.Neutral500};
+      opacity: ${$animated ? 0 : 1};
+      transition: opacity 0.2s ease;
+      white-space: nowrap;
+    }
+
+    &:hover:not(:disabled) span {
+      opacity: 1;
+    }
+
+    &:first-child svg {
+      flex-shrink: 0;
+    }
+
+    ${!$animated &&
+    css`
+      border-radius: 20px;
+      max-width: unset;
+      padding: 8px;
+      padding-right: 12px;
+      aspect-ratio: unset;
+
+      span {
+        opacity: 1;
+      }
+    `}
+  `}
+
+  ${$variant === "largeIconWithLabel" &&
+  css`
+    width: 72px;
+    height: 72px;
+    padding: 12px;
+    border-radius: 24px;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background-color: transparent;
+    transition: background-color 0.2s ease;
+    box-shadow: none;
+
+    &:hover:not(:disabled) {
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    }
+
+    span {
+      font-size: 12px;
+      line-height: 12px;
+      color: ${colors.Neutral500};
+      white-space: nowrap;
+      display: block;
+      margin-top: 4px;
+      opacity: 0;
+      transition: opacity 0.2s ease-out;
+    }
+
+    &:hover:not(:disabled) span {
+      opacity: 1;
+    }
+
+    & > svg {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+  `}
 `
 
 type ButtonStyleProps = {
   $variant?: VariantType
   $size?: "small" | "medium" | "large"
   $primaryColor?: string
+  $animated?: boolean
 }
 
 export const Button = styled.button<ButtonStyleProps>`
@@ -103,12 +211,11 @@ export const Button = styled.button<ButtonStyleProps>`
         `
     }
   }}
-  border-radius: ${({$variant}) => ($variant === "icon" ? "50%" : "24px")};
   cursor: pointer;
   transition: all 0.2s ease;
 
-  ${({$primaryColor, $variant}) =>
-    $variantStyles($variant, $primaryColor ?? colors.Red400)}
+  ${({$primaryColor, $variant, $animated}) =>
+    $variantStyles($variant, $primaryColor ?? colors.Red400, $animated)}
 
   &:active:not(:disabled) {
     transform: scale(0.98);
