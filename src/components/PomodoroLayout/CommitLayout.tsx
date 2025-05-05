@@ -21,26 +21,19 @@ import styled from "styled-components"
 import {Button, Textarea} from ".."
 import {colors} from "../../styles"
 import {LeftArrow} from "../Icons/LeftArrow"
-import {Row} from "../Layout"
+import {HintText, Row} from "../Layout"
 
 const ButtonGroup = styled.div`
   display: flex;
   gap: 1rem;
 `
 
-const ButtomRow = styled.div`
+const ButtonRow = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding-top: 8px;
-`
-
-const HintText = styled.div`
-  font-size: 12px;
-  line-height: 12px;
-  color: ${colors.Neutral500};
-  transition: opacity 0.3s ease-out;
 `
 
 const DescriptionBox = styled.div`
@@ -97,7 +90,7 @@ export const CommitLayout = ({
         } // 添加类型注解
         placeholder={t`description.placeholder`}
       />
-      <ButtomRow>
+      <ButtonRow>
         <ButtonGroup>
           <Button $size="small" onClick={onCommitConfirm}>
             {t`commit.confirm`}
@@ -128,7 +121,7 @@ export const CommitLayout = ({
         <HintText
           style={{opacity: abortConfirm ? 1 : 0}}
         >{t`commit.abort-hint`}</HintText>
-      </ButtomRow>
+      </ButtonRow>
     </DescriptionBox>
   )
 }

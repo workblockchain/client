@@ -13,9 +13,9 @@
     "windows": [
       {
         "title": "WorkchainClient@alpha",
-        "width": 400,
-        "height": 300,
-        "resizable": true,
+        "width": 320,
+        "height": 240,
+        "resizable": false,
         "fullscreen": false
       }
     ],

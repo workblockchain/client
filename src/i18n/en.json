@@ -5,6 +5,7 @@
   "commit.confirm-abort": "Confirm Abort",
   "commit.hintText": "You've worked for {{timePassed}} seconds",
   "description.placeholder": "Work description...",
+  "general.back": "Back",
   "timer.pause": "Pause",
   "timer.skip": "Skip",
   "timer.start": "Start"
