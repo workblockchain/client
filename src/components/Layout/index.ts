@@ -16,9 +16,17 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import styled from "styled-components"
+import {colors} from "../../styles"
 
 export const Row = styled.div`
   display: flex;
   gap: 1.5rem;
   align-items: center;
+`
+
+export const HintText = styled.div`
+  font-size: 12px;
+  line-height: 12px;
+  color: ${colors.Neutral500};
+  transition: opacity 0.3s ease-out;
 `

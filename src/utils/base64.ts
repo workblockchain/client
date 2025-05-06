@@ -15,31 +15,9 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import Clock from "@/assets/clock.svg?react"
-import Gear from "@/assets/gear.svg?react"
-import ReactIcon from "@/assets/react.svg?react"
-import type {Meta} from "@storybook/react"
-import styled from "styled-components"
-import * as icons from "."
-import {colors} from "../../styles"
+// 将Uint8Array转换为Base64字符串
+export const toBase64 = (bytes: Uint8Array) =>
+  Buffer.from(bytes).toString("base64")
 
-const meta: Meta = {
-  title: "assets/Icons",
-}
-
-export default meta
-
-const IconWrapper = styled.div`
-  display: flex;
-  gap: 1rem;
-  color: ${colors.Red300};
-`
-
-export const Pomodoro = () => (
-  <IconWrapper>
-    <icons.Pomodoro />
-    <Clock />
-    <Gear />
-    <ReactIcon />
-  </IconWrapper>
-)
+// 将Base64字符串转换为Uint8Array
+export const fromBase64 = (str: string) => Buffer.from(str, "base64")
