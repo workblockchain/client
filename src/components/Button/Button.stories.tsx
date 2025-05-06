@@ -26,7 +26,14 @@ const meta = {
   argTypes: {
     $variant: {
       control: {type: "radio"},
-      options: ["solid", "outline", "text", "icon"],
+      options: [
+        "solid",
+        "outline",
+        "text",
+        "icon",
+        "iconWithLabel",
+        "largeIconWithLabel",
+      ],
     },
     $size: {
       control: {type: "radio"},
@@ -37,6 +44,9 @@ const meta = {
     },
     children: {
       control: "text",
+    },
+    $animated: {
+      control: "boolean",
     },
   },
 } satisfies Meta<typeof Button>
@@ -77,5 +87,39 @@ export const Icon: Story = {
     ...Primary.args,
     $variant: "icon",
     children: <GearIcon />,
+  },
+}
+
+export const IconWithLabel: Story = {
+  args: {
+    ...Icon.args,
+    $variant: "iconWithLabel",
+    $animated: true,
+    children: (
+      <>
+        <GearIcon />
+        <span>设置</span>
+      </>
+    ),
+  },
+}
+
+export const LargeIconWithLabel: Story = {
+  args: {
+    ...Icon.args,
+    $variant: "largeIconWithLabel",
+    children: (
+      <>
+        <GearIcon />
+        <span>大号标签</span>
+      </>
+    ),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: "图标和标签垂直布局，高度固定72px",
+      },
+    },
   },
 }

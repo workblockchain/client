@@ -15,16 +15,30 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {t} from "i18next"
 import styled from "styled-components"
 import {colors} from "../../styles"
 import {Button} from "../Button/Button"
-import {Row} from "../Layout"
+import {LeftArrow} from "../Icons/LeftArrow"
+import {HintText, Row} from "../Layout"
 import Select from "../Select/Select"
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  position: relative;
+  min-height: 100%;
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  gap: 4px;
+`
+
+const TimerConfig = styled.div`
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
+  padding: 0 1rem;
 `
 
 const Label = styled.label`
@@ -32,6 +46,7 @@ const Label = styled.label`
   color: ${colors.Neutral700};
   font-weight: 500;
   line-height: 1;
+  width: 120px;
 `
 
 const AdvancedOptions = styled.div`
@@ -69,32 +84,40 @@ export const ConfigLayout = ({
   return (
     <Container>
       <Row>
-        <Label>工作时长</Label>
-        <Select
-          options={workOptions}
-          value={workDuration.toString()}
-          onChange={(v) => v && setWorkDuration(parseInt(v))}
-        />
+        <Button $variant="icon" onClick={onClose}>
+          <LeftArrow width={18} height={18} color={colors.Neutral700} />
+        </Button>
+        <HintText>{t`general.back`}</HintText>
       </Row>
-      <Row>
-        <Label>休息时长</Label>
-        <Select
-          options={breakOptions}
-          value={breakDuration.toString()}
-          onChange={(v) => v && setBreakDuration(parseInt(v))}
-        />
-      </Row>
+      <TimerConfig id="timer-config">
+        <Row>
+          <Label>工作时长</Label>
+          <Select
+            options={workOptions}
+            value={workDuration.toString()}
+            onChange={(v) => v && setWorkDuration(parseInt(v))}
+            containerStyle={{width: "100%"}}
+            size="small"
+          />
+        </Row>
+        <Row>
+          <Label>休息时长</Label>
+          <Select
+            options={breakOptions}
+            value={breakDuration.toString()}
+            onChange={(v) => v && setBreakDuration(parseInt(v))}
+            containerStyle={{width: "100%"}}
+            size="small"
+          />
+        </Row>
 
-      <AdvancedOptions>
-        <Label>高级设置</Label>
-        <div style={{color: colors.Neutral500, fontSize: "0.875rem"}}>
-          自定义计时模板（开发中）
-        </div>
-      </AdvancedOptions>
-
-      <Button onClick={onClose} $variant="solid" $size="medium">
-        返回计时器
-      </Button>
+        <AdvancedOptions>
+          <Label>高级设置</Label>
+          <div style={{color: colors.Neutral500, fontSize: "0.875rem"}}>
+            自定义计时模板（开发中）
+          </div>
+        </AdvancedOptions>
+      </TimerConfig>
     </Container>
   )
 }
