@@ -20,3 +20,7 @@ corepack enable pnpm
 # Verify pnpm version:
 pnpm -v
 ```
+
+### 安装Rust
+
+使用[推荐方案](https://www.rust-lang.org/zh-CN/tools/install)
