@@ -55,7 +55,7 @@ const KanbanColumn = forwardRef<HTMLDivElement, KanbanColumnProps>(
       accept: "CARD",
       drop: (
         item: {id: string; boardId: string; columnId: string},
-        monitor
+        _monitor
       ) => {
         if (item.boardId !== boardId) {
           onCardMoveBetweenBoards?.(
