@@ -15,14 +15,65 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import React from "react"
+import {useState} from "react"
 import {DndProvider} from "react-dnd"
 import {HTML5Backend} from "react-dnd-html5-backend"
 import styled from "styled-components"
-import KanbanColumn from "./KanbanColumn"
-import {Board, Card} from "./types"
+import {BaseList, KanbanList} from "./KanbanList"
 
-const BoardContainer = styled.div`
+export interface Props {
+  id: string
+  title: string // 看板标题
+  list: BaseList[]
+}
+
+export const KanbanBoard = ({id, title, list}: Props) => {
+  const [boardData, setBoardData] = useState<BaseList[]>(list)
+
+  // 处理卡片移动的逻辑
+  const handleCardMove = (
+    dragID: string,
+    sourceListId: string,
+    targetListId: string,
+    targetIndex: number
+  ) => {
+    setBoardData((prevBoards) => {
+      const newBoards = [...prevBoards]
+
+      const sourceList = list.find((c) => c.id === sourceListId)
+      const targetList = list.find((c) => c.id === targetListId)
+
+      if (!sourceList || !targetList) return prevBoards
+
+      const card = sourceList.cards.find((c) => c.id === dragID)
+      if (!card) return prevBoards
+
+      sourceList.cards = sourceList.cards.filter((c) => c.id !== dragID)
+      targetList.cards.splice(targetIndex, 0, card)
+
+      return newBoards
+    })
+  }
+
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <Title>{title}</Title>
+      <Container>
+        {boardData.map((kanbanList) => (
+          <KanbanList
+            key={kanbanList.id}
+            id={kanbanList.id}
+            title={kanbanList.title}
+            cards={kanbanList.cards}
+            onCardMove={handleCardMove}
+          />
+        ))}
+      </Container>
+    </DndProvider>
+  )
+}
+
+const Container = styled.div`
   display: flex;
   gap: 16px;
   padding: 16px;
@@ -30,54 +81,7 @@ const BoardContainer = styled.div`
   border-radius: 8px;
 `
 
-const BoardTitle = styled.h2`
+const Title = styled.h2`
   font-size: 18px;
-  margin: 0 0 16px 0;
   padding: 0 16px;
 `
-
-interface KanbanBoardProps {
-  board: Board
-  onCardClick?: (card: Card) => void
-  onCardMove?: (
-    boardId: string,
-    cardId: string,
-    sourceColumnId: string,
-    targetColumnId: string,
-    targetIndex: number
-  ) => void
-  onCardMoveBetweenBoards?: (
-    cardId: string,
-    sourceBoardId: string,
-    targetBoardId: string,
-    targetColumnId: string,
-    targetIndex: number
-  ) => void
-}
-
-const KanbanBoard: React.FC<KanbanBoardProps> = ({
-  board,
-  onCardClick,
-  onCardMove,
-  onCardMoveBetweenBoards,
-}) => {
-  return (
-    <DndProvider backend={HTML5Backend}>
-      <BoardTitle>{board.title}</BoardTitle>
-      <BoardContainer>
-        {board.columns.map((column) => (
-          <KanbanColumn
-            key={column.id}
-            boardId={board.id}
-            column={column}
-            onCardClick={onCardClick}
-            onCardMove={onCardMove}
-            onCardMoveBetweenBoards={onCardMoveBetweenBoards}
-          />
-        ))}
-      </BoardContainer>
-    </DndProvider>
-  )
-}
-
-export default KanbanBoard
