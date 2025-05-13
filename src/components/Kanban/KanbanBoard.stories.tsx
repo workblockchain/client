@@ -16,10 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {Meta, StoryObj} from "@storybook/react"
-import {useState} from "react"
-import KanbanBoard from "./KanbanBoard"
-import {Board, Card} from "./types"
-
+import {KanbanBoard} from "./KanbanBoard"
 const meta: Meta<typeof KanbanBoard> = {
   title: "Components/KanbanBoard",
   component: KanbanBoard,
@@ -30,124 +27,30 @@ export default meta
 
 type Story = StoryObj<typeof KanbanBoard>
 
-const initialBoards: Board[] = [
-  {
+export const Primary: Story = {
+  args: {
     id: "board1",
-    title: "Board 1",
-    columns: [
+    title: "看板 1",
+    list: [
       {
-        id: "col1",
-        title: "To Do",
+        id: "card 1",
+        title: "待办",
         cards: [
-          {id: "card1", title: "Task 1", description: "222"},
-          {id: "card2", title: "Task 2"},
+          {id: "eat", title: "吃", description: "222"},
+          {id: "sleep 1", title: "睡"},
+          {id: "eat11", title: "吃", description: "222"},
+          {id: "sleep111", title: "睡"},
+          {id: "eat1111", title: "吃", description: "222"},
+          {id: "sleep111111", title: "睡"},
+          {id: "eat11111", title: "吃", description: "222"},
+          {id: "sleep11111", title: "睡"},
         ],
       },
       {
-        id: "col2",
-        title: "In Progress",
+        id: "card 2",
+        title: "进行中",
         cards: [{id: "card3", title: "Task 3"}],
       },
     ],
   },
-  {
-    id: "board2",
-    title: "Board 2",
-    columns: [
-      {
-        id: "col3",
-        title: "Backlog",
-        cards: [{id: "card4", title: "Task 4"}],
-      },
-    ],
-  },
-]
-
-const KanbanBoardWithState = () => {
-  const [boards, setBoards] = useState(initialBoards)
-
-  const handleCardClick = (card: Card) => {
-    alert(`Clicked card: ${card.title}`)
-  }
-
-  const handleCardMove = (
-    boardId: string,
-    cardId: string,
-    sourceColumnId: string,
-    targetColumnId: string,
-    targetIndex: number
-  ) => {
-    setBoards((prevBoards) => {
-      const newBoards = [...prevBoards]
-      const board = newBoards.find((b) => b.id === boardId)
-      if (!board) return prevBoards
-
-      const sourceColumn = board.columns.find((c) => c.id === sourceColumnId)
-      const targetColumn = board.columns.find((c) => c.id === targetColumnId)
-      if (!sourceColumn || !targetColumn) return prevBoards
-
-      const card = sourceColumn.cards.find((c) => c.id === cardId)
-      if (!card) return prevBoards
-
-      sourceColumn.cards = sourceColumn.cards.filter((c) => c.id !== cardId)
-      targetColumn.cards.splice(targetIndex, 0, card)
-
-      return newBoards
-    })
-  }
-
-  const handleCardMoveBetweenBoards = (
-    cardId: string,
-    sourceBoardId: string,
-    targetBoardId: string,
-    targetColumnId: string,
-    targetIndex: number
-  ) => {
-    setBoards((prevBoards) => {
-      const newBoards = [...prevBoards]
-      const sourceBoard = newBoards.find((b) => b.id === sourceBoardId)
-      const targetBoard = newBoards.find((b) => b.id === targetBoardId)
-      if (!sourceBoard || !targetBoard) return prevBoards
-
-      let card: Card | undefined
-      let sourceColumnId: string | undefined
-
-      for (const column of sourceBoard.columns) {
-        card = column.cards.find((c) => c.id === cardId)
-        if (card) {
-          sourceColumnId = column.id
-          column.cards = column.cards.filter((c) => c.id !== cardId)
-          break
-        }
-      }
-
-      if (!card || !sourceColumnId) return prevBoards
-
-      const targetColumn = targetBoard.columns.find(
-        (c) => c.id === targetColumnId
-      )
-      if (!targetColumn) return prevBoards
-
-      targetColumn.cards.splice(targetIndex, 0, card)
-      return newBoards
-    })
-  }
-
-  return (
-    <div style={{display: "flex", flexDirection: "column", gap: "24px"}}>
-      {boards.map((board) => (
-        <KanbanBoard
-          key={board.id}
-          board={board}
-          onCardClick={handleCardClick}
-          onCardMove={handleCardMove}
-          onCardMoveBetweenBoards={handleCardMoveBetweenBoards}
-        />
-      ))}
-    </div>
-  )
-}
-
-export const Default: Story = {
-  render: () => <KanbanBoardWithState />,
 }
