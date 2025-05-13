@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {useState} from "react"
+import {useCallback, useState} from "react"
 import {DndProvider} from "react-dnd"
 import {HTML5Backend} from "react-dnd-html5-backend"
 import styled from "styled-components"
@@ -31,29 +31,32 @@ export const KanbanBoard = ({title, list}: Props) => {
   const [boardData, setBoardData] = useState<BaseList[]>(list)
 
   // 处理卡片移动的逻辑
-  const handleCardMove = (
-    dragID: string,
-    sourceListId: string,
-    targetListId: string,
-    targetIndex: number
-  ) => {
-    setBoardData((prevBoards) => {
-      const newBoards = [...prevBoards]
+  const handleCardMove = useCallback(
+    (
+      dragID: string,
+      sourceListId: string,
+      targetListId: string,
+      targetIndex: number
+    ) => {
+      setBoardData((prevBoards) => {
+        const newBoards = [...prevBoards]
 
-      const sourceList = list.find((c) => c.id === sourceListId)
-      const targetList = list.find((c) => c.id === targetListId)
+        const sourceList = list.find((c) => c.id === sourceListId)
+        const targetList = list.find((c) => c.id === targetListId)
 
-      if (!sourceList || !targetList) return prevBoards
+        if (!sourceList || !targetList) return prevBoards
 
-      const card = sourceList.cards.find((c) => c.id === dragID)
-      if (!card) return prevBoards
+        const card = sourceList.cards.find((c) => c.id === dragID)
+        if (!card) return prevBoards
 
-      sourceList.cards = sourceList.cards.filter((c) => c.id !== dragID)
-      targetList.cards.splice(targetIndex, 0, card)
+        sourceList.cards = sourceList.cards.filter((c) => c.id !== dragID)
+        targetList.cards.splice(targetIndex, 0, card)
 
-      return newBoards
-    })
-  }
+        return newBoards
+      })
+    },
+    []
+  )
 
   return (
     <DndProvider backend={HTML5Backend}>
