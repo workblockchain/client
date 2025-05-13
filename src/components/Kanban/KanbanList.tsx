@@ -39,7 +39,7 @@ interface Props extends BaseList {
 export const KanbanList = ({id, cards, title, onCardMove}: Props) => {
   const ref = useRef<HTMLDivElement>(null)
   // 实现列表作为放置目标
-  const [{isOver}, drop] = useDrop({
+  const [_, drop] = useDrop({
     accept: ItemTypes.CARD,
     drop: (dropItem: {id: string; listId: string}, monitor) => {
       if (!monitor.didDrop()) {

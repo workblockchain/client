@@ -27,7 +27,7 @@ export interface Props {
   list: BaseList[]
 }
 
-export const KanbanBoard = ({id, title, list}: Props) => {
+export const KanbanBoard = ({title, list}: Props) => {
   const [boardData, setBoardData] = useState<BaseList[]>(list)
 
   // 处理卡片移动的逻辑
