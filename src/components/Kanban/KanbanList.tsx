@@ -78,6 +78,7 @@ export const KanbanList = ({id, cards, title, onCardMove}: Props) => {
             key={card.id}
             id={card.id}
             title={card.title}
+            description={card.description}
             index={index}
             listId={id}
             moveCard={moveCard}
@@ -99,7 +100,7 @@ const Container = styled.div`
 const CardList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
 `
 
 const Title = styled.h3`

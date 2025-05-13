@@ -119,8 +119,17 @@ const Container = styled.div<{$isDragging: boolean}>`
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   cursor: ${({$isDragging}) => ($isDragging ? "move" : "grab")};
   opacity: ${({$isDragging}) => ($isDragging ? 0.4 : 1)};
-  transition: opacity 0.2s ease;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
   position: relative;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
 `
 
 const CardTitle = styled.h4`
