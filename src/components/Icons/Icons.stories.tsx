@@ -15,13 +15,10 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import Clock from "@/assets/clock.svg?react"
-import Gear from "@/assets/gear.svg?react"
-import ReactIcon from "@/assets/react.svg?react"
 import type {Meta} from "@storybook/react"
 import styled from "styled-components"
-import * as icons from "."
 import {colors} from "../../styles"
+import {svgIcons} from "./svgIcons"
 
 const meta: Meta = {
   title: "assets/Icons",
@@ -37,9 +34,8 @@ const IconWrapper = styled.div`
 
 export const Pomodoro = () => (
   <IconWrapper>
-    <icons.Pomodoro />
-    <Clock />
-    <Gear />
-    <ReactIcon />
+    {svgIcons.map(({component: Component}, i) => (
+      <Component key={i} />
+    ))}
   </IconWrapper>
 )
