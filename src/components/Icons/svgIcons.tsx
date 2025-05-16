@@ -14,11 +14,16 @@
 // See the Mulan PubL v2 for more details.
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
+import Clock from "@/assets/clock.svg?react"
+import Gear from "@/assets/gear.svg?react"
+import Navigation from "@/assets/navigation.svg?react"
+import PomodoroIcon from "@/assets/pomodoro.svg?react"
+import ReactIcon from "@/assets/react.svg?react"
 
-import PomodoroSVG from "@/assets/pomodoro.svg?react"
-import styled from "styled-components"
-
-export const Pomodoro = styled(PomodoroSVG)`
-  width: 64px;
-  height: 64px;
-`
+export const svgIcons = [
+  {name: "ReactIcon", component: ReactIcon},
+  {name: "PomodoroIcon", component: PomodoroIcon},
+  {name: "Navigation", component: Navigation},
+  {name: "Gear", component: Gear},
+  {name: "Clock", component: Clock},
+]
