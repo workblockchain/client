@@ -16,6 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import GearIcon from "@/assets/gear.svg?react"
+import NavigationSvg from "@/assets/navigation.svg?react"
 import {useState} from "react"
 import styled from "styled-components"
 import {Layout} from ".."
@@ -25,8 +26,10 @@ import {
 } from "../../stores/usePomodoroTimer"
 import {colors} from "../../styles"
 import {secondToHMS} from "../../utils"
+import {Portal} from "../Portal/Portal"
 import {CommitLayout} from "./CommitLayout"
 import {ConfigLayout} from "./ConfigLayout"
+import {Navigation} from "./Navigation"
 import {TimerLayout} from "./TimerLayout"
 
 // const PhaseTitle = styled.h2`
@@ -51,6 +54,39 @@ const Container = styled(Layout)<{$phase: TimerPhaseType}>`
 `
 
 export const PomodoroLayout = () => {
+  const [showNavigation, setShowNavigation] = useState(false)
+  const demoTargets = [
+    {
+      icon: <GearIcon width={24} height={24} />,
+      label: "设置",
+      onClick: () => setCurrentLayout("config"),
+    },
+    {
+      icon: <GearIcon width={24} height={24} />,
+      label: "设置",
+      onClick: () => setCurrentLayout("config"),
+    },
+    {
+      icon: <GearIcon width={24} height={24} />,
+      label: "设置",
+      onClick: () => setCurrentLayout("config"),
+    },
+    {
+      icon: <GearIcon width={24} height={24} />,
+      label: "设置",
+      onClick: () => setCurrentLayout("config"),
+    },
+    {
+      icon: <GearIcon width={24} height={24} />,
+      label: "设置",
+      onClick: () => setCurrentLayout("config"),
+    },
+    {
+      icon: <GearIcon width={24} height={24} />,
+      label: "设置",
+      onClick: () => setCurrentLayout("config"),
+    },
+  ]
   const [currentLayout, setCurrentLayout] = useState<
     "timer" | "commit" | "config"
   >("timer")
@@ -106,13 +142,20 @@ export const PomodoroLayout = () => {
 
   // 配置按钮点击处理
   const handleConfigClick = () => {
-    setCurrentLayout("config")
+    setShowNavigation(true)
   }
 
   return (
     <Container $phase={timerPhase}>
+      <Portal>
+        <Navigation
+          targets={demoTargets}
+          onClose={() => setShowNavigation(false)}
+          show={showNavigation}
+        />
+      </Portal>
       {currentLayout === "timer" && (
-        <GearIcon
+        <NavigationSvg
           onClick={handleConfigClick}
           style={{
             position: "absolute",

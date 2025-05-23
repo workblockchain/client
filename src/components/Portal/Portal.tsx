@@ -15,27 +15,31 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {useEffect} from "react"
+import {useEffect, useState} from "react"
 import {createPortal} from "react-dom"
-import styled from "styled-components"
 
 type PortalProps = {
   id?: string
   children: React.ReactNode
 }
 
-export const Portal = ({id = PORTAL_CONTAINER_ID, children}: PortalProps) => {
-  useEffect(() => {
-    const rootContainer = document.getElementById(PORTAL_CONTAINER_ID)
-    let container = document.getElementById(id)
+function getRootContainer() {
+  const root = document.getElementById(PORTAL_CONTAINER_ID)
+  if (!root) {
+    const newRoot = document.createElement("div")
+    newRoot.id = PORTAL_CONTAINER_ID
+    document.getElementById("root")?.appendChild(newRoot)
+    return newRoot
+  }
+  return root
+}
 
-    if (import.meta.env.DEV && !rootContainer) {
-      console.error(
-        `Portal根容器未找到。\n` +
-          `请确保在应用根组件中包含 <PortalContainers/> 组件`
-      )
-      return
-    }
+export const Portal = ({id = PORTAL_CONTAINER_ID, children}: PortalProps) => {
+  const [container, setContainer] = useState<HTMLElement | null>(null)
+
+  useEffect(() => {
+    const rootContainer = getRootContainer()
+    let container = document.getElementById(id)
 
     if (!container && rootContainer) {
       container = document.createElement("div")
@@ -43,24 +47,20 @@ export const Portal = ({id = PORTAL_CONTAINER_ID, children}: PortalProps) => {
       rootContainer.appendChild(container)
     }
 
+    setContainer(container)
+
     return () => {
-      if (container && rootContainer?.contains(container)) {
+      if (
+        id !== PORTAL_CONTAINER_ID &&
+        container &&
+        rootContainer?.contains(container)
+      ) {
         rootContainer.removeChild(container)
       }
     }
   }, [id])
 
-  const container = document.getElementById(id)
   return container ? createPortal(children, container) : null
 }
 
 const PORTAL_CONTAINER_ID = "root-portal-container"
-export const PortalContainers = () => {
-  return <Container id={PORTAL_CONTAINER_ID} />
-}
-
-const Container = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-`

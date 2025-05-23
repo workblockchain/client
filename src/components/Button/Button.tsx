@@ -20,6 +20,8 @@ import styled, {css} from "styled-components"
 import {colors} from "../../styles/colors"
 import {styledCommon} from "../../styles/common"
 
+export const LARGE_BUTTON_SIZE = 72 as const
+
 export type VariantType =
   | "solid"
   | "outline"
@@ -139,8 +141,8 @@ const $variantStyles = (
 
   ${$variant === "largeIconWithLabel" &&
   css`
-    width: 72px;
-    height: 72px;
+    width: ${LARGE_BUTTON_SIZE}px;
+    height: ${LARGE_BUTTON_SIZE}px;
     padding: 12px;
     border-radius: 24px;
     display: inline-flex;
@@ -151,6 +153,7 @@ const $variantStyles = (
     background-color: transparent;
     transition: background-color 0.2s ease;
     box-shadow: none;
+    flex-shrink: 0;
 
     &:hover:not(:disabled) {
       box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
