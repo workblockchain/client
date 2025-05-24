@@ -30,7 +30,7 @@ interface StoryControls {
 }
 
 const meta: Meta<CommitLayoutProps & StoryControls> = {
-  title: "Components/CommitLayout",
+  title: "Layouts/CommitLayout",
   component: CommitLayout,
   parameters: {
     controls: {

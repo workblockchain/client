@@ -23,7 +23,7 @@ import {useState} from "react"
 import {Navigation, type NavigationProps} from "./Navigation"
 
 const meta = {
-  title: "Components/PomodoroLayout/Navigation",
+  title: "Components/Navigation",
   component: Navigation,
   tags: ["autodocs"],
   argTypes: {

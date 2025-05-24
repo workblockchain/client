@@ -17,15 +17,8 @@
 
 import * as ed from "@noble/ed25519"
 import {create} from "zustand"
+import {UserInfoProps} from "../interfaces/userInfo"
 import {fromBase64, toBase64} from "../utils"
-
-interface UserInfoProps {
-  username: string
-  email: string
-  avatar: string // base64
-  contact: string // 可以是千奇百怪
-  contactTag: string // mobile | wechat | etc.
-}
 
 interface UserProfile {
   userInfo: UserInfoProps
@@ -36,6 +29,7 @@ interface UserProfile {
 interface UserProfileStore extends UserProfile {
   setUserInfo: (userInfo: Partial<UserInfoProps>) => void
   generateSignature: () => Promise<[string, string]> // [public key, secret key]
+  setSignature: (publicKey: string, secretKey: string) => void
   exportUserProfile: () => UserProfile
   sign: (message: string) => Promise<string>
   verify: (message: string, signature: string) => Promise<boolean>
@@ -49,8 +43,6 @@ export const useUserProfile = create<UserProfileStore>((set, get) => ({
     username: "",
     email: "",
     avatar: "",
-    contact: "",
-    contactTag: "",
   },
   publicKey: "",
   secretKey: "",
@@ -65,6 +57,8 @@ export const useUserProfile = create<UserProfileStore>((set, get) => ({
     const publicKey = await ed.getPublicKeyAsync(privateKey)
     return [toBase64(publicKey), toBase64(privateKey)]
   },
+
+  setSignature: (publicKey, secretKey) => set({publicKey, secretKey}),
 
   exportUserProfile: () => ({
     userInfo: get().userInfo,

@@ -27,7 +27,7 @@ interface StoryControls {
 }
 
 const meta: Meta<TimerLayoutProps & StoryControls> = {
-  title: "Components/TimerLayout",
+  title: "Layouts/TimerLayout",
   component: TimerLayout,
   tags: ["autodocs"],
   parameters: {
