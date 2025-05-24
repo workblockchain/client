@@ -16,13 +16,16 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import type {Meta, StoryObj} from "@storybook/react"
-import {Input} from "./Input"
+import {TextInputWithLabel} from "./Input"
 
-const meta: Meta<typeof Input> = {
-  title: "Components/Input",
-  component: Input,
+const meta: Meta<typeof TextInputWithLabel> = {
+  title: "Components/Input/TextInput",
+  component: TextInputWithLabel,
   tags: ["autodocs"],
   argTypes: {
+    label: {
+      control: "text",
+    },
     placeholder: {
       control: "text",
     },
@@ -33,17 +36,23 @@ const meta: Meta<typeof Input> = {
 }
 
 export default meta
-type Story = StoryObj<typeof Input>
+type Story = StoryObj<typeof TextInputWithLabel>
 
 export const Default: Story = {
   args: {
-    placeholder: "请输入内容...",
+    label: "用户名",
+    placeholder: "请输入...",
   },
-}
-
-export const Disabled: Story = {
-  args: {
-    placeholder: "禁用状态",
-    disabled: true,
+  decorators: [
+    (Story) => (
+      <div style={{maxWidth: "400px", margin: "20px", background: "#de9696"}}>
+        <Story />
+      </div>
+    ),
+  ],
+  parameters: {
+    controls: {
+      exclude: ["as", "css", "theme"],
+    },
   },
 }

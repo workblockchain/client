@@ -21,7 +21,7 @@ import {colors} from "../../styles"
 import {Button} from "../Button/Button"
 import {LeftArrow} from "../Icons/LeftArrow"
 import {HintText, Row} from "../Layout"
-import Select from "../Select/Select"
+import {Select} from "../Select/Select"
 
 const Container = styled.div`
   display: flex;

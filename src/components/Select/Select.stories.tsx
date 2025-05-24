@@ -17,7 +17,7 @@
 
 import type {Meta, StoryObj} from "@storybook/react"
 import {userEvent, within} from "@storybook/test"
-import Select from "./Select"
+import {Select} from "./Select"
 
 const meta: Meta<typeof Select> = {
   title: "Components/Select",

@@ -37,7 +37,7 @@ interface SelectProps {
 
 const animatedComponents = makeAnimated()
 
-const Select = ({
+export const Select = ({
   options,
   value,
   onChange,
@@ -123,5 +123,3 @@ const customStyles: (custom: {
     },
   }),
 })
-
-export default Select
