@@ -128,6 +128,8 @@ export function UserProfile() {
   )
 }
 
+export default UserProfile
+
 const StyledUserProfile = styled.div`
   padding: 20px;
   max-width: 600px;
