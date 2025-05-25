@@ -22,6 +22,7 @@ import {fromBase64, toBase64} from "../utils"
 
 interface UserProfile {
   userInfo: UserInfoProps
+  uid: string
   publicKey: string
   secretKey: string
 }
@@ -29,7 +30,7 @@ interface UserProfile {
 interface UserProfileStore extends UserProfile {
   setUserInfo: (userInfo: Partial<UserInfoProps>) => void
   generateSignature: () => Promise<[string, string]> // [public key, secret key]
-  setSignature: (publicKey: string, secretKey: string) => void
+  setSignature: (publicKey: string, secretKey: string, uid: string) => void
   exportUserProfile: () => UserProfile
   sign: (message: string) => Promise<string>
   verify: (message: string, signature: string) => Promise<boolean>
@@ -44,6 +45,7 @@ export const useUserProfile = create<UserProfileStore>((set, get) => ({
     email: "",
     avatar: "",
   },
+  uid: "",
   publicKey: "",
   secretKey: "",
 
@@ -58,10 +60,12 @@ export const useUserProfile = create<UserProfileStore>((set, get) => ({
     return [toBase64(publicKey), toBase64(privateKey)]
   },
 
-  setSignature: (publicKey, secretKey) => set({publicKey, secretKey}),
+  setSignature: (publicKey, secretKey, uid) =>
+    set({publicKey, secretKey, uid: uid.slice(0, 16)}),
 
   exportUserProfile: () => ({
     userInfo: get().userInfo,
+    uid: get().uid.slice(0, 16) + "#" + get().publicKey.slice(0, 8),
     publicKey: get().publicKey,
     secretKey: get().secretKey,
   }),

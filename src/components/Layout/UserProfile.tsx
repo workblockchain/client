@@ -20,52 +20,10 @@ import styled from "styled-components"
 import {UserInfoProps} from "../../interfaces"
 import {useUserProfile} from "../../stores/useUserProfile"
 import {Button} from "../Button/Button"
+import {DividerHorizontal} from "../Divider"
 import {TextInputWithLabel} from "../Input/Input"
+import {SubDescription} from "../Typographies"
 import {AvatarRow} from "./AvatarRow"
-
-const StyledUserProfile = styled.div`
-  padding: 20px;
-  max-width: 600px;
-  margin: 0 auto;
-
-  h2 {
-    margin-bottom: 1.5rem;
-    color: #333;
-  }
-`
-
-const FormSection = styled.div`
-  margin-bottom: 2rem;
-  & > * {
-    margin-bottom: 1rem;
-  }
-`
-
-const ActionSection = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
-`
-
-const KeySection = styled.div`
-  margin-top: 2rem;
-  padding: 1rem;
-  background: #f5f5f5;
-  border-radius: 4px;
-
-  h3 {
-    margin: 0.5rem 0;
-    color: #666;
-    font-size: 0.9em;
-  }
-`
-
-const KeyValue = styled.p`
-  color: #333;
-  word-break: break-all;
-  font-family: monospace;
-  margin: 0.5rem 0;
-`
 
 export function UserProfile() {
   const [showSecretKey, setShowSecretKey] = useState(false)
@@ -76,46 +34,47 @@ export function UserProfile() {
     secretKey,
     generateSignature,
     setSignature,
+    save,
+    uid,
   } = useUserProfile()
   const [isGenerating, setIsGenerating] = useState(false)
   const [draft, setDraft] = useState<Partial<UserInfoProps>>(userInfo)
+  const [draftUid, setDraftUid] = useState<string>(uid)
 
   const saveDraft = () => {
     setUserInfo(draft)
+    save()
   }
 
   const handleGenerateKeys = async () => {
     setIsGenerating(true)
     const [pubKey, secKey] = await generateSignature()
-    setSignature(pubKey, secKey)
+    setSignature(pubKey, secKey, uid)
     setIsGenerating(false)
   }
 
   return (
     <StyledUserProfile>
-      <h2>个人信息</h2>
-
-      <FormSection>
+      <Title>账户信息</Title>
+      <InputRow>
         <TextInputWithLabel
-          label="用户名"
-          value={draft.username}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            setDraft((draft) => ({...draft, username: e.target.value}))
-          }
+          label="UID"
+          value={draftUid}
+          placeholder="唯一ID"
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            const value = e.target.value
+            if (/^[a-zA-Z0-9_.]{3,16}$/.test(value)) {
+              setDraftUid(value)
+            }
+          }}
         />
-        <TextInputWithLabel
-          label="邮箱"
-          value={draft.email}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            setDraft((draft) => ({...draft, email: e.target.value}))
-          }
-        />
-        <AvatarRow
-          value={draft.avatar || ""}
-          onChange={(value) => setDraft((draft) => ({...draft, avatar: value}))}
-        />
-      </FormSection>
-
+        <SubDescription style={{color: "red", marginLeft: "12px"}}>
+          *唯一ID，与公私钥绑定，一经设定不可更改
+        </SubDescription>
+        <SubDescription style={{color: "red", marginLeft: "12px"}}>
+          *必须为16位以内，仅允许字母、数字、下划线和点号
+        </SubDescription>
+      </InputRow>
       {publicKey && (
         <KeySection>
           <h3>公钥</h3>
@@ -143,6 +102,80 @@ export function UserProfile() {
           保存信息
         </Button>
       </ActionSection>
+      <DividerHorizontal />
+      <Title>个人信息</Title>
+      <FormSection>
+        <TextInputWithLabel
+          label="用户名"
+          value={draft.username}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setDraft((draft) => ({...draft, username: e.target.value}))
+          }
+        />
+        <TextInputWithLabel
+          label="邮箱"
+          value={draft.email}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setDraft((draft) => ({...draft, email: e.target.value}))
+          }
+        />
+        <AvatarRow
+          value={draft.avatar || ""}
+          onChange={(value) => setDraft((draft) => ({...draft, avatar: value}))}
+        />
+      </FormSection>
     </StyledUserProfile>
   )
 }
+
+const StyledUserProfile = styled.div`
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  h2 {
+    color: #333;
+  }
+`
+
+const FormSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`
+
+const ActionSection = styled.div`
+  display: flex;
+  gap: 1rem;
+`
+
+const KeySection = styled.div`
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+
+  h3 {
+    margin: 0.5rem 0;
+    color: #666;
+    font-size: 0.9em;
+  }
+`
+
+const KeyValue = styled.p`
+  color: #333;
+  word-break: break-all;
+  font-family: monospace;
+`
+
+const InputRow = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+`
+
+const Title = styled.h2`
+  margin: 0;
+`
