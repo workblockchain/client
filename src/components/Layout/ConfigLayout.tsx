@@ -17,10 +17,10 @@
 
 import {t} from "i18next"
 import styled from "styled-components"
+import {HintText, Row} from "."
 import {colors} from "../../styles"
 import {Button} from "../Button/Button"
 import {LeftArrow} from "../Icons/LeftArrow"
-import {HintText, Row} from "../Layout"
 import {Select} from "../Select/Select"
 
 const Container = styled.div`
@@ -89,7 +89,7 @@ export const ConfigLayout = ({
         </Button>
         <HintText>{t`general.back`}</HintText>
       </Row>
-      <TimerConfig id="timer-config">
+      <TimerConfig>
         <Row>
           <Label>工作时长</Label>
           <Select
