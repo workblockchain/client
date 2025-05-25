@@ -46,7 +46,6 @@ function updateStoryFile() {
 
   // 获取所有SVG文件
   const svgFiles: string[] = globSync(assetsPath, {windowsPathsNoEscape: true})
-  console.log(assetsPath, svgFiles)
   const imports = svgFiles
     .map((filePath, i, arr) => {
       const fileName = path.basename(filePath)
@@ -69,12 +68,10 @@ function updateStoryFile() {
     .join("\n")
 
   // 同时替换import部分和svgIcons数组
-  console.log("Before replacement:", storyContent)
   const updatedContent = storyContent.replace(
     /(\/\/ === Auto generated, DO NOT EDIT ABOVE ===\n)[\s\S]*?export\s+const\s+svgIcons\s*=\s*\[[^\]]*\];?/s,
     `$1${imports.join("\n")}\n\nexport const svgIcons = [\n${svgIconsEntries}\n];`
   )
-  console.log("After replacement:", updatedContent)
 
   writeFileSync(storyPath, updatedContent)
   console.log("SVG imports updated successfully!")
