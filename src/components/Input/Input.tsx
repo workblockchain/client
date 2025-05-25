@@ -39,10 +39,10 @@ export const TextInput = styled.input`
   background-color: transparent;
   padding: 4px 8px 3px;
   transition: all 0.2s ease-out;
+  box-shadow: none;
 
   &:hover {
     background: rgba(255, 255, 255, 0.6);
-    box-shadow: none;
   }
 
   &:focus {
