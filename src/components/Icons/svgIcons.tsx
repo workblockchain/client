@@ -17,13 +17,15 @@
 import Clock from "@/assets/clock.svg?react"
 import Gear from "@/assets/gear.svg?react"
 import Navigation from "@/assets/navigation.svg?react"
+import People from "@/assets/people.svg?react"
 import PomodoroIcon from "@/assets/pomodoro.svg?react"
 import ReactIcon from "@/assets/react.svg?react"
 
 export const svgIcons = [
-  {name: "ReactIcon", component: ReactIcon},
-  {name: "PomodoroIcon", component: PomodoroIcon},
-  {name: "Navigation", component: Navigation},
-  {name: "Gear", component: Gear},
-  {name: "Clock", component: Clock},
-]
+  { name: 'ReactIcon', component: ReactIcon },
+  { name: 'PomodoroIcon', component: PomodoroIcon },
+  { name: 'People', component: People },
+  { name: 'Navigation', component: Navigation },
+  { name: 'Gear', component: Gear },
+  { name: 'Clock', component: Clock },
+];

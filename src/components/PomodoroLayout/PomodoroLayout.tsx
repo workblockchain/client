@@ -15,8 +15,6 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import GearIcon from "@/assets/gear.svg?react"
-import NavigationSvg from "@/assets/navigation.svg?react"
 import {useState} from "react"
 import styled from "styled-components"
 import {Layout} from ".."
@@ -26,10 +24,7 @@ import {
 } from "../../stores/usePomodoroTimer"
 import {colors} from "../../styles"
 import {secondToHMS} from "../../utils"
-import {Portal} from "../Portal/Portal"
 import {CommitLayout} from "./CommitLayout"
-import {ConfigLayout} from "./ConfigLayout"
-import {Navigation} from "./Navigation"
 import {TimerLayout} from "./TimerLayout"
 
 // const PhaseTitle = styled.h2`
@@ -53,40 +48,7 @@ const Container = styled(Layout)<{$phase: TimerPhaseType}>`
   min-height: unset;
 `
 
-export const PomodoroLayout = () => {
-  const [showNavigation, setShowNavigation] = useState(false)
-  const demoTargets = [
-    {
-      icon: <GearIcon width={24} height={24} />,
-      label: "设置",
-      onClick: () => setCurrentLayout("config"),
-    },
-    {
-      icon: <GearIcon width={24} height={24} />,
-      label: "设置",
-      onClick: () => setCurrentLayout("config"),
-    },
-    {
-      icon: <GearIcon width={24} height={24} />,
-      label: "设置",
-      onClick: () => setCurrentLayout("config"),
-    },
-    {
-      icon: <GearIcon width={24} height={24} />,
-      label: "设置",
-      onClick: () => setCurrentLayout("config"),
-    },
-    {
-      icon: <GearIcon width={24} height={24} />,
-      label: "设置",
-      onClick: () => setCurrentLayout("config"),
-    },
-    {
-      icon: <GearIcon width={24} height={24} />,
-      label: "设置",
-      onClick: () => setCurrentLayout("config"),
-    },
-  ]
+const PomodoroLayout = () => {
   const [currentLayout, setCurrentLayout] = useState<
     "timer" | "commit" | "config"
   >("timer")
@@ -94,14 +56,6 @@ export const PomodoroLayout = () => {
 
   const {status, remainingTime, timePassed, timerPhase} = usePomodoroTimer()
   const {startTimer, pauseTimer, togglePhase} = usePomodoroTimer()
-  const {workDuration, setWorkDuration, breakDuration, setBreakDuration} =
-    usePomodoroTimer()
-  const configProps = {
-    workDuration,
-    breakDuration,
-    setWorkDuration,
-    setBreakDuration,
-  }
 
   // TODO: record to store and read to sign
   const handleRecord = () => {
@@ -140,32 +94,8 @@ export const PomodoroLayout = () => {
     goNextPhase()
   }
 
-  // 配置按钮点击处理
-  const handleConfigClick = () => {
-    setShowNavigation(true)
-  }
-
   return (
     <Container $phase={timerPhase}>
-      <Portal>
-        <Navigation
-          targets={demoTargets}
-          onClose={() => setShowNavigation(false)}
-          show={showNavigation}
-        />
-      </Portal>
-      {currentLayout === "timer" && (
-        <NavigationSvg
-          onClick={handleConfigClick}
-          style={{
-            position: "absolute",
-            top: "1rem",
-            right: "1rem",
-            cursor: "pointer",
-            opacity: 0.6,
-          }}
-        />
-      )}
       {currentLayout === "timer" && (
         <TimerLayout
           onCountStart={startTimer}
@@ -189,12 +119,9 @@ export const PomodoroLayout = () => {
           }}
         />
       )}
-      {currentLayout === "config" && (
-        <ConfigLayout
-          {...configProps}
-          onClose={() => setCurrentLayout("timer")}
-        />
-      )}
     </Container>
   )
 }
+
+export default PomodoroLayout
+export {PomodoroLayout}
