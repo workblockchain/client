@@ -2,6 +2,8 @@ import {isTauri} from "@tauri-apps/api/core"
 import {WebviewWindow} from "@tauri-apps/api/webviewWindow"
 import {useNavigate} from "react-router"
 
+const tauriBaseUrl = "http://localhost:5173/"
+
 interface NavigationParams {
   path: string // React Router 路径
   tauriWindowOptions: {
@@ -29,21 +31,35 @@ export function useConditionalNavigation() {
       console.log(
         `Tauri: Navigating to ${path} in new window (label: ${label})`
       )
-      const existingWindow = await WebviewWindow.getByLabel(label)
-      if (existingWindow) {
-        console.log(
-          `Tauri: Window with label "${label}" already exists, focusing it.`
-        )
-        existingWindow.setFocus()
-      } else {
-        new WebviewWindow(label, {
-          url: path,
-          center: true,
-          width,
-          height,
-          resizable: true,
-          title,
-        })
+      try {
+        const existingWindow = await WebviewWindow.getByLabel(label)
+        if (existingWindow) {
+          console.log(
+            `Tauri: Window with label "${label}" already exists, focusing it.`
+          )
+          existingWindow.setFocus()
+        } else {
+          const url = `${tauriBaseUrl}${path}`
+          const window = new WebviewWindow(label, {
+            url,
+            center: true,
+            width,
+            height,
+            resizable: true,
+            title,
+          })
+          console.log(
+            `Tauri: Created new window with label "${label}" by URL "${url}"`
+          )
+          window.once("tauri://created", () => {
+            console.log(`Tauri: Window "${label}" created successfully.`)
+          })
+          window.once("tauri://error", (error) => {
+            console.error(`Tauri: Error creating window "${label}":`, error)
+          })
+        }
+      } catch (error) {
+        console.error(error)
       }
     } else {
       console.log(`Browser: Navigating to ${path}`)
