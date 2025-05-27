@@ -24,6 +24,7 @@ import styled from "styled-components"
 import {Button} from "../../Button"
 import {DividerHorizontal} from "../../Divider"
 import {TextInputWithLabel} from "../../Input"
+import {Modal} from "../../Modal"
 import {SubDescription} from "../../Typographies"
 import {AvatarRow} from "../AvatarRow"
 
@@ -62,9 +63,26 @@ export function UserProfile() {
     save()
   }
 
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+  const {clear} = useUserProfile()
+
   const onClickGenerateKeys = () => {
     if (isGenerating) return
-    handleGenerateKeys()
+    if (publicKey) {
+      setIsConfirmOpen(true)
+    } else {
+      handleGenerateKeys()
+    }
+  }
+
+  const onConfirmGenerate = () => {
+    setIsConfirmOpen(false)
+    setDraftUid("")
+    clear()
+  }
+
+  const onCancelGenerate = () => {
+    setIsConfirmOpen(false)
   }
 
   const handleGenerateKeys = async () => {
@@ -75,7 +93,8 @@ export function UserProfile() {
       return
     }
     const [pubKey, secKey] = await generateSignature()
-    setSignature(pubKey, secKey, draftUid)
+    const uid = `${draftUid.slice(0, 16)}#${pubKey.slice(0, 8)}`
+    setSignature(pubKey, secKey, uid)
     save()
     toast("密钥对生成成功")
     setIsGenerating(false)
@@ -90,6 +109,7 @@ export function UserProfile() {
             label="UID"
             value={draftUid}
             placeholder="唯一ID"
+            disabled={!!publicKey}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               const value = e.target.value
               if (/^[a-zA-Z0-9_.]{0,16}$/.test(value)) {
@@ -131,7 +151,11 @@ export function UserProfile() {
           onClick={onClickGenerateKeys}
           disabled={isGenerating}
         >
-          {isGenerating ? "生成中..." : "生成密钥对并保存"}
+          {isGenerating
+            ? "生成中..."
+            : publicKey
+              ? "删除该账户"
+              : "生成密钥对并保存"}
         </Button>
       </ActionSection>
       <DividerHorizontal />
@@ -161,6 +185,17 @@ export function UserProfile() {
           保存个人信息
         </Button>
       </ActionSection>
+      <Modal isOpen={isConfirmOpen} onClose={onCancelGenerate} title="确认操作">
+        确定要删除当前账户信息吗？此操作将清除所有本地存储的身份数据。
+        <ActionSection style={{marginTop: "1rem"}}>
+          <Button $variant="outline" onClick={onCancelGenerate}>
+            取消
+          </Button>
+          <Button $variant="solid" onClick={onConfirmGenerate}>
+            确定
+          </Button>
+        </ActionSection>
+      </Modal>
     </StyledUserProfile>
   )
 }
