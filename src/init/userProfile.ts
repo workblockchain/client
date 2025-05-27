@@ -7,11 +7,13 @@
 //
 //   http://license.coscl.org.cn/MulanPubL-2.0
 //
-
-/**
- * 用户配置初始化模块
- * 在应用启动时自动加载本地存储的用户配置
- */
+// THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS,
+// WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+// INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+// MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+// See the Mulan PubL v2 for more details.
+//
+// === Auto generated, DO NOT EDIT ABOVE ===
 
 import {useUserProfile} from "../stores/useUserProfile"
 

@@ -15,5 +15,4 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-export * from "./Input"
-export * from "./Textarea"
+export * from "./Modal"

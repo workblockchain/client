@@ -15,6 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 import Clock from "@/assets/clock.svg?react"
+import Cross from "@/assets/cross.svg?react"
 import Gear from "@/assets/gear.svg?react"
 import Navigation from "@/assets/navigation.svg?react"
 import People from "@/assets/people.svg?react"
@@ -27,5 +28,6 @@ export const svgIcons = [
   {name: "People", component: People},
   {name: "Navigation", component: Navigation},
   {name: "Gear", component: Gear},
+  {name: "Cross", component: Cross},
   {name: "Clock", component: Clock},
 ]
