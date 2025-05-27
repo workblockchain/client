@@ -16,6 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {ChangeEvent, useState} from "react"
+import {toast} from "react-toastify"
 import styled from "styled-components"
 import {UserInfoProps} from "../../interfaces"
 import {useUserProfile} from "../../stores/useUserProfile"
@@ -41,13 +42,32 @@ export function UserProfile() {
   const [draft, setDraft] = useState<Partial<UserInfoProps>>(userInfo)
   const [draftUid, setDraftUid] = useState<string>(uid)
 
+  const validateKeys = () => {
+    if (!/^[a-zA-Z0-9_.]{3,16}$/.test(draftUid)) {
+      toast("UID格式错误：必须为3-16位字母、数字、下划线或点号")
+      return false
+    }
+    if (!publicKey || !secretKey) {
+      toast("请生成有效密钥对")
+      return false
+    }
+    toast("信息已保存")
+    return true
+  }
+
   const saveDraft = () => {
+    if (!validateKeys()) return
     setUserInfo(draft)
     save()
   }
 
   const handleGenerateKeys = async () => {
     setIsGenerating(true)
+    if (!draftUid || !/^[a-zA-Z0-9_.]{3,16}$/.test(draftUid)) {
+      toast("请先输入有效的UID")
+      setIsGenerating(false)
+      return
+    }
     const [pubKey, secKey] = await generateSignature()
     setSignature(pubKey, secKey, uid)
     setIsGenerating(false)
@@ -63,15 +83,19 @@ export function UserProfile() {
           placeholder="唯一ID"
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             const value = e.target.value
-            if (/^[a-zA-Z0-9_.]{3,16}$/.test(value)) {
+            if (/^[a-zA-Z0-9_.]{0,16}$/.test(value)) {
               setDraftUid(value)
             }
           }}
         />
-        <SubDescription style={{color: "red", marginLeft: "12px"}}>
+        <SubDescription
+          style={{color: "red", marginLeft: "12px", opacity: 0.6}}
+        >
           *唯一ID，与公私钥绑定，一经设定不可更改
         </SubDescription>
-        <SubDescription style={{color: "red", marginLeft: "12px"}}>
+        <SubDescription
+          style={{color: "red", marginLeft: "12px", opacity: 0.6}}
+        >
           *必须为16位以内，仅允许字母、数字、下划线和点号
         </SubDescription>
       </InputRow>
@@ -96,7 +120,7 @@ export function UserProfile() {
           onClick={handleGenerateKeys}
           disabled={isGenerating}
         >
-          {isGenerating ? "生成中..." : "生成密钥对"}
+          {isGenerating ? "生成中..." : "生成密钥对并保存"}
         </Button>
         <Button $variant="outline" onClick={saveDraft}>
           保存信息

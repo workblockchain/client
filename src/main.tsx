@@ -17,6 +17,7 @@
 
 import {StrictMode} from "react"
 import {createRoot} from "react-dom/client"
+import {Bounce, ToastContainer} from "react-toastify"
 import {ThemeProvider} from "styled-components"
 import App from "./App.tsx"
 import "./i18n"
@@ -27,8 +28,22 @@ import {theme} from "./styles/theme"
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
-      <GlobalStyles />
       <App />
+      <GlobalStyles />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        limit={3}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
     </ThemeProvider>
   </StrictMode>
 )
