@@ -15,16 +15,17 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {UserInfoProps} from "@/interfaces"
+import {useUserProfile} from "@/stores/useUserProfile"
+import {colors} from "@/styles"
 import {ChangeEvent, useState} from "react"
 import {toast} from "react-toastify"
 import styled from "styled-components"
-import {UserInfoProps} from "../../interfaces"
-import {useUserProfile} from "../../stores/useUserProfile"
-import {Button} from "../Button/Button"
-import {DividerHorizontal} from "../Divider"
-import {TextInputWithLabel} from "../Input/Input"
-import {SubDescription} from "../Typographies"
-import {AvatarRow} from "./AvatarRow"
+import {Button} from "../../Button"
+import {DividerHorizontal} from "../../Divider"
+import {TextInputWithLabel} from "../../Input"
+import {SubDescription} from "../../Typographies"
+import {AvatarRow} from "../AvatarRow"
 
 export function UserProfile() {
   const [showSecretKey, setShowSecretKey] = useState(false)
@@ -40,7 +41,7 @@ export function UserProfile() {
   } = useUserProfile()
   const [isGenerating, setIsGenerating] = useState(false)
   const [draft, setDraft] = useState<Partial<UserInfoProps>>(userInfo)
-  const [draftUid, setDraftUid] = useState<string>(uid)
+  const [draftUid, setDraftUid] = useState<string>(uid.split("#")[0])
 
   const validateKeys = () => {
     if (!/^[a-zA-Z0-9_.]{3,16}$/.test(draftUid)) {
@@ -61,6 +62,11 @@ export function UserProfile() {
     save()
   }
 
+  const onClickGenerateKeys = () => {
+    if (isGenerating) return
+    handleGenerateKeys()
+  }
+
   const handleGenerateKeys = async () => {
     setIsGenerating(true)
     if (!draftUid || !/^[a-zA-Z0-9_.]{3,16}$/.test(draftUid)) {
@@ -69,7 +75,9 @@ export function UserProfile() {
       return
     }
     const [pubKey, secKey] = await generateSignature()
-    setSignature(pubKey, secKey, uid)
+    setSignature(pubKey, secKey, draftUid)
+    save()
+    toast("密钥对生成成功")
     setIsGenerating(false)
   }
 
@@ -77,17 +85,20 @@ export function UserProfile() {
     <StyledUserProfile>
       <Title>账户信息</Title>
       <InputRow>
-        <TextInputWithLabel
-          label="UID"
-          value={draftUid}
-          placeholder="唯一ID"
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            const value = e.target.value
-            if (/^[a-zA-Z0-9_.]{0,16}$/.test(value)) {
-              setDraftUid(value)
-            }
-          }}
-        />
+        <span>
+          <TextInputWithLabel
+            label="UID"
+            value={draftUid}
+            placeholder="唯一ID"
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              const value = e.target.value
+              if (/^[a-zA-Z0-9_.]{0,16}$/.test(value)) {
+                setDraftUid(value)
+              }
+            }}
+          />
+          <pre>#{uid.split("#")[1]}</pre>
+        </span>
         <SubDescription
           style={{color: "red", marginLeft: "12px", opacity: 0.6}}
         >
@@ -117,13 +128,10 @@ export function UserProfile() {
       <ActionSection>
         <Button
           $variant="solid"
-          onClick={handleGenerateKeys}
+          onClick={onClickGenerateKeys}
           disabled={isGenerating}
         >
           {isGenerating ? "生成中..." : "生成密钥对并保存"}
-        </Button>
-        <Button $variant="outline" onClick={saveDraft}>
-          保存信息
         </Button>
       </ActionSection>
       <DividerHorizontal />
@@ -148,6 +156,11 @@ export function UserProfile() {
           onChange={(value) => setDraft((draft) => ({...draft, avatar: value}))}
         />
       </FormSection>
+      <ActionSection>
+        <Button $variant="solid" onClick={saveDraft}>
+          保存个人信息
+        </Button>
+      </ActionSection>
     </StyledUserProfile>
   )
 }
@@ -200,6 +213,17 @@ const InputRow = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  pre {
+    font-size: 12px;
+    color: ${colors.Neutral300};
+  }
 `
 
 const Title = styled.h2`

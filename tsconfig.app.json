@@ -20,7 +20,13 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    /* TypeScript */
+    "baseUrl": ".", // 告诉 TypeScript 根目录是当前文件所在的目录
+    "paths": {
+      "@/*": ["./src/*"] // 将 @/ 映射到 src/ 目录 (如果 Node.js 代码也需要)
+    }
   },
   "include": ["src"]
 }
