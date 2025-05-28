@@ -17,3 +17,5 @@ src-tauri/gen/schemas
 dist/
 dist-ssr/
 storybook-static/
+
+*.ttf
