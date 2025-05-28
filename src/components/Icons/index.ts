@@ -15,4 +15,4 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-export * from "./Pomodoro"
+export * from "./svgIcons"

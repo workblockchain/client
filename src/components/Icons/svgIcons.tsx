@@ -14,36 +14,24 @@
 // See the Mulan PubL v2 for more details.
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
+import ArrowRound from "@/assets/arrow-round.svg?react"
+import Arrow from "@/assets/arrow.svg?react"
+import Clock from "@/assets/clock.svg?react"
+import Cross from "@/assets/cross.svg?react"
+import Gear from "@/assets/gear.svg?react"
+import Navigation from "@/assets/navigation.svg?react"
+import People from "@/assets/people.svg?react"
+import Pomodoro from "@/assets/pomodoro.svg?react"
+import ReactIcon from "@/assets/react.svg?react"
 
-import type {Meta, StoryObj} from "@storybook/react"
-import {Input} from "./Input"
-
-const meta: Meta<typeof Input> = {
-  title: "Components/Input",
-  component: Input,
-  tags: ["autodocs"],
-  argTypes: {
-    placeholder: {
-      control: "text",
-    },
-    disabled: {
-      control: "boolean",
-    },
-  },
-}
-
-export default meta
-type Story = StoryObj<typeof Input>
-
-export const Default: Story = {
-  args: {
-    placeholder: "请输入内容...",
-  },
-}
-
-export const Disabled: Story = {
-  args: {
-    placeholder: "禁用状态",
-    disabled: true,
-  },
+export const svgIcons = {
+  ReactIcon,
+  Pomodoro,
+  People,
+  Navigation,
+  Gear,
+  Cross,
+  Clock,
+  Arrow,
+  ArrowRound,
 }

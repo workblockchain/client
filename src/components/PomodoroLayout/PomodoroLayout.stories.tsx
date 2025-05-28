@@ -19,7 +19,7 @@ import type {Meta, StoryObj} from "@storybook/react"
 import {PomodoroLayout} from "./PomodoroLayout"
 
 const meta: Meta<typeof PomodoroLayout> = {
-  title: "Components/PomodoroLayout",
+  title: "Layouts/PomodoroLayout",
   component: PomodoroLayout,
   parameters: {
     layout: "centered",

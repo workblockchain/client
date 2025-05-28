@@ -15,35 +15,21 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import type {Meta, StoryObj} from "@storybook/react"
-import {Input} from "./Input"
+import styled from "styled-components"
+import {colors} from "../styles/colors"
 
-const meta: Meta<typeof Input> = {
-  title: "Components/Input",
-  component: Input,
-  tags: ["autodocs"],
-  argTypes: {
-    placeholder: {
-      control: "text",
-    },
-    disabled: {
-      control: "boolean",
-    },
-  },
-}
+const BaseDivider = styled.div<{color?: string; margin?: string}>`
+  background-color: ${({color}) => color || colors.Neutral300};
+`
 
-export default meta
-type Story = StoryObj<typeof Input>
+export const DividerHorizontal = styled(BaseDivider)`
+  height: 1px;
+  width: 100%;
+  margin: ${({margin}) => margin || "8px 0"};
+`
 
-export const Default: Story = {
-  args: {
-    placeholder: "请输入内容...",
-  },
-}
-
-export const Disabled: Story = {
-  args: {
-    placeholder: "禁用状态",
-    disabled: true,
-  },
-}
+export const DividerVertical = styled(BaseDivider)`
+  width: 1px;
+  height: 100%;
+  margin: ${({margin}) => margin || "0 8px"};
+`

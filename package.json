@@ -16,22 +16,34 @@
     "build.review": "npm run build.web && npm run build.storybook",
     "build.storybook": "storybook build",
     "i18n": "tsx scripts/i18n-check.ts",
+    "svg-imports": "tsx scripts/generate-svg-imports.ts",
     "format": "prettier --write . && vite-node scripts/license.ts",
     "review": "prettier --check . && oxlint && vite-node scripts/license.ts -c"
   },
   "dependencies": {
     "@noble/ed25519": "^2.2.3",
+    "@tauri-apps/api": "^2.5.0",
+    "@tauri-apps/plugin-opener": "^2.2.7",
     "axios": "^1.8.4",
     "dayjs": "^1.11.13",
     "i18next": "^25.0.2",
     "polished": "^4.3.1",
     "react": "^19.0.0",
+    "react-avatar-editor": "^13.0.2",
     "react-dom": "^19.0.0",
     "react-i18next": "^15.4.1",
     "react-markdown": "^10.1.0",
+    "react-router": "^7.6.1",
     "react-select": "^5.10.1",
+    "react-toastify": "^11.0.5",
     "styled-components": "^6.1.16",
     "zustand": "^5.0.3"
+  },
+  "overrides": {
+    "react-avatar-editor": {
+      "react": ">=18.0.0",
+      "react-dom": ">=18.0.0"
+    }
   },
   "devDependencies": {
     "@chromatic-com/storybook": "3",
@@ -43,9 +55,11 @@
     "@storybook/react-vite": "8.6.8",
     "@storybook/test": "8.6.8",
     "@tauri-apps/cli": "2.5.0",
+    "@types/glob": "^8.1.0",
     "@types/minimist": "^1.2.5",
     "@types/node": "^22.13.13",
     "@types/react": "^19.0.10",
+    "@types/react-avatar-editor": "^13.0.4",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react-swc": "^3.8.0",
     "@vitest/browser": "^3.0.9",
@@ -55,6 +69,7 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "eslint-plugin-storybook": "^0.11.6",
+    "glob": "^11.0.2",
     "globals": "^16.0.0",
     "minimist": "^1.2.8",
     "oxlint": "^0.16.8",

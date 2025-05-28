@@ -1,0 +1,23 @@
+# Code editors and platform local preferences.
+
+.Desktop.ini
+.DS_Store
+.idea/
+_.iml
+_.ipr
+\*.iws
+
+# Node.
+
+node_modules/
+
+# Tauri.
+
+src-tauri/target/
+src-tauri/gen/schemas
+
+# Compilation output.
+
+dist/
+dist-ssr/
+storybook-static/

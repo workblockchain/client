@@ -17,18 +17,12 @@
 
 import * as ed from "@noble/ed25519"
 import {create} from "zustand"
+import {UserInfoProps} from "../interfaces/userInfo"
 import {fromBase64, toBase64} from "../utils"
-
-interface UserInfoProps {
-  username: string
-  email: string
-  avatar: string // base64
-  contact: string // 可以是千奇百怪
-  contactTag: string // mobile | wechat | etc.
-}
 
 interface UserProfile {
   userInfo: UserInfoProps
+  uid: string
   publicKey: string
   secretKey: string
 }
@@ -36,11 +30,13 @@ interface UserProfile {
 interface UserProfileStore extends UserProfile {
   setUserInfo: (userInfo: Partial<UserInfoProps>) => void
   generateSignature: () => Promise<[string, string]> // [public key, secret key]
+  setSignature: (publicKey: string, secretKey: string, uid: string) => void
   exportUserProfile: () => UserProfile
   sign: (message: string) => Promise<string>
   verify: (message: string, signature: string) => Promise<boolean>
   save: () => void
   load: () => void
+  clear: () => void
 }
 const USER_PROFILE_KEY = "USER_PROFILE" as const
 
@@ -49,9 +45,8 @@ export const useUserProfile = create<UserProfileStore>((set, get) => ({
     username: "",
     email: "",
     avatar: "",
-    contact: "",
-    contactTag: "",
   },
+  uid: "",
   publicKey: "",
   secretKey: "",
 
@@ -66,8 +61,11 @@ export const useUserProfile = create<UserProfileStore>((set, get) => ({
     return [toBase64(publicKey), toBase64(privateKey)]
   },
 
+  setSignature: (publicKey, secretKey, uid) => set({publicKey, secretKey, uid}),
+
   exportUserProfile: () => ({
     userInfo: get().userInfo,
+    uid: get().uid,
     publicKey: get().publicKey,
     secretKey: get().secretKey,
   }),
@@ -98,5 +96,18 @@ export const useUserProfile = create<UserProfileStore>((set, get) => ({
       const userProfile = JSON.parse(userProfileStr)
       set(userProfile)
     }
+  },
+  clear: () => {
+    localStorage.removeItem(USER_PROFILE_KEY)
+    set({
+      userInfo: {
+        username: "",
+        email: "",
+        avatar: "",
+      },
+      uid: "",
+      publicKey: "",
+      secretKey: "",
+    })
   },
 }))
