@@ -15,12 +15,13 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {isTauri} from "@tauri-apps/api/core"
 import {t} from "i18next"
 import styled from "styled-components"
 import {HintText, Row} from "."
 import {colors} from "../../styles"
 import {Button} from "../Button/Button"
-import {LeftArrow} from "../Icons/LeftArrow"
+import {svgIcons} from "../Icons"
 import {Select} from "../Select/Select"
 
 const Container = styled.div`
@@ -83,12 +84,14 @@ export const ConfigLayout = ({
 }: ConfigLayoutProps) => {
   return (
     <Container>
-      <Row>
-        <Button $variant="icon" onClick={onClose}>
-          <LeftArrow width={18} height={18} color={colors.Neutral700} />
-        </Button>
-        <HintText>{t`general.back`}</HintText>
-      </Row>
+      {!isTauri() && (
+        <Row>
+          <Button $variant="icon" onClick={onClose}>
+            <svgIcons.ArrowRound style={{rotate: "90deg"}} />
+          </Button>
+          <HintText>{t`general.back`}</HintText>
+        </Row>
+      )}
       <TimerConfig>
         <Row>
           <Label>工作时长</Label>
