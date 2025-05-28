@@ -17,7 +17,6 @@
 
 import {useState} from "react"
 import styled from "styled-components"
-import {Layout} from ".."
 import {
   type TimerPhaseType,
   usePomodoroTimer,
@@ -33,7 +32,12 @@ import {TimerLayout} from "./TimerLayout"
 //   margin: 0;
 // `
 
-const Container = styled(Layout)<{$phase: TimerPhaseType}>`
+const Container = styled.div<{$phase: TimerPhaseType}>`
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f0f8ff;
+  overflow: hidden;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -45,7 +49,6 @@ const Container = styled(Layout)<{$phase: TimerPhaseType}>`
   transition: background-color 0.2s ease;
   width: auto;
   height: 100vh;
-  min-height: unset;
 `
 
 const PomodoroLayout = () => {
