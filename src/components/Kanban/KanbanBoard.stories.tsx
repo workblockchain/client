@@ -54,3 +54,9 @@ export const Primary: Story = {
     ],
   },
 }
+
+export const EmptyList: Story = {
+  args: {
+    list: [{id: "empty", title: "空列表", cards: []}],
+  },
+}

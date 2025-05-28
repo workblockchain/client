@@ -15,17 +15,12 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {BaseList} from "@/interfaces"
 import {useRef} from "react"
 import {useDrop} from "react-dnd"
 import styled from "styled-components"
-import {BaseCard, KanbanCard} from "./KanbanCard"
+import {KanbanCard} from "./KanbanCard"
 import {ItemTypes} from "./types"
-
-export interface BaseList {
-  id: string // 列表标题
-  title: string
-  cards: BaseCard[]
-}
 
 interface Props extends BaseList {
   onCardMove?: (

@@ -15,16 +15,11 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {BaseCard} from "@/interfaces"
 import {useRef} from "react"
 import {useDrag, useDrop} from "react-dnd"
 import styled from "styled-components"
 import {ItemTypes} from "./types"
-
-export interface BaseCard {
-  id: string
-  title: string // 卡片标题
-  description?: string // 卡片内容描述
-}
 
 interface Props extends BaseCard {
   index: number // 卡片在列表中的索引
