@@ -24,7 +24,7 @@
     "@noble/ed25519": "^2.2.3",
     "@tauri-apps/api": "^2.5.0",
     "@tauri-apps/plugin-opener": "^2.2.7",
-    "@react-spring/web": "^9.7.5",
+    "@react-spring/web": "^10.0.1",
     "axios": "^1.8.4",
     "dayjs": "^1.11.13",
     "i18next": "^25.0.2",
