@@ -24,9 +24,19 @@ export const Row = styled.div`
   align-items: center;
 `
 
-export const HintText = styled.div`
+export const HintText = styled.span`
   font-size: 12px;
   line-height: 12px;
   color: ${colors.Neutral500};
   transition: opacity 0.3s ease-out;
+`
+
+export const ConfigContainer = styled.div`
+  padding: 20px;
+  min-width: 400px;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 `

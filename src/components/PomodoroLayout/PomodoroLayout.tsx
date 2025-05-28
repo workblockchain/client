@@ -15,6 +15,8 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {paths} from "@/router"
+import {useConditionalNavigation} from "@/router/useConditionalNavigation"
 import {useState} from "react"
 import styled from "styled-components"
 import {
@@ -23,6 +25,9 @@ import {
 } from "../../stores/usePomodoroTimer"
 import {colors} from "../../styles"
 import {secondToHMS} from "../../utils"
+import {svgIcons} from "../Icons"
+import {Navigation} from "../Layout/Navigation"
+import {Portal} from "../Portal"
 import {CommitLayout} from "./CommitLayout"
 import {TimerLayout} from "./TimerLayout"
 
@@ -50,6 +55,56 @@ const Container = styled.div<{$phase: TimerPhaseType}>`
   width: auto;
   height: 100vh;
 `
+
+function NavigationButton() {
+  // 配置按钮点击处理
+  const handleConfigClick = () => {
+    setShowNavigation(true)
+  }
+  const navigation = useConditionalNavigation()
+  const demoTargets = [
+    {
+      icon: <svgIcons.Gear width={24} height={24} />,
+      label: "设置",
+      onClick: () =>
+        navigation({
+          path: paths.config,
+          tauriWindowOptions: {label: "config", title: "Workchain - 设置"},
+        }),
+    },
+    {
+      icon: <svgIcons.People width={24} height={24} />,
+      label: "个人信息",
+      onClick: () =>
+        navigation({
+          path: paths.profile,
+          tauriWindowOptions: {label: "profile", title: "Workchain - 个人信息"},
+        }),
+    },
+  ]
+  const [showNavigation, setShowNavigation] = useState(false)
+  return (
+    <>
+      <Portal>
+        <Navigation
+          targets={demoTargets}
+          onClose={() => setShowNavigation(false)}
+          show={showNavigation}
+        />
+      </Portal>
+      <svgIcons.Navigation
+        onClick={handleConfigClick}
+        style={{
+          position: "absolute",
+          top: "1rem",
+          right: "1rem",
+          cursor: "pointer",
+          opacity: 0.6,
+        }}
+      />
+    </>
+  )
+}
 
 const PomodoroLayout = () => {
   const [currentLayout, setCurrentLayout] = useState<
@@ -122,6 +177,7 @@ const PomodoroLayout = () => {
           }}
         />
       )}
+      <NavigationButton />
     </Container>
   )
 }

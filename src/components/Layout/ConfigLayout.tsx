@@ -18,22 +18,67 @@
 import {isTauri} from "@tauri-apps/api/core"
 import {t} from "i18next"
 import styled from "styled-components"
-import {HintText, Row} from "."
+import {ConfigContainer, HintText, Row} from "."
 import {colors} from "../../styles"
 import {Button} from "../Button/Button"
 import {svgIcons} from "../Icons"
 import {Select} from "../Select/Select"
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  min-height: 100%;
-  width: 100%;
-  height: 100%;
-  padding: 8px;
-  gap: 4px;
-`
+interface ConfigLayoutProps {
+  workDuration: number
+  breakDuration: number
+  setWorkDuration: (minutes: number) => void
+  setBreakDuration: (minutes: number) => void
+  onClose: () => void
+}
+
+export const ConfigLayout = ({
+  workDuration,
+  breakDuration,
+  setWorkDuration,
+  setBreakDuration,
+  onClose,
+}: ConfigLayoutProps) => {
+  return (
+    <ConfigContainer>
+      {!isTauri() && (
+        <Button $variant="iconWithLabel" onClick={onClose}>
+          <svgIcons.Arrow style={{rotate: "90deg"}} />
+          <HintText>{t`general.back`}</HintText>
+        </Button>
+      )}
+      <TimerConfig>
+        <Row>
+          <Label>工作时长</Label>
+          <Select
+            options={workOptions}
+            value={workDuration.toString()}
+            onChange={(v) => v && setWorkDuration(parseInt(v))}
+            containerStyle={{width: "100%"}}
+            size="small"
+          />
+        </Row>
+        <Row>
+          <Label>休息时长</Label>
+          <Select
+            options={breakOptions}
+            value={breakDuration.toString()}
+            onChange={(v) => v && setBreakDuration(parseInt(v))}
+            containerStyle={{width: "100%"}}
+            size="small"
+          />
+        </Row>
+
+        <AdvancedOptions>
+          <Label>高级设置</Label>
+          <div style={{color: colors.Neutral500, fontSize: "0.875rem"}}>
+            自定义计时模板（开发中）
+          </div>
+        </AdvancedOptions>
+      </TimerConfig>
+    </ConfigContainer>
+  )
+}
 
 const TimerConfig = styled.div`
   display: flex;
@@ -66,61 +111,3 @@ const breakOptions = [
   {value: "10", label: "10分钟"},
   {value: "15", label: "15分钟"},
 ]
-
-interface ConfigLayoutProps {
-  workDuration: number
-  breakDuration: number
-  setWorkDuration: (minutes: number) => void
-  setBreakDuration: (minutes: number) => void
-  onClose: () => void
-}
-
-export const ConfigLayout = ({
-  workDuration,
-  breakDuration,
-  setWorkDuration,
-  setBreakDuration,
-  onClose,
-}: ConfigLayoutProps) => {
-  return (
-    <Container>
-      {!isTauri() && (
-        <Row>
-          <Button $variant="icon" onClick={onClose}>
-            <svgIcons.ArrowRound style={{rotate: "90deg"}} />
-          </Button>
-          <HintText>{t`general.back`}</HintText>
-        </Row>
-      )}
-      <TimerConfig>
-        <Row>
-          <Label>工作时长</Label>
-          <Select
-            options={workOptions}
-            value={workDuration.toString()}
-            onChange={(v) => v && setWorkDuration(parseInt(v))}
-            containerStyle={{width: "100%"}}
-            size="small"
-          />
-        </Row>
-        <Row>
-          <Label>休息时长</Label>
-          <Select
-            options={breakOptions}
-            value={breakDuration.toString()}
-            onChange={(v) => v && setBreakDuration(parseInt(v))}
-            containerStyle={{width: "100%"}}
-            size="small"
-          />
-        </Row>
-
-        <AdvancedOptions>
-          <Label>高级设置</Label>
-          <div style={{color: colors.Neutral500, fontSize: "0.875rem"}}>
-            自定义计时模板（开发中）
-          </div>
-        </AdvancedOptions>
-      </TimerConfig>
-    </Container>
-  )
-}

@@ -21,6 +21,7 @@ import {colors} from "@/styles"
 import {ChangeEvent, useState} from "react"
 import {toast} from "react-toastify"
 import styled from "styled-components"
+import {ConfigContainer} from ".."
 import {Button} from "../../Button"
 import {DividerHorizontal} from "../../Divider"
 import {TextInputWithLabel} from "../../Input"
@@ -101,7 +102,7 @@ export function UserProfile() {
   }
 
   return (
-    <StyledUserProfile>
+    <ConfigContainer>
       <Title>账户信息</Title>
       <InputRow>
         <span>
@@ -196,24 +197,11 @@ export function UserProfile() {
           </Button>
         </ActionSection>
       </Modal>
-    </StyledUserProfile>
+    </ConfigContainer>
   )
 }
 
 export default UserProfile
-
-const StyledUserProfile = styled.div`
-  padding: 20px;
-  max-width: 600px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-
-  h2 {
-    color: #333;
-  }
-`
 
 const FormSection = styled.div`
   display: flex;
