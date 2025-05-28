@@ -28,7 +28,7 @@ function formatVarName(filePath: string) {
     .join("")
 
   // 特殊文件名处理
-  if (["react", "pomodoro"].includes(baseName)) {
+  if (["react"].includes(baseName)) {
     varName += "Icon"
   }
   return varName
@@ -63,14 +63,14 @@ function updateStoryFile() {
   const svgIconsEntries = svgFiles
     .map((filePath) => {
       const varName = formatVarName(filePath)
-      return `  { name: '${varName}', component: ${varName} },`
+      return `  ${varName},`
     })
     .join("\n")
 
   // 同时替换import部分和svgIcons数组
   const updatedContent = storyContent.replace(
     /(\/\/ === Auto generated, DO NOT EDIT ABOVE ===\n)[\s\S]*?export\s+const\s+svgIcons\s*=\s*\[[^\]]*\];?/s,
-    `$1${imports.join("\n")}\n\nexport const svgIcons = [\n${svgIconsEntries}\n];`
+    `$1${imports.join("\n")}\n\nexport const svgIcons = {\n${svgIconsEntries}\n}`
   )
 
   writeFileSync(storyPath, updatedContent)
