@@ -20,8 +20,8 @@ import {useTranslation} from "react-i18next"
 import styled from "styled-components"
 import {Button, Textarea} from ".."
 import {colors} from "../../styles"
-import {LeftArrow} from "../Icons/LeftArrow"
-import {HintText, Row} from "../Layout"
+import {svgIcons} from "../Icons"
+import {HintText} from "../Layout"
 
 const ButtonGroup = styled.div`
   display: flex;
@@ -75,14 +75,12 @@ export const CommitLayout = ({
 
   return (
     <DescriptionBox>
-      <Row>
-        {remainingTime > 0 && (
-          <Button $variant="icon" onClick={onBack}>
-            <LeftArrow width={18} height={18} color={colors.Neutral700} />
-          </Button>
-        )}
-        <HintText>{hintText}</HintText>
-      </Row>
+      {remainingTime > 0 && (
+        <Button $variant="iconWithLabel" onClick={onBack}>
+          <svgIcons.ArrowRound style={{rotate: "90deg"}} />
+          <HintText>{hintText}</HintText>
+        </Button>
+      )}
       <Textarea
         value={description}
         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>

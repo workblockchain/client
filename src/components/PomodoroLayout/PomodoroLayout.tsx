@@ -15,15 +15,19 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {paths} from "@/router"
+import {useConditionalNavigation} from "@/router/useConditionalNavigation"
 import {useState} from "react"
 import styled from "styled-components"
-import {Layout} from ".."
 import {
   type TimerPhaseType,
   usePomodoroTimer,
 } from "../../stores/usePomodoroTimer"
 import {colors} from "../../styles"
 import {secondToHMS} from "../../utils"
+import {svgIcons} from "../Icons"
+import {Navigation} from "../Layout/Navigation"
+import {Portal} from "../Portal"
 import {CommitLayout} from "./CommitLayout"
 import {TimerLayout} from "./TimerLayout"
 
@@ -33,7 +37,12 @@ import {TimerLayout} from "./TimerLayout"
 //   margin: 0;
 // `
 
-const Container = styled(Layout)<{$phase: TimerPhaseType}>`
+const Container = styled.div<{$phase: TimerPhaseType}>`
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f0f8ff;
+  overflow: hidden;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -45,8 +54,57 @@ const Container = styled(Layout)<{$phase: TimerPhaseType}>`
   transition: background-color 0.2s ease;
   width: auto;
   height: 100vh;
-  min-height: unset;
 `
+
+function NavigationButton() {
+  // 配置按钮点击处理
+  const handleConfigClick = () => {
+    setShowNavigation(true)
+  }
+  const navigation = useConditionalNavigation()
+  const demoTargets = [
+    {
+      icon: <svgIcons.Gear width={24} height={24} />,
+      label: "设置",
+      onClick: () =>
+        navigation({
+          path: paths.config,
+          tauriWindowOptions: {label: "config", title: "Workchain - 设置"},
+        }),
+    },
+    {
+      icon: <svgIcons.People width={24} height={24} />,
+      label: "个人信息",
+      onClick: () =>
+        navigation({
+          path: paths.profile,
+          tauriWindowOptions: {label: "profile", title: "Workchain - 个人信息"},
+        }),
+    },
+  ]
+  const [showNavigation, setShowNavigation] = useState(false)
+  return (
+    <>
+      <Portal>
+        <Navigation
+          targets={demoTargets}
+          onClose={() => setShowNavigation(false)}
+          show={showNavigation}
+        />
+      </Portal>
+      <svgIcons.Navigation
+        onClick={handleConfigClick}
+        style={{
+          position: "absolute",
+          top: "1rem",
+          right: "1rem",
+          cursor: "pointer",
+          opacity: 0.6,
+        }}
+      />
+    </>
+  )
+}
 
 const PomodoroLayout = () => {
   const [currentLayout, setCurrentLayout] = useState<
@@ -119,6 +177,7 @@ const PomodoroLayout = () => {
           }}
         />
       )}
+      <NavigationButton />
     </Container>
   )
 }
