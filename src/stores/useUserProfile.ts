@@ -36,6 +36,7 @@ interface UserProfileStore extends UserProfile {
   verify: (message: string, signature: string) => Promise<boolean>
   save: () => void
   load: () => void
+  clear: () => void
 }
 const USER_PROFILE_KEY = "USER_PROFILE" as const
 
@@ -60,12 +61,11 @@ export const useUserProfile = create<UserProfileStore>((set, get) => ({
     return [toBase64(publicKey), toBase64(privateKey)]
   },
 
-  setSignature: (publicKey, secretKey, uid) =>
-    set({publicKey, secretKey, uid: uid.slice(0, 16)}),
+  setSignature: (publicKey, secretKey, uid) => set({publicKey, secretKey, uid}),
 
   exportUserProfile: () => ({
     userInfo: get().userInfo,
-    uid: get().uid.slice(0, 16) + "#" + get().publicKey.slice(0, 8),
+    uid: get().uid,
     publicKey: get().publicKey,
     secretKey: get().secretKey,
   }),
@@ -96,5 +96,18 @@ export const useUserProfile = create<UserProfileStore>((set, get) => ({
       const userProfile = JSON.parse(userProfileStr)
       set(userProfile)
     }
+  },
+  clear: () => {
+    localStorage.removeItem(USER_PROFILE_KEY)
+    set({
+      userInfo: {
+        username: "",
+        email: "",
+        avatar: "",
+      },
+      uid: "",
+      publicKey: "",
+      secretKey: "",
+    })
   },
 }))

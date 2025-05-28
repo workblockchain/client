@@ -15,15 +15,19 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {UserInfoProps} from "@/interfaces"
+import {useUserProfile} from "@/stores/useUserProfile"
+import {colors} from "@/styles"
 import {ChangeEvent, useState} from "react"
+import {toast} from "react-toastify"
 import styled from "styled-components"
-import {UserInfoProps} from "../../interfaces"
-import {useUserProfile} from "../../stores/useUserProfile"
-import {Button} from "../Button/Button"
-import {DividerHorizontal} from "../Divider"
-import {TextInputWithLabel} from "../Input/Input"
-import {SubDescription} from "../Typographies"
-import {AvatarRow} from "./AvatarRow"
+import {ConfigContainer} from ".."
+import {Button} from "../../Button"
+import {DividerHorizontal} from "../../Divider"
+import {TextInputWithLabel} from "../../Input"
+import {Modal} from "../../Modal"
+import {SubDescription} from "../../Typographies"
+import {AvatarRow} from "../AvatarRow"
 
 export function UserProfile() {
   const [showSecretKey, setShowSecretKey] = useState(false)
@@ -39,39 +43,91 @@ export function UserProfile() {
   } = useUserProfile()
   const [isGenerating, setIsGenerating] = useState(false)
   const [draft, setDraft] = useState<Partial<UserInfoProps>>(userInfo)
-  const [draftUid, setDraftUid] = useState<string>(uid)
+  const [draftUid, setDraftUid] = useState<string>(uid.split("#")[0])
+
+  const validateKeys = () => {
+    if (!/^[a-zA-Z0-9_.]{3,16}$/.test(draftUid)) {
+      toast("UID格式错误：必须为3-16位字母、数字、下划线或点号")
+      return false
+    }
+    if (!publicKey || !secretKey) {
+      toast("请生成有效密钥对")
+      return false
+    }
+    toast("信息已保存")
+    return true
+  }
 
   const saveDraft = () => {
+    if (!validateKeys()) return
     setUserInfo(draft)
     save()
   }
 
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+  const {clear} = useUserProfile()
+
+  const onClickGenerateKeys = () => {
+    if (isGenerating) return
+    if (publicKey) {
+      setIsConfirmOpen(true)
+    } else {
+      handleGenerateKeys()
+    }
+  }
+
+  const onConfirmGenerate = () => {
+    setIsConfirmOpen(false)
+    setDraftUid("")
+    clear()
+  }
+
+  const onCancelGenerate = () => {
+    setIsConfirmOpen(false)
+  }
+
   const handleGenerateKeys = async () => {
     setIsGenerating(true)
+    if (!draftUid || !/^[a-zA-Z0-9_.]{3,16}$/.test(draftUid)) {
+      toast("请先输入有效的UID")
+      setIsGenerating(false)
+      return
+    }
     const [pubKey, secKey] = await generateSignature()
+    const uid = `${draftUid.slice(0, 16)}#${pubKey.slice(0, 8)}`
     setSignature(pubKey, secKey, uid)
+    save()
+    toast("密钥对生成成功")
     setIsGenerating(false)
   }
 
   return (
-    <StyledUserProfile>
+    <ConfigContainer>
       <Title>账户信息</Title>
       <InputRow>
-        <TextInputWithLabel
-          label="UID"
-          value={draftUid}
-          placeholder="唯一ID"
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            const value = e.target.value
-            if (/^[a-zA-Z0-9_.]{3,16}$/.test(value)) {
-              setDraftUid(value)
-            }
-          }}
-        />
-        <SubDescription style={{color: "red", marginLeft: "12px"}}>
+        <span>
+          <TextInputWithLabel
+            label="UID"
+            value={draftUid}
+            placeholder="唯一ID"
+            disabled={!!publicKey}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              const value = e.target.value
+              if (/^[a-zA-Z0-9_.]{0,16}$/.test(value)) {
+                setDraftUid(value)
+              }
+            }}
+          />
+          <pre>#{uid.split("#")[1]}</pre>
+        </span>
+        <SubDescription
+          style={{color: "red", marginLeft: "12px", opacity: 0.6}}
+        >
           *唯一ID，与公私钥绑定，一经设定不可更改
         </SubDescription>
-        <SubDescription style={{color: "red", marginLeft: "12px"}}>
+        <SubDescription
+          style={{color: "red", marginLeft: "12px", opacity: 0.6}}
+        >
           *必须为16位以内，仅允许字母、数字、下划线和点号
         </SubDescription>
       </InputRow>
@@ -93,13 +149,14 @@ export function UserProfile() {
       <ActionSection>
         <Button
           $variant="solid"
-          onClick={handleGenerateKeys}
+          onClick={onClickGenerateKeys}
           disabled={isGenerating}
         >
-          {isGenerating ? "生成中..." : "生成密钥对"}
-        </Button>
-        <Button $variant="outline" onClick={saveDraft}>
-          保存信息
+          {isGenerating
+            ? "生成中..."
+            : publicKey
+              ? "删除该账户"
+              : "生成密钥对并保存"}
         </Button>
       </ActionSection>
       <DividerHorizontal />
@@ -124,24 +181,27 @@ export function UserProfile() {
           onChange={(value) => setDraft((draft) => ({...draft, avatar: value}))}
         />
       </FormSection>
-    </StyledUserProfile>
+      <ActionSection>
+        <Button $variant="solid" onClick={saveDraft}>
+          保存个人信息
+        </Button>
+      </ActionSection>
+      <Modal isOpen={isConfirmOpen} onClose={onCancelGenerate} title="确认操作">
+        确定要删除当前账户信息吗？此操作将清除所有本地存储的身份数据。
+        <ActionSection style={{marginTop: "1rem"}}>
+          <Button $variant="outline" onClick={onCancelGenerate}>
+            取消
+          </Button>
+          <Button $variant="solid" onClick={onConfirmGenerate}>
+            确定
+          </Button>
+        </ActionSection>
+      </Modal>
+    </ConfigContainer>
   )
 }
 
 export default UserProfile
-
-const StyledUserProfile = styled.div`
-  padding: 20px;
-  max-width: 600px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-
-  h2 {
-    color: #333;
-  }
-`
 
 const FormSection = styled.div`
   display: flex;
@@ -176,6 +236,17 @@ const InputRow = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  pre {
+    font-size: 12px;
+    color: ${colors.Neutral300};
+  }
 `
 
 const Title = styled.h2`

@@ -15,8 +15,6 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-export * from "./Button/Button"
-export * from "./ChatWindow/Layout"
-export * from "./Input/Input"
-export * from "./Input/Textarea"
+export * from "./Button"
+export * from "./Input"
 export * from "./TimeDisplay/TimeDisplay"

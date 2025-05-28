@@ -28,7 +28,10 @@ function getRootContainer() {
   if (!root) {
     const newRoot = document.createElement("div")
     newRoot.id = PORTAL_CONTAINER_ID
-    document.getElementById("root")?.appendChild(newRoot)
+    const root =
+      document.getElementById("root") ??
+      document.getElementById("storybook-root")
+    root?.appendChild(newRoot)
     return newRoot
   }
   return root
