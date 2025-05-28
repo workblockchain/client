@@ -15,11 +15,12 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {BaseList} from "@/interfaces"
 import {useCallback, useState} from "react"
 import {DndProvider} from "react-dnd"
 import {HTML5Backend} from "react-dnd-html5-backend"
 import styled from "styled-components"
-import {BaseList, KanbanList} from "./KanbanList"
+import {KanbanList} from "./KanbanList"
 
 export interface Props {
   id: string
@@ -55,7 +56,7 @@ export const KanbanBoard = ({title, list}: Props) => {
         return newBoards
       })
     },
-    []
+    [list]
   )
 
   return (
