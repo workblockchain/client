@@ -19,10 +19,13 @@ import {isTauri} from "@tauri-apps/api/core"
 import {t} from "i18next"
 import styled from "styled-components"
 import {ConfigContainer, HintText, Row} from "."
+import {useConfig} from "../../stores/useConfig"
 import {colors} from "../../styles"
 import {Button} from "../Button/Button"
+import {DividerHorizontal} from "../Divider"
 import {svgIcons} from "../Icons"
 import {Select} from "../Select/Select"
+import {Switch} from "../Switch/Switch"
 
 interface ConfigLayoutProps {
   workDuration: number
@@ -39,6 +42,7 @@ export const ConfigLayout = ({
   setBreakDuration,
   onClose,
 }: ConfigLayoutProps) => {
+  const {autoSign, setAutoSign} = useConfig()
   return (
     <ConfigContainer>
       {!isTauri() && (
@@ -48,6 +52,7 @@ export const ConfigLayout = ({
         </Button>
       )}
       <TimerConfig>
+        <Label>基础设置</Label>
         <Row>
           <Label>工作时长</Label>
           <Select
@@ -67,6 +72,12 @@ export const ConfigLayout = ({
             containerStyle={{width: "100%"}}
             size="small"
           />
+        </Row>
+        <DividerHorizontal />
+        <Label>记录偏好</Label>
+        <Row>
+          <Label>自动签名</Label>
+          <Switch checked={autoSign} onChange={setAutoSign} size="small" />
         </Row>
 
         <AdvancedOptions>
