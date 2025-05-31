@@ -68,7 +68,7 @@ export const router = createBrowserRouter([
         }),
         children: [
           {
-            path: "labor",
+            path: "work",
             lazy: async () => ({
               Component: (await import("./components/Table/Table.tsx")).default,
             }),
