@@ -77,6 +77,18 @@ function NavigationButton() {
           tauriWindowOptions: {label: "record", title: "Workchain - 历史记录"},
         }),
     },
+    {
+      icon: <svgIcons.Navigation width={24} height={24} />,
+      label: "后台面板",
+      onClick: () =>
+        navigation({
+          path: paths.dashboard,
+          tauriWindowOptions: {
+            label: "dashboard",
+            title: "Workchain - 后台面板",
+          },
+        }),
+    },
   ]
   const [showNavigation, setShowNavigation] = useState(false)
   return (
