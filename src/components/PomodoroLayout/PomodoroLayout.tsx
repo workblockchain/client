@@ -17,12 +17,17 @@
 
 import {paths} from "@/router"
 import {useConditionalNavigation} from "@/router/useConditionalNavigation"
+import {useConfig} from "@/stores/useConfig"
+import {useUserProfile} from "@/stores/useUserProfile"
 import {useState} from "react"
+import {toast} from "react-toastify"
 import styled from "styled-components"
+import {v4} from "uuid"
 import {
   type TimerPhaseType,
   usePomodoroTimer,
 } from "../../stores/usePomodoroTimer"
+import {useSignedRecord} from "../../stores/useSignedRecord"
 import {colors} from "../../styles"
 import {secondToHMS} from "../../utils"
 import {svgIcons} from "../Icons"
@@ -114,14 +119,39 @@ const PomodoroLayout = () => {
 
   const {status, remainingTime, timePassed, timerPhase} = usePomodoroTimer()
   const {startTimer, pauseTimer, togglePhase} = usePomodoroTimer()
+  const {uid} = useUserProfile()
 
-  // TODO: record to store and read to sign
-  const handleRecord = () => {
-    console.log({
-      timestamp: new Date().toISOString(),
-      description,
-      phase: timerPhase,
-    })
+  const {addWorkRecord, createRecord} = useSignedRecord()
+  const {autoSign} = useConfig()
+  const handleRecord = async () => {
+    try {
+      const message = `${
+        timerPhase === "work" ? "工作" : "休息"
+      }阶段记录: ${description || "无描述"}`
+      const now = Date.now()
+      const work = {
+        wid: v4(),
+        startTime: now - timePassed() * 1000, // timestamp in milliseconds
+        endTime: now,
+        duration: timePassed(), // duration in seconds
+        outcome: "",
+        userId: uid,
+        workTags: [],
+        requirementIds: [],
+        projectIds: [],
+        description: message,
+      }
+      addWorkRecord(work)
+      if (autoSign) {
+        const record = await createRecord(JSON.stringify(work), uid)
+        toast.success(`记录已保存: #${record.id.slice(0, 8)}`)
+        return
+      }
+      toast.success(`记录保存成功`)
+    } catch (error) {
+      toast.error("记录保存失败")
+      console.error("记录保存失败:", error)
+    }
   }
 
   // Timer buttons
