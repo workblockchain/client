@@ -17,13 +17,18 @@
 
 export interface Record {
   id: string // 默认ID
-  message: string // 记录内容，JSON字符串, WorkRecord, RequirementRecord, ProjectRecord等
-  signature: string // 签名
+  data: string // 记录内容，JSON字符串, WorkRecord, RequirementRecord, ProjectRecord等
   createdBy: string // 创建人/组ID
   createdAt: number // 创建时间 timestamp in milliseconds
 }
 
-export interface WorkRecord {
+export interface SignedRecord extends Record {
+  signature: string
+  algorithm: "ed25519"
+}
+
+export interface WorkData {
+  wid: string // 具有可读性的劳动id
   // atom work record
   startTime: number // timestamp in milliseconds
   endTime: number // timestamp in milliseconds
@@ -47,8 +52,8 @@ export interface WorkRecord {
 const requirementStatusList = ["todo", "doing", "done"] as const
 export type RequirementStatusType = (typeof requirementStatusList)[number]
 
-export interface RequirementRecord {
-  id: string // 默认ID
+export interface RequirementData {
+  rid: string // 具有可读性的需求id
   priority: string // 优先级
   status: string // 状态
 
@@ -70,8 +75,8 @@ export interface RequirementRecord {
   relatedOutcomes?: string[] // 关联的成果ID，workRecord的outcome资源ID，索引
 }
 
-export interface ProjectRecord {
-  id: string // 默认ID
+export interface ProjectData {
+  pid: string // 具有可读性的项目id
   projectType: string // 项目类型
   status: string // 状态
   assignedTo: string // 被分配人ID
