@@ -100,7 +100,7 @@ export const KanbanCard = ({
 
   return (
     <Container ref={ref} $isDragging={isDragging}>
-      <CardTitle>{title}</CardTitle>
+      {/* <CardTitle>{title}</CardTitle> */}
       {description || props.children}
       <MoveButton></MoveButton>
     </Container>
@@ -109,8 +109,10 @@ export const KanbanCard = ({
 
 const Container = styled.div<{$isDragging: boolean}>`
   background-color: white;
+  display: flex;
+  gap: 12;
   border-radius: 4px;
-  padding: 12px;
+  padding: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   cursor: ${({$isDragging}) => ($isDragging ? "move" : "grab")};
   opacity: ${({$isDragging}) => ($isDragging ? 0.4 : 1)};
