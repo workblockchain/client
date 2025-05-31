@@ -16,15 +16,21 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import type {Meta, StoryObj} from "@storybook/react"
-import {Dashboard} from "./Dashboard"
+import {Descriptor} from "./Descriptor"
 
-const meta: Meta<typeof Dashboard> = {
-  title: "Layouts/Dashboard",
-  component: Dashboard,
+const meta: Meta<typeof Descriptor> = {
+  title: "Components/Descriptor",
+  component: Descriptor,
 }
 
 export default meta
 
-type Story = StoryObj<typeof Dashboard>
+type Story = StoryObj<typeof Descriptor>
 
-export const Default: Story = {}
+export const Default: Story = {
+  args: {
+    children: <input type="checkbox" />,
+    descriptor: "123",
+    labelPosition: "left",
+  },
+}

@@ -66,6 +66,23 @@ export const router = createBrowserRouter([
           Component: (await import("./components/Layout/Dashboard/Dashboard"))
             .default,
         }),
+        children: [
+          {
+            path: "labor",
+            lazy: async () => ({
+              Component: (await import("./components/Containers/WorkContainer"))
+                .default,
+            }),
+          },
+          {
+            path: "kanbanList",
+            lazy: async () => ({
+              Component: (
+                await import("./components/Containers/KanListContainer")
+              ).default,
+            }),
+          },
+        ],
       },
     ],
   },

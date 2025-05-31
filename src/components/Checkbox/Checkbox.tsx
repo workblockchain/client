@@ -15,16 +15,19 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import type {Meta, StoryObj} from "@storybook/react"
-import {Dashboard} from "./Dashboard"
+import Descriptor from "../Descriptor/Descriptor"
 
-const meta: Meta<typeof Dashboard> = {
-  title: "Layouts/Dashboard",
-  component: Dashboard,
+type CheckboxProps = {
+  descriptor?: string
+  onClick?: (event: React.MouseEvent<HTMLInputElement>) => void
 }
 
-export default meta
+export function Checkbox({descriptor, onClick}: CheckboxProps) {
+  return (
+    <Descriptor labelPosition="right" descriptor={descriptor}>
+      <input type="checkbox" onClick={onClick} />
+    </Descriptor>
+  )
+}
 
-type Story = StoryObj<typeof Dashboard>
-
-export const Default: Story = {}
+export default Checkbox
