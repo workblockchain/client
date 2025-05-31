@@ -7,6 +7,8 @@
     "core:default",
     "core:window:allow-center",
     "core:webview:allow-create-webview-window",
-    "core:window:allow-set-focus"
+    "core:window:allow-set-focus",
+    "core:window:allow-show",
+    "core:window:allow-unminimize"
   ]
 }
