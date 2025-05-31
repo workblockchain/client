@@ -27,7 +27,6 @@ import {fromBase64, toBase64} from "../utils"
 import {useUserProfile} from "./useUserProfile"
 
 interface SignedRecordStore {
-  records: Record[]
   currentRecord: Record | null
   workRecords: WorkRecord[]
   requirementRecords: RequirementRecord[]
@@ -37,12 +36,6 @@ interface SignedRecordStore {
   createRecord: (message: string, createdBy: string) => Promise<Record>
   signRecord: (record: Omit<Record, "signature">) => Promise<Record>
   verifyRecord: (record: Record) => Promise<boolean>
-
-  // CRUD operations
-  addRecord: (record: Record) => void
-  getRecord: (id: string) => Record | undefined
-  updateRecord: (id: string, updates: Partial<Record>) => void
-  deleteRecord: (id: string) => void
 
   // WorkRecord operations
   addWorkRecord: (workRecord: WorkRecord) => void
@@ -74,7 +67,6 @@ interface SignedRecordStore {
 const SIGNED_RECORD_KEY = "SIGNED_RECORDS" as const
 
 export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
-  records: [],
   currentRecord: null,
   workRecords: [],
   requirementRecords: [],
@@ -111,30 +103,6 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
     const signatureBytes = fromBase64(signature)
     return await ed.verifyAsync(signatureBytes, msgBytes, publicKeyBytes)
   },
-
-  addRecord: (record) =>
-    set((state) => ({
-      records: [...state.records, record],
-      currentRecord: record,
-    })),
-
-  getRecord: (id) => get().records.find((r) => r.id === id),
-
-  updateRecord: (id, updates) =>
-    set((state) => ({
-      records: state.records.map((r) => (r.id === id ? {...r, ...updates} : r)),
-      currentRecord:
-        state.currentRecord?.id === id
-          ? {...state.currentRecord, ...updates}
-          : state.currentRecord,
-    })),
-
-  deleteRecord: (id) =>
-    set((state) => ({
-      records: state.records.filter((r) => r.id !== id),
-      currentRecord:
-        state.currentRecord?.id === id ? null : state.currentRecord,
-    })),
 
   // WorkRecord methods
   addWorkRecord: (workRecord) =>
@@ -199,11 +167,10 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
 
   // Persistence methods
   save: () => {
-    const {records, workRecords, requirementRecords, projectRecords} = get()
+    const {workRecords, requirementRecords, projectRecords} = get()
     localStorage.setItem(
       SIGNED_RECORD_KEY,
       JSON.stringify({
-        records,
         workRecords,
         requirementRecords,
         projectRecords,
@@ -214,16 +181,15 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
   load: () => {
     const dataStr = localStorage.getItem(SIGNED_RECORD_KEY)
     if (dataStr) {
-      const {records, workRecords, requirementRecords, projectRecords} =
+      const {workRecords, requirementRecords, projectRecords} =
         JSON.parse(dataStr)
-      set({records, workRecords, requirementRecords, projectRecords})
+      set({workRecords, requirementRecords, projectRecords})
     }
   },
 
   clear: () => {
     localStorage.removeItem(SIGNED_RECORD_KEY)
     set({
-      records: [],
       currentRecord: null,
       workRecords: [],
       requirementRecords: [],
