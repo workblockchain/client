@@ -51,6 +51,14 @@ export function useConditionalNavigation() {
       try {
         const existingWindow = await WebviewWindow.getByLabel(label)
         if (existingWindow) {
+          const minimized = await existingWindow.isMinimized()
+          console.log(
+            `Tauri: Window with label "${label}" already exists, minimized is ${minimized}.`
+          )
+          if (minimized) {
+            existingWindow.unminimize()
+          }
+
           console.log(
             `Tauri: Window with label "${label}" already exists, focusing it.`
           )
