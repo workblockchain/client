@@ -1,6 +1,7 @@
 {
   "commit.abort": "放弃提交",
   "commit.abort-hint": "你确认要放弃提交吗?你的劳动将不会被记录",
+  "commit.auto-sign": "签名",
   "commit.confirm": "提交",
   "commit.confirm-abort": "确认放弃",
   "commit.hintText": "你已经工作了 {{timePassed}}.",

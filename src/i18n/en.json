@@ -1,6 +1,7 @@
 {
   "commit.abort": "Abort",
   "commit.abort-hint": "Are you sure to abort? Your work will not be recorded.",
+  "commit.auto-sign": "Sign",
   "commit.confirm": "Confirm",
   "commit.confirm-abort": "Confirm Abort",
   "commit.hintText": "You've worked for {{timePassed}} seconds",

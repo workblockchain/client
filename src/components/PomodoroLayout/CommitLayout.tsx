@@ -22,6 +22,7 @@ import {Button, Textarea} from ".."
 import {colors} from "../../styles"
 import {svgIcons} from "../Icons"
 import {HintText, Row} from "../Layout"
+import {Switch} from "../Switch"
 
 export type CommitLayoutProps = {
   description: string
@@ -31,6 +32,8 @@ export type CommitLayoutProps = {
   timePassed: string
   onBack: () => void
   remainingTime: number
+  autoSign: boolean
+  setAutoSign: (value: boolean) => void
 }
 
 export const CommitLayout = ({
@@ -41,6 +44,8 @@ export const CommitLayout = ({
   timePassed,
   remainingTime,
   onBack,
+  autoSign,
+  setAutoSign,
 }: CommitLayoutProps) => {
   const {t} = useTranslation()
   const [abortConfirm, setAbortConfirm] = useState(false)
@@ -53,7 +58,7 @@ export const CommitLayout = ({
   return (
     <DescriptionBox>
       {remainingTime > 0 && (
-        <Row>
+        <Row style={{margin: "8px 0 0 8px"}}>
           <Button $variant="icon" onClick={onBack}>
             <svgIcons.Arrow style={{rotate: "90deg"}} />
           </Button>
@@ -94,6 +99,12 @@ export const CommitLayout = ({
           >
             {t`commit.confirm-abort`}
           </Button>
+          <Sign>
+            <HintText style={{whiteSpace: "nowrap"}}>
+              {t`commit.auto-sign`}:
+            </HintText>
+            <Switch size="small" checked={autoSign} onChange={setAutoSign} />
+          </Sign>
         </ButtonGroup>
         <HintText
           style={{opacity: abortConfirm ? 1 : 0}}
@@ -106,14 +117,15 @@ export const CommitLayout = ({
 const ButtonGroup = styled.div`
   display: flex;
   gap: 1rem;
+  align-items: center;
 `
 
 const ButtonRow = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding-top: 8px;
+  gap: 4px;
+  padding: 4px 24px;
 `
 
 const DescriptionBox = styled.div`
@@ -122,5 +134,14 @@ const DescriptionBox = styled.div`
   border-radius: 6px;
   width: 100%;
   max-width: 400px;
-  padding: 2rem;
+
+  textarea {
+    margin: 4px 24px 8px;
+  }
+`
+
+const Sign = styled.span`
+  display: flex;
+  gap: 4px;
+  align-items: center;
 `

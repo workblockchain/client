@@ -40,6 +40,7 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   max-height: 600px;
+  margin: auto;
 `
 
 export type TimerLayoutProps = {
