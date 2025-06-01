@@ -24,8 +24,10 @@ import Key from "@/assets/key.svg?react"
 import List from "@/assets/list.svg?react"
 import Navigation from "@/assets/navigation.svg?react"
 import People from "@/assets/people.svg?react"
+import PlusIcon from "@/assets/plus.svg?react"
 import Pomodoro from "@/assets/pomodoro.svg?react"
 import ReactIcon from "@/assets/react.svg?react"
+import VectorIcon from "@/assets/vector.svg?react"
 
 export const svgIcons = {
   ReactIcon,
@@ -40,4 +42,6 @@ export const svgIcons = {
   Check,
   Arrow,
   ArrowRound,
+  PlusIcon,
+  VectorIcon,
 }
