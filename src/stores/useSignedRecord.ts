@@ -69,7 +69,7 @@ interface SignedRecordStore {
   clear: () => void
 }
 
-const SIGNED_RECORD_KEY = "SIGNED_RECORDS" as const
+const SIGNED_RECORD_KEY = "RECORDS" as const
 
 export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
   currentRecord: null,
@@ -88,6 +88,7 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
     }
     const signed = await get().signRecord(record)
     get().signedRecords.push(signed)
+    get().save()
     return signed
   },
 
@@ -118,10 +119,12 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
   },
 
   // WorkRecord methods
-  addWorkRecord: (workRecord) =>
+  addWorkRecord: (workRecord) => {
     set((state) => ({
       workRecords: [...state.workRecords, workRecord],
-    })),
+    }))
+    get().save()
+  },
 
   getWorkRecord: (userId) => get().workRecords.find((w) => w.userId === userId),
 
@@ -179,6 +182,8 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
     })),
 
   // Persistence methods
+  // TODO: optimize this to only save changed records
+  // use IndexedDB for better performance
   save: () => {
     const {workRecords, requirementRecords, projectRecords} = get()
     localStorage.setItem(
@@ -191,6 +196,11 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
     )
   },
 
+  // TODO: optimize loading, it could take a long time if there are many records
+  // 1. load only the latest records
+  // 2. load records in chunks
+  // 3. use a web worker to load records in the background
+  // 4. use IndexedDB for better performance
   load: () => {
     const dataStr = localStorage.getItem(SIGNED_RECORD_KEY)
     if (dataStr) {

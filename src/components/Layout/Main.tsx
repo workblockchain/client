@@ -27,7 +27,7 @@ import {svgIcons} from "../Icons"
 export function Main() {
   const navigate = useNavigate()
   const location = useLocation()
-  const isMain = location.pathname !== "/"
+  const isMain = location.pathname === "/"
   const onClose = () => {
     if (isTauri()) {
       window.close()
@@ -36,7 +36,7 @@ export function Main() {
     }
   }
   return (
-    <Container $padding={isMain}>
+    <Container $padding={!isMain}>
       {!isTauri() && !isMain && (
         <Button $variant="iconWithLabel" onClick={onClose}>
           <svgIcons.Arrow style={{rotate: "90deg"}} />
