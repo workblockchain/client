@@ -7,6 +7,10 @@
   "commit.hintText": "你已经工作了 {{timePassed}}.",
   "description.placeholder": "劳动成果描述",
   "general.back": "返回",
+  "time.hour": "小时",
+  "time.justNow": "现在",
+  "time.minute": "分",
+  "time.second": "秒",
   "timer.pause": "暂停",
   "timer.skip": "跳过",
   "timer.start": "开始"

@@ -19,6 +19,7 @@ import ArrowRound from "@/assets/arrow-round.svg?react"
 import Clock from "@/assets/clock.svg?react"
 import Cross from "@/assets/cross.svg?react"
 import Gear from "@/assets/gear.svg?react"
+import Key from "@/assets/key.svg?react"
 import List from "@/assets/list.svg?react"
 import Navigation from "@/assets/navigation.svg?react"
 import People from "@/assets/people.svg?react"
@@ -31,6 +32,7 @@ export const svgIcons = {
   People,
   Navigation,
   List,
+  Key,
   Gear,
   Cross,
   Clock,
