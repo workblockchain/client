@@ -35,6 +35,7 @@ interface SignedRecordStore {
   workRecords: WorkData[]
   requirementRecords: RequirementData[]
   projectRecords: ProjectData[]
+  signedRecords: SignedRecord[]
 
   // Record operations
   createRecord: (message: string, createdBy: string) => Promise<SignedRecord>
@@ -75,6 +76,7 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
   workRecords: [],
   requirementRecords: [],
   projectRecords: [],
+  signedRecords: [],
 
   createRecord: async (message) => {
     const {uid} = useUserProfile.getState()
@@ -84,7 +86,9 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
       createdBy: uid,
       createdAt: Date.now(),
     }
-    return await get().signRecord(record)
+    const signed = await get().signRecord(record)
+    get().signedRecords.push(signed)
+    return signed
   },
 
   signRecord: async (record) => {

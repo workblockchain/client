@@ -21,30 +21,7 @@ import styled from "styled-components"
 import {Button, Textarea} from ".."
 import {colors} from "../../styles"
 import {svgIcons} from "../Icons"
-import {HintText} from "../Layout"
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 1rem;
-`
-
-const ButtonRow = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-top: 8px;
-`
-
-const DescriptionBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  border-radius: 6px;
-  width: 100%;
-  max-width: 400px;
-  padding: 2rem;
-`
+import {HintText, Row} from "../Layout"
 
 export type CommitLayoutProps = {
   description: string
@@ -76,10 +53,12 @@ export const CommitLayout = ({
   return (
     <DescriptionBox>
       {remainingTime > 0 && (
-        <Button $variant="iconWithLabel" onClick={onBack}>
-          <svgIcons.ArrowRound style={{rotate: "90deg"}} />
+        <Row>
+          <Button $variant="icon" onClick={onBack}>
+            <svgIcons.Arrow style={{rotate: "90deg"}} />
+          </Button>
           <HintText>{hintText}</HintText>
-        </Button>
+        </Row>
       )}
       <Textarea
         value={description}
@@ -123,3 +102,25 @@ export const CommitLayout = ({
     </DescriptionBox>
   )
 }
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 1rem;
+`
+
+const ButtonRow = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 8px;
+`
+
+const DescriptionBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+`
