@@ -16,21 +16,17 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import type {Meta, StoryObj} from "@storybook/react"
-import {Table} from "./Table"
+import {TableGroup} from "./TableGroup"
 import {CellProps} from "./TableRow"
 
 const meta = {
-  title: "Components/Table",
-  component: Table,
+  title: "Components/TableGroup",
+  component: TableGroup,
   tags: ["autodocs"],
-  argTypes: {
-    data: {
-      control: "object",
-    },
-  },
-} satisfies Meta<typeof Table>
+} satisfies Meta<typeof TableGroup>
 
 export default meta
+
 type Story = StoryObj<typeof meta>
 
 const sampleCells: CellProps[][] = [
@@ -54,44 +50,18 @@ const sampleCells: CellProps[][] = [
   ],
 ]
 
-const sampleData = [
-  {
+export const Default: Story = {
+  args: {
     groupName: "劳动记录组1",
     expanded: true,
     onClick: () => console.log("Group clicked"),
     cells: sampleCells,
   },
-  {
-    groupName: "劳动记录组1",
-    expanded: true,
-    onClick: () => console.log("Group clicked"),
-    cells: sampleCells,
-  },
-]
-
-export const Basic: Story = {
-  args: {
-    data: sampleData,
-    titles: [
-      "劳动描述",
-      "劳动分类",
-      "人员",
-      "状态",
-      "提出日期",
-      "持续时间",
-      "关联项",
-    ],
-  },
 }
 
-export const Empty: Story = {
+export const Collapsed: Story = {
   args: {
-    data: [],
-  },
-}
-
-export const SingleGroup: Story = {
-  args: {
-    data: [sampleData[0]],
+    ...Default.args,
+    expanded: false,
   },
 }
