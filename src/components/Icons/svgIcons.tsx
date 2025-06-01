@@ -14,8 +14,8 @@
 // See the Mulan PubL v2 for more details.
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
-import Arrow from "@/assets/arrow.svg?react"
 import ArrowRound from "@/assets/arrow-round.svg?react"
+import Arrow from "@/assets/arrow.svg?react"
 import Check from "@/assets/check.svg?react"
 import Clock from "@/assets/clock.svg?react"
 import Cross from "@/assets/cross.svg?react"
