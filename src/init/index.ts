@@ -15,19 +15,35 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {useSignedRecord} from "@/stores/useSignedRecord"
+import dayjs from "dayjs"
+import duration from "dayjs/plugin/duration"
 import {useUserProfile} from "../stores/useUserProfile"
 
 // TODO: refactor to async progress
-function initUserProfile() {
+async function initUserProfile() {
   // 非响应式直接访问store实例
-  useUserProfile.getState().load()
+  return new Promise<void>((resolve) => {
+    useUserProfile.getState().load()
+    resolve()
+  })
 }
 
-function initRecords() {
+async function initRecords() {
   // 初始化工作记录
-  useUserProfile.getState().load()
+  return new Promise<void>((resolve) => {
+    useSignedRecord.getState().load()
+    resolve()
+  })
+}
+
+async function dayjsPlugin() {
+  return new Promise<void>((resolve) => {
+    dayjs.extend(duration)
+    resolve()
+  })
 }
 
 export async function init() {
-  return Promise.all([initUserProfile(), initRecords()])
+  await Promise.all([initUserProfile(), initRecords(), dayjsPlugin()])
 }

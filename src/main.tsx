@@ -27,27 +27,27 @@ import {GlobalStyles} from "./styles/globalStyles"
 import {theme} from "./styles/theme"
 
 // 初始化用户配置
-init()
-
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ThemeProvider theme={theme}>
-      <App />
-      <GlobalStyles />
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        limit={3}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition={Bounce}
-      />
-    </ThemeProvider>
-  </StrictMode>
-)
+init().then(() => {
+  createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+      <ThemeProvider theme={theme}>
+        <App />
+        <GlobalStyles />
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          limit={3}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Bounce}
+        />
+      </ThemeProvider>
+    </StrictMode>
+  )
+})
