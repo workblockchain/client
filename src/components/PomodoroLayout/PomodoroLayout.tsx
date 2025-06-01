@@ -115,9 +115,8 @@ const PomodoroLayout = () => {
   const {addWorkRecord, createRecord} = useSignedRecord()
   const {autoSign: autoSignConfig} = useConfig()
   const [autoSign, setAutoSign] = useState(autoSignConfig)
-  const handleRecord = async () => {
+  const handleRecord = async (isWork: boolean) => {
     try {
-      const isWork = timerPhase === "work"
       const message = `${
         isWork ? "工作" : "休息"
       }${description ? `: ${description}` : ""}`
@@ -151,12 +150,13 @@ const PomodoroLayout = () => {
   // Timer buttons
   const handleSkip = () => {
     pauseTimer()
-
-    if (timerPhase === "break") {
-      handleRecord()
-      goNextPhase()
-    } else if (timerPhase === "work" && timePassed() > 0) {
-      setCurrentLayout("commit")
+    if (timePassed() > 0) {
+      if (timerPhase === "break") {
+        handleRecord(false)
+        goNextPhase()
+      } else {
+        setCurrentLayout("commit")
+      }
     } else {
       goNextPhase()
     }
@@ -169,7 +169,7 @@ const PomodoroLayout = () => {
     setCurrentLayout("timer")
   }
   const handleCommitConfirm = () => {
-    handleRecord()
+    handleRecord(timerPhase === "work")
     goNextPhase()
   }
 
