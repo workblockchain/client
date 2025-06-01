@@ -22,12 +22,12 @@ import {ThemeProvider} from "styled-components"
 import App from "./App.tsx"
 import "./i18n"
 import "./index.css"
-import {initUserProfile} from "./init/userProfile"
+import {init} from "./init"
 import {GlobalStyles} from "./styles/globalStyles"
 import {theme} from "./styles/theme"
 
 // 初始化用户配置
-initUserProfile()
+init()
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

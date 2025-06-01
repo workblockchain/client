@@ -1,4 +1,3 @@
-import {useEffect} from "react"
 import {toast} from "react-toastify"
 import styled from "styled-components"
 import {Title} from "."
@@ -16,11 +15,7 @@ const workDataToRecord = (workData: WorkData): Record => {
 }
 
 export const RecordsPage = () => {
-  const {workRecords, signedRecords, signRecord, load, save} = useSignedRecord()
-
-  useEffect(() => {
-    load()
-  }, [])
+  const {workRecords, signedRecords, signRecord, save} = useSignedRecord()
 
   const isSigned = (workId: string) => {
     return signedRecords.some((sr) => sr.id === workId)

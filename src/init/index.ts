@@ -17,7 +17,17 @@
 
 import {useUserProfile} from "../stores/useUserProfile"
 
-export function initUserProfile() {
+// TODO: refactor to async progress
+function initUserProfile() {
   // 非响应式直接访问store实例
   useUserProfile.getState().load()
+}
+
+function initRecords() {
+  // 初始化工作记录
+  useUserProfile.getState().load()
+}
+
+export async function init() {
+  return Promise.all([initUserProfile(), initRecords()])
 }
