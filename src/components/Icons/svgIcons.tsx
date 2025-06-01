@@ -21,8 +21,10 @@ import Cross from "@/assets/cross.svg?react"
 import Gear from "@/assets/gear.svg?react"
 import Navigation from "@/assets/navigation.svg?react"
 import People from "@/assets/people.svg?react"
+import PlusIcon from "@/assets/plus.svg?react"
 import Pomodoro from "@/assets/pomodoro.svg?react"
 import ReactIcon from "@/assets/react.svg?react"
+import VectorIcon from "@/assets/vector.svg?react"
 
 export const svgIcons = {
   ReactIcon,
@@ -34,4 +36,6 @@ export const svgIcons = {
   Clock,
   Arrow,
   ArrowRound,
+  PlusIcon,
+  VectorIcon,
 }
