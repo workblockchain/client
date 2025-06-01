@@ -19,6 +19,7 @@ import {paths} from "@/router"
 import {useConditionalNavigation} from "@/router/useConditionalNavigation"
 import {useConfig} from "@/stores/useConfig"
 import {useUserProfile} from "@/stores/useUserProfile"
+import {POMODORO_BREAK, POMODORO_WORK} from "@/utils/supportTags"
 import {useState} from "react"
 import {toast} from "react-toastify"
 import styled from "styled-components"
@@ -128,7 +129,7 @@ const PomodoroLayout = () => {
         duration: timePassed(), // duration in seconds
         outcome: "",
         userId: uid,
-        workTags: isWork ? [] : ["break"],
+        workTags: isWork ? [POMODORO_WORK] : [POMODORO_BREAK],
         requirementIds: [],
         projectIds: [],
         description: message,
@@ -140,6 +141,7 @@ const PomodoroLayout = () => {
         return
       }
       toast.success(`记录暂存`)
+      setDescription("")
     } catch (error) {
       toast.error("记录保存失败")
       console.error("记录保存失败:", error)
@@ -148,14 +150,15 @@ const PomodoroLayout = () => {
 
   // Timer buttons
   const handleSkip = () => {
-    setDescription("")
     pauseTimer()
 
     if (timerPhase === "break") {
       handleRecord()
       goNextPhase()
-    } else {
+    } else if (timerPhase === "work" && timePassed() > 0) {
       setCurrentLayout("commit")
+    } else {
+      goNextPhase()
     }
   }
 
