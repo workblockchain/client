@@ -42,25 +42,6 @@ import {TimerLayout} from "./TimerLayout"
 //   margin: 0;
 // `
 
-const Container = styled.div<{$phase: TimerPhaseType}>`
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  background-color: #f0f8ff;
-  overflow: hidden;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem;
-  background-color: ${({$phase}) =>
-    $phase === "work" ? colors.Red100 : colors.Blue100};
-  color: ${({$phase}) => ($phase === "work" ? colors.Red800 : colors.Blue900)};
-  transition: background-color 0.2s ease;
-  width: auto;
-  height: 100vh;
-`
-
 function NavigationButton() {
   // 配置按钮点击处理
   const handleConfigClick = () => {
@@ -131,12 +112,14 @@ const PomodoroLayout = () => {
   const {uid} = useUserProfile()
 
   const {addWorkRecord, createRecord} = useSignedRecord()
-  const {autoSign} = useConfig()
+  const {autoSign: autoSignConfig} = useConfig()
+  const [autoSign, setAutoSign] = useState(autoSignConfig)
   const handleRecord = async () => {
     try {
+      const isWork = timerPhase === "work"
       const message = `${
-        timerPhase === "work" ? "工作" : "休息"
-      }阶段记录: ${description || "无描述"}`
+        isWork ? "工作" : "休息"
+      }${description ? `: ${description}` : ""}`
       const now = Date.now()
       const work = {
         wid: v4(),
@@ -145,7 +128,7 @@ const PomodoroLayout = () => {
         duration: timePassed(), // duration in seconds
         outcome: "",
         userId: uid,
-        workTags: [],
+        workTags: isWork ? [] : ["break"],
         requirementIds: [],
         projectIds: [],
         description: message,
@@ -156,7 +139,7 @@ const PomodoroLayout = () => {
         toast.success(`记录已保存: #${record.id.slice(0, 8)}`)
         return
       }
-      toast.success(`记录保存成功`)
+      toast.success(`记录暂存`)
     } catch (error) {
       toast.error("记录保存失败")
       console.error("记录保存失败:", error)
@@ -214,6 +197,8 @@ const PomodoroLayout = () => {
           onBack={() => {
             setCurrentLayout("timer")
           }}
+          autoSign={autoSign}
+          setAutoSign={setAutoSign}
         />
       )}
       <NavigationButton />
@@ -222,4 +207,21 @@ const PomodoroLayout = () => {
 }
 
 export default PomodoroLayout
-export {PomodoroLayout}
+
+const Container = styled.div<{$phase: TimerPhaseType}>`
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f0f8ff;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  background-color: ${({$phase}) =>
+    $phase === "work" ? colors.Red100 : colors.Blue100};
+  color: ${({$phase}) => ($phase === "work" ? colors.Red800 : colors.Blue900)};
+  transition: background-color 0.2s ease;
+  width: auto;
+  height: 100vh;
+`
