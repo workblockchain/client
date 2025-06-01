@@ -15,12 +15,41 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {Outlet} from "react-router"
+import {colors} from "@/styles"
+import {isTauri} from "@tauri-apps/api/core"
+import {t} from "i18next"
+import {Outlet, useLocation, useNavigate} from "react-router"
+import styled from "styled-components"
+import {HintText} from "."
+import {Button} from ".."
+import {svgIcons} from "../Icons"
 
 export function Main() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const isMain = location.pathname !== "/"
+  const onClose = () => {
+    if (isTauri()) {
+      window.close()
+    } else {
+      navigate(-1)
+    }
+  }
   return (
-    <>
+    <Container $padding={isMain}>
+      {!isTauri() && !isMain && (
+        <Button $variant="iconWithLabel" onClick={onClose}>
+          <svgIcons.Arrow style={{rotate: "90deg"}} />
+          <HintText>{t`general.back`}</HintText>
+        </Button>
+      )}
       <Outlet />
-    </>
+    </Container>
   )
 }
+
+const Container = styled.div<{$padding: boolean}>`
+  padding: ${(props) => (props.$padding ? "24px" : "0")};
+  background-color: ${colors.Red100};
+  min-height: 100vh;
+`

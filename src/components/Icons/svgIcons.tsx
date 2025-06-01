@@ -14,11 +14,12 @@
 // See the Mulan PubL v2 for more details.
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
-import ArrowRound from "@/assets/arrow-round.svg?react"
 import Arrow from "@/assets/arrow.svg?react"
+import ArrowRound from "@/assets/arrow-round.svg?react"
 import Clock from "@/assets/clock.svg?react"
 import Cross from "@/assets/cross.svg?react"
 import Gear from "@/assets/gear.svg?react"
+import List from "@/assets/list.svg?react"
 import Navigation from "@/assets/navigation.svg?react"
 import People from "@/assets/people.svg?react"
 import Pomodoro from "@/assets/pomodoro.svg?react"
@@ -29,6 +30,7 @@ export const svgIcons = {
   Pomodoro,
   People,
   Navigation,
+  List,
   Gear,
   Cross,
   Clock,

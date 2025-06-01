@@ -15,15 +15,11 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {isTauri} from "@tauri-apps/api/core"
-import {t} from "i18next"
 import styled from "styled-components"
-import {ConfigContainer, HintText, Row} from "."
+import {ConfigContainer, Row, Title} from "."
 import {useConfig} from "../../stores/useConfig"
 import {colors} from "../../styles"
-import {Button} from "../Button/Button"
 import {DividerHorizontal} from "../Divider"
-import {svgIcons} from "../Icons"
 import {Select} from "../Select/Select"
 import {Switch} from "../Switch/Switch"
 
@@ -32,7 +28,6 @@ interface ConfigLayoutProps {
   breakDuration: number
   setWorkDuration: (minutes: number) => void
   setBreakDuration: (minutes: number) => void
-  onClose: () => void
 }
 
 export const ConfigLayout = ({
@@ -40,19 +35,12 @@ export const ConfigLayout = ({
   breakDuration,
   setWorkDuration,
   setBreakDuration,
-  onClose,
 }: ConfigLayoutProps) => {
   const {autoSign, setAutoSign} = useConfig()
   return (
     <ConfigContainer>
-      {!isTauri() && (
-        <Button $variant="iconWithLabel" onClick={onClose}>
-          <svgIcons.Arrow style={{rotate: "90deg"}} />
-          <HintText>{t`general.back`}</HintText>
-        </Button>
-      )}
       <TimerConfig>
-        <Label>基础设置</Label>
+        <Title>基础设置</Title>
         <Row>
           <Label>工作时长</Label>
           <Select
@@ -81,7 +69,7 @@ export const ConfigLayout = ({
         </Row>
 
         <AdvancedOptions>
-          <Label>高级设置</Label>
+          <Title>高级设置</Title>
           <div style={{color: colors.Neutral500, fontSize: "0.875rem"}}>
             自定义计时模板（开发中）
           </div>
