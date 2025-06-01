@@ -7,6 +7,10 @@
   "commit.hintText": "You've worked for {{timePassed}} seconds",
   "description.placeholder": "Work description...",
   "general.back": "Back",
+  "time.hour": "hour",
+  "time.justNow": "just now",
+  "time.minute": "mins",
+  "time.second": "sec",
   "timer.pause": "Pause",
   "timer.skip": "Skip",
   "timer.start": "Start"
