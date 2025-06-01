@@ -20,21 +20,31 @@ import {colors} from "../../styles/colors"
 
 const TagContainer = styled.span<{
   $variant: "primary" | "success" | "warning" | "error"
+  $size?: "small" | "medium" | "large"
 }>`
   display: inline-flex;
   align-items: center;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
+  border-radius: 8px;
   font-weight: 500;
   line-height: 1.5;
+
+  ${({$size}) => {
+    switch ($size) {
+      case "small":
+        return `padding: 1px 6px; font-size: 10px;`
+      case "large":
+        return `padding: 4px 12px; font-size: 14px;`
+      default: // medium
+        return `padding: 2px 8px; font-size: 12px;`
+    }
+  }}
 
   ${({$variant}) => {
     switch ($variant) {
       case "primary":
         return `background-color: ${colors.Blue100}; color: ${colors.Blue700};`
       case "success":
-        return `background-color: ${colors.Yellow100}; color: ${colors.Yellow700};`
+        return `background-color: ${colors.Yellow300}; color: ${colors.Yellow800};`
       case "warning":
         return `background-color: ${colors.Red100}; color: ${colors.Red700};`
       case "error":
@@ -45,9 +55,18 @@ const TagContainer = styled.span<{
 
 interface TagProps {
   variant?: "primary" | "success" | "warning" | "error"
+  size?: "small" | "medium" | "large"
   children: React.ReactNode
 }
 
-export const Tag = ({variant = "primary", children}: TagProps) => {
-  return <TagContainer $variant={variant}>{children}</TagContainer>
+export const Tag = ({
+  variant = "primary",
+  size = "medium",
+  children,
+}: TagProps) => {
+  return (
+    <TagContainer $variant={variant} $size={size}>
+      {children}
+    </TagContainer>
+  )
 }
