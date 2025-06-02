@@ -1,9 +1,17 @@
 import type {Meta, StoryObj} from "@storybook/react"
+import {BrowserRouter} from "react-router"
 import {Menu} from "./Menu"
 
 const meta: Meta<typeof Menu> = {
   title: "Components/Menu",
   component: Menu,
+  decorators: [
+    (Story) => (
+      <BrowserRouter>
+        <Story />
+      </BrowserRouter>
+    ),
+  ],
 }
 
 export default meta
@@ -17,18 +25,17 @@ export const Default: Story = {
         id: "gzt",
         icon: "",
         label: "工作台",
-        url: "/",
+        url: "/dashboard",
       },
       {
-        id: "ldgl",
+        id: "labor",
         label: "劳动管理",
-        url: "/",
         children: [
           {
             id: "lb",
             icon: "",
             label: "列表",
-            url: "/",
+            url: "/dashboard/labor",
             onUpdate: () => {},
           },
           {
@@ -48,6 +55,29 @@ export const Default: Story = {
         id: "bdy",
         label: "表单页",
         url: "/",
+      },
+    ],
+  },
+}
+
+export const WithDisabledItems: Story = {
+  args: {
+    items: [
+      {
+        id: "dashboard",
+        label: "仪表盘",
+        url: "/dashboard",
+      },
+      {
+        id: "settings",
+        label: "设置",
+        url: "/settings",
+        disabled: true,
+      },
+      {
+        id: "profile",
+        label: "个人资料",
+        url: "/profile",
       },
     ],
   },
