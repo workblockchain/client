@@ -24,7 +24,7 @@ import {Td} from "./TableRow"
 
 interface TableProps {
   titles?: string[]
-  data: TableGroupProps[]
+  data?: TableGroupProps[]
 }
 
 export const Table = ({data, titles = []}: TableProps) => {
@@ -51,7 +51,7 @@ export const Table = ({data, titles = []}: TableProps) => {
         ))}
       </TableTitle>
 
-      {data.map((group, index) => {
+      {data!.map((group, index) => {
         return <TableGroup key={index} {...group}></TableGroup>
       })}
       <TableGroupAdd>
@@ -61,6 +61,8 @@ export const Table = ({data, titles = []}: TableProps) => {
     </TableContainer>
   )
 }
+
+export default Table
 
 const TableContainer = styled.div`
   width: 100%;

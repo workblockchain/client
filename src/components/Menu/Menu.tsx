@@ -1,12 +1,12 @@
-import {DividerHorizontal} from "@/components/Divider"
-import React, {ReactNode, useState} from "react"
+import {ReactNode, useState} from "react"
+import {useLocation, useNavigate} from "react-router"
 import styled from "styled-components"
 
 export interface MenuItem {
   id: string
   label: string
   icon?: ReactNode
-  url: string
+  url?: string
   children?: MenuItem[]
   show?: boolean
   disabled?: boolean
@@ -15,18 +15,14 @@ export interface MenuItem {
 }
 
 interface MenuProps {
-  items?: MenuItem[]
+  items: MenuItem[]
 }
 
 export function Menu({items}: MenuProps) {
+  const navigate = useNavigate()
+  const location = useLocation()
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
-    items?.reduce(
-      (acc, item) => {
-        acc[item.id] = item.expand ?? false
-        return acc
-      },
-      {} as Record<string, boolean>
-    ) ?? {}
+    Object.fromEntries(items.map((item) => [item.id, item.expand ?? false]))
   )
 
   const toggleExpand = (id: string) => {
@@ -39,8 +35,8 @@ export function Menu({items}: MenuProps) {
   const handleItemClick = (item: MenuItem) => {
     if (item.children) {
       toggleExpand(item.id)
-    } else {
-      window.location.href = item.url
+    } else if (item.url) {
+      navigate(item.url)
       item.onUpdate?.()
     }
   }
@@ -48,14 +44,16 @@ export function Menu({items}: MenuProps) {
   const renderMenuItem = (item: MenuItem) => {
     if (item.show === false) return null
 
-    const hasChildren = !!(item.children && item.children.length > 0)
-    const isExpanded = expandedItems[item.id] ?? item.expand ?? false
+    const hasChildren = !!item.children?.length
+    const isExpanded = expandedItems[item.id] ?? false
+    const isSelected = item.url === location.pathname
 
     return (
-      <MenuItem key={item.id}>
-        <MenuItemContent
+      <>
+        <MenuItem
           hasChildren={hasChildren}
           disabled={item.disabled ?? false}
+          isSelected={isSelected}
           onClick={() => !item.disabled && handleItemClick(item)}
         >
           {item.icon && <MenuItemIcon>{item.icon}</MenuItemIcon>}
@@ -63,26 +61,20 @@ export function Menu({items}: MenuProps) {
           {hasChildren && (
             <MenuItemArrow isExpanded={isExpanded}>▼</MenuItemArrow>
           )}
-        </MenuItemContent>
-
+        </MenuItem>
         {hasChildren && (
           <MenuSubItems isExpanded={isExpanded}>
-            {item.children?.map((child) => renderMenuItem(child))}
+            {item.children!.map(renderMenuItem)}
           </MenuSubItems>
         )}
-      </MenuItem>
+      </>
     )
   }
 
   return (
     <MenuContainer>
-      {items?.length ? (
-        items.map((item, index) => (
-          <React.Fragment key={item.id}>
-            {renderMenuItem(item)}
-            <DividerHorizontal />
-          </React.Fragment>
-        ))
+      {items.length ? (
+        items.map((item) => renderMenuItem(item))
       ) : (
         <MenuEmpty>暂无菜单项</MenuEmpty>
       )}
@@ -92,33 +84,44 @@ export function Menu({items}: MenuProps) {
 
 // Styled components
 const MenuContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`
-
-const MenuItem = styled.div`
-  display: flex;
-  flex-direction: column;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 `
 
-const MenuItemContent = styled.div<{
-  hasChildren: boolean
-  disabled: boolean
+const MenuItem = styled.div<{
+  hasChildren?: boolean
+  disabled?: boolean
+  isSelected?: boolean
 }>`
   display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-direction: row;
+  width: 100%;
   align-items: center;
   padding: 8px 16px;
   cursor: ${({disabled}) => (disabled ? "not-allowed" : "pointer")};
-  background-color: ${({disabled}) => (disabled ? "#f5f5f5" : "transparent")};
+  background-color: ${({disabled, isSelected}) =>
+    disabled
+      ? "#f5f5f5"
+      : isSelected
+        ? "rgba(255, 232, 219, 1)"
+        : "transparent"};
+  color: ${({isSelected}) => (isSelected ? "rgba(238, 125, 37, 1)" : "#333")};
   opacity: ${({disabled}) => (disabled ? 0.6 : 1)};
   transition:
     background-color 0.3s ease,
-    opacity 0.3s ease;
+    opacity 0.3s ease,
+    color 0.3s ease;
 
   &:hover {
-    background-color: ${({disabled}) => (disabled ? "#f5f5f5" : "#e0e0e0")};
+    background-color: ${({disabled, isSelected}) =>
+      disabled
+        ? "#f5f5f5"
+        : isSelected
+          ? "rgba(255, 232, 219, 0.7)"
+          : "rgba(255, 232, 219, 0.46)"};
   }
 `
 
@@ -132,7 +135,6 @@ const MenuItemIcon = styled.span`
 const MenuItemTitle = styled.span`
   flex: 1;
   font-size: 16px;
-  color: #333;
 `
 
 const MenuItemArrow = styled.span<{isExpanded: boolean}>`
@@ -140,7 +142,7 @@ const MenuItemArrow = styled.span<{isExpanded: boolean}>`
   align-items: center;
   font-size: 12px;
   transform: ${({isExpanded}) =>
-    isExpanded ? "rotate(180deg)" : "rotate(0deg)"};
+    isExpanded ? "rotate(0deg)" : "rotate(-90deg)"};
   transition: transform 0.3s ease;
 `
 

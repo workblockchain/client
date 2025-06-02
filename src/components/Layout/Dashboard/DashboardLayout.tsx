@@ -15,9 +15,92 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import Workbench from "@/assets/workbench.svg?react"
 import {Breadcrumb} from "@/components/Breadcrumb/Breadcrumb"
 import Menu from "@/components/Menu/Menu"
+import {CellProps} from "@/components/Table/TableRow"
+import {Outlet} from "react-router"
 import styled from "styled-components"
+
+const sampleCells: CellProps[][] = [
+  [
+    {type: "text", data: "修复首页样式问题"},
+    {type: "text", data: "前端开发"},
+    {type: "text", data: "张三"},
+    {type: "tag", data: "已完成"},
+    {type: "time", data: "2023-05-01"},
+    {type: "text", data: "2小时"},
+    {type: "text", data: "BUG-123"},
+  ],
+  [
+    {type: "text", data: "优化API响应时间"},
+    {type: "text", data: "后端开发"},
+    {type: "text", data: "李四"},
+    {type: "tag", data: "进行中"},
+    {type: "time", data: "2023-05-02"},
+    {type: "text", data: "4小时"},
+    {type: "text", data: "TASK-456"},
+  ],
+]
+
+const sampleData = [
+  {
+    groupName: "劳动记录组1",
+    expanded: true,
+    onClick: () => console.log("Group clicked"),
+    cells: sampleCells,
+  },
+  {
+    groupName: "劳动记录组1",
+    expanded: true,
+    onClick: () => console.log("Group clicked"),
+    cells: sampleCells,
+  },
+]
+
+const menus = [
+  {
+    id: "gzt",
+    icon: <Workbench />,
+    label: "工作台",
+    url: "/dashboard",
+  },
+  {
+    id: "labor",
+    label: "劳动管理",
+    children: [
+      {
+        id: "lb",
+        icon: <Workbench />,
+        label: "列表",
+        url: "/dashboard/labor",
+        onUpdate: () => {},
+      },
+      {
+        id: "zt",
+        label: "状态",
+        url: "/",
+      },
+      {
+        id: "gtt",
+        label: "甘特图",
+        url: "/",
+        show: false,
+      },
+    ],
+  },
+  {
+    id: "bdy",
+    label: "表单页",
+    url: "/",
+  },
+]
+
+const path = [
+  {title: "工作台", path: "/dashboard"},
+  {title: "劳动管理", path: "/dashboard/labor"},
+  {title: "表单", path: "/dashboard"},
+]
 
 export function DashboardLayout() {
   return (
@@ -28,58 +111,15 @@ export function DashboardLayout() {
       </Top>
       <Left>
         <h2>menu title</h2>
-        <Menu
-          items={[
-            {
-              id: "gzt",
-              icon: "",
-              label: "工作台",
-              url: "/",
-            },
-            {
-              id: "ldgl",
-              label: "劳动管理",
-              url: "/",
-              children: [
-                {
-                  id: "lb",
-                  icon: "",
-                  label: "列表",
-                  url: "/",
-                  onUpdate: () => {},
-                },
-                {
-                  id: "zt",
-                  label: "状态",
-                  url: "/",
-                },
-                {
-                  id: "gtt",
-                  label: "甘特图",
-                  url: "/",
-                  show: false,
-                },
-              ],
-            },
-            {
-              id: "bdy",
-              label: "表单页",
-              url: "/",
-            },
-          ]}
-        ></Menu>
+        <Menu items={menus}></Menu>
       </Left>
       <ConLayout>
         <BreadcrumbWrapper>
-          <Breadcrumb
-            items={[
-              {title: "首页", path: "/"},
-              {title: "产品", path: "/products"},
-              {title: "详情", path: "/products/123"},
-            ]}
-          />
+          <Breadcrumb items={path} />
         </BreadcrumbWrapper>
-        <Con>con</Con>
+        <Con>
+          <Outlet />
+        </Con>
       </ConLayout>
     </Layout>
   )
