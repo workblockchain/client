@@ -15,9 +15,19 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {useUserProfile} from "../stores/useUserProfile"
+import {SignedRecord} from "./records"
 
-export function initUserProfile() {
-  // 非响应式直接访问store实例
-  useUserProfile.getState().load()
+export interface BlockHeader {
+  hash: string
+  previousHash: string
+  data: string
+  timestamp: number
+
+  packer: string // public key of the packer
+  signature: string
+}
+
+export interface ChainBlock {
+  header: BlockHeader
+  records: SignedRecord[]
 }

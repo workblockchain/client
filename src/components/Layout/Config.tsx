@@ -15,7 +15,6 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {useNavigate} from "react-router"
 import {usePomodoroTimer} from "../../stores/usePomodoroTimer"
 import {ConfigLayout} from "./ConfigLayout"
 
@@ -28,8 +27,7 @@ function Config() {
     setWorkDuration,
     setBreakDuration,
   }
-  const navigate = useNavigate()
-  return <ConfigLayout {...configProps} onClose={() => navigate(-1)} />
+  return <ConfigLayout {...configProps} />
 }
 
 export default Config

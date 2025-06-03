@@ -15,6 +15,8 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {t} from "i18next"
+
 export function secondToHMS(seconds: number) {
   const h = Math.floor(seconds / 3600)
   const m = Math.floor((seconds % 3600) / 60)
@@ -24,4 +26,21 @@ export function secondToHMS(seconds: number) {
     return `${String(h)}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`
   }
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`
+}
+
+export function secondToTime(seconds: number) {
+  const h = Math.floor(seconds / 3600)
+  const m = Math.floor((seconds % 3600) / 60)
+  const s = seconds % 60
+
+  if (h > 0) {
+    return `${h}${t`time.hour`}${m}${t`time.minute`}${s}${t`time.second`}`
+  }
+  if (m > 0) {
+    return `${m}${t`time.minute`}${s}${t`time.second`}`
+  }
+  if (m === 0 && s === 0) {
+    return t`time.justNow`
+  }
+  return `${s}${t`time.second`}`
 }

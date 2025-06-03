@@ -15,7 +15,4 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-export * from "./cryptos"
-export * from "./kanban"
-export * from "./records"
-export * from "./userInfo"
+export * from "./Switch"

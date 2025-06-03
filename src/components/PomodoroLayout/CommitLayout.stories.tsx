@@ -92,6 +92,10 @@ export const Default: Story = {
       }
       onAbort={() => console.log(`[CommitLayout] ${args.messageAbort}`)}
       onBack={() => console.log("[CommitLayout] onBack")}
+      autoSign={false}
+      setAutoSign={function (value: boolean): void {
+        console.log(`[CommitLayout] 自动签名设置: ${value}`)
+      }}
     />
   ),
 }
