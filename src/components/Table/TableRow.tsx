@@ -18,33 +18,51 @@
 import {colors} from "@/styles/colors"
 import {ReactNode} from "react"
 import styled from "styled-components"
+import {DatePicker} from "../DatePicker/DatePicker"
 import {Tag} from "../Tag/Tag"
 
 export interface CellProps {
+  type: "text" | "time" | "tag"
   children?: ReactNode
-  type?: "text" | "time" | "tag"
-  data?: string | undefined
   width?: number
   id?: string
 }
 
-export interface TableRowProps {
-  cells: CellProps[]
+export interface TextCellProps extends CellProps {
+  type: "text"
+  data?: string | boolean | string[] | undefined
 }
 
-function renderCellContent(item: CellProps) {
+export interface TimeCellProps extends CellProps {
+  type: "time"
+  data?: number
+  format?: "YMD" | "MD" | "HM" | "M" | "S" | "HMS"
+}
+
+export interface TagCellProps extends CellProps {
+  type: "tag"
+  data?: string
+}
+export interface TableRowProps {
+  row: TypedCellProps[]
+}
+
+export type TypedCellProps = TextCellProps | TimeCellProps | TagCellProps
+
+function renderCellContent({type = "text", ...item}: TypedCellProps) {
   if (item.children) return item.children
 
   try {
-    switch (item.type) {
+    switch (type) {
       case "text":
         return <span>{item.data}</span>
       case "time":
-        return item.data ? (
-          <time dateTime={item.data}>
-            {new Date(item.data).toLocaleString()}
-          </time>
-        ) : null
+        const timeProps = item as TimeCellProps
+        return timeProps.data ? (
+          <DatePicker value={timeProps.data} format={"HMS"} />
+        ) : (
+          timeProps.data
+        )
       case "tag":
         return <Tag size="large">{item.data}</Tag>
       default:
@@ -56,10 +74,10 @@ function renderCellContent(item: CellProps) {
   }
 }
 
-export function TableRow({cells}: TableRowProps) {
+export function TableRow({row}: TableRowProps) {
   return (
     <Tr>
-      {cells.map((item, index) => (
+      {row.map((item, index) => (
         <Td key={item.id || index}>{renderCellContent(item)}</Td>
       ))}
     </Tr>
@@ -78,10 +96,14 @@ export const Td = styled.td`
   box-sizing: border-box;
   padding: 8px;
   color: ${colors.Neutral500};
+  overflow: hidden; /* Hides overflow content */
+  white-space: nowrap; /* Prevents text from wrapping */
+  text-overflow: ellipsis; /* Displays ellipsis (...) for overflow text */
 `
 
 export const Tr = styled.tr`
   display: flex;
   align-items: stretch;
   width: 100%;
+  max-height: 70px;
 `

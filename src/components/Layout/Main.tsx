@@ -28,6 +28,7 @@ export function Main() {
   const navigate = useNavigate()
   const location = useLocation()
   const isMain = location.pathname === "/"
+  const isDashboard = location.pathname.startsWith("/dashboard")
   const onClose = () => {
     if (isTauri()) {
       window.close()
@@ -36,8 +37,8 @@ export function Main() {
     }
   }
   return (
-    <Container $padding={!isMain}>
-      {!isTauri() && !isMain && (
+    <Container $padding={!(isMain || isDashboard)}>
+      {!isTauri() && !isMain && !isDashboard && (
         <Button $variant="iconWithLabel" onClick={onClose}>
           <svgIcons.Arrow style={{rotate: "90deg"}} />
           <HintText>{t`general.back`}</HintText>

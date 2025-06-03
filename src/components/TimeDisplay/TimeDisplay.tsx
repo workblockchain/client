@@ -15,6 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {useState} from "react"
 import {CSSProperties, styled} from "styled-components"
 import {styledCommon} from "../../styles/common"
 import {secondToHMS} from "../../utils/secondToHMS"
@@ -22,6 +23,7 @@ import {secondToHMS} from "../../utils/secondToHMS"
 interface TimeDisplayProps {
   seconds: number
   style?: CSSProperties
+  editable?: boolean
 }
 
 const TimeDisplayContainer = styled.div`
@@ -34,10 +36,51 @@ const TimeDisplayContainer = styled.div`
   }
 `
 
-export const TimeDisplay = ({seconds, style}: TimeDisplayProps) => {
-  const formattedTime = secondToHMS(seconds)
+export const TimeDisplay = ({
+  seconds,
+  style,
+  editable = false,
+}: TimeDisplayProps) => {
+  const [isEditing, setIsEditing] = useState(false)
+  const [value, setValue] = useState(seconds)
+  const formattedTime = secondToHMS(value)
+
+  const handleClick = () => {
+    if (editable) {
+      setIsEditing(true)
+    }
+  }
+
+  const handleBlur = () => {
+    setIsEditing(false)
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(Number(e.target.value))
+  }
 
   return (
-    <TimeDisplayContainer style={style}>{formattedTime}</TimeDisplayContainer>
+    <TimeDisplayContainer style={style} onClick={handleClick}>
+      {isEditing ? (
+        <input
+          type="number"
+          value={value}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          autoFocus
+          style={{
+            width: "100%",
+            textAlign: "center",
+            background: "transparent",
+            border: "none",
+            outline: "none",
+            fontSize: "inherit",
+            fontFamily: "inherit",
+          }}
+        />
+      ) : (
+        formattedTime
+      )}
+    </TimeDisplayContainer>
   )
 }

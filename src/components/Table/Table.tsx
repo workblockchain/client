@@ -21,7 +21,6 @@ import styled from "styled-components"
 import {Button} from "../Button"
 import {TableGroup, TableGroupProps} from "./TableGroup"
 import {Td} from "./TableRow"
-
 interface TableProps {
   titles?: string[]
   data?: TableGroupProps[]
@@ -31,16 +30,17 @@ export const Table = ({data, titles = []}: TableProps) => {
   return (
     <TableContainer>
       <ToolbarActions>
-        <Button $variant="outline" $size="small">
+        <Button $variant="text" $size="small">
+          <PlusIcon />
           <span>添加记录</span>
         </Button>
-        <Button $variant="outline" $size="small">
+        <Button $variant="text" $size="small">
           <span>字段配置</span>
         </Button>
-        <Button $variant="outline" $size="small">
+        <Button $variant="text" $size="small">
           筛选
         </Button>
-        <Button $variant="outline" $size="small">
+        <Button $variant="text" $size="small">
           排序
         </Button>
       </ToolbarActions>
@@ -68,6 +68,7 @@ const TableContainer = styled.div`
   width: 100%;
   overflow: hidden;
   display: flex;
+  padding: 5px;
   flex-direction: column;
   gap: 8px;
 `
@@ -81,7 +82,9 @@ const ToolbarActions = styled.div`
 export const TableTitle = styled.tr`
   display: flex;
   align-items: stretch;
+  height: 35px;
   width: 100%;
+  background-color: #fff;
   overflow: hidden;
   border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: 16px;

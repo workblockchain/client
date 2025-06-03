@@ -17,7 +17,7 @@
 
 import type {Meta, StoryObj} from "@storybook/react"
 import {Table} from "./Table"
-import {CellProps} from "./TableRow"
+import {TableRowProps} from "./TableRow"
 
 const meta = {
   title: "Components/Table",
@@ -33,39 +33,43 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const sampleCells: CellProps[][] = [
-  [
-    {type: "text", data: "修复首页样式问题"},
-    {type: "text", data: "前端开发"},
-    {type: "text", data: "张三"},
-    {type: "tag", data: "已完成"},
-    {type: "time", data: "2023-05-01"},
-    {type: "text", data: "2小时"},
-    {type: "text", data: "BUG-123"},
-  ],
-  [
-    {type: "text", data: "优化API响应时间"},
-    {type: "text", data: "后端开发"},
-    {type: "text", data: "李四"},
-    {type: "tag", data: "进行中"},
-    {type: "time", data: "2023-05-02"},
-    {type: "text", data: "4小时"},
-    {type: "text", data: "TASK-456"},
-  ],
+const sampleCells: TableRowProps[] = [
+  {
+    row: [
+      {type: "text", data: "修复首页样式问题", id: "cell-1-1"},
+      {type: "text", data: "前端开发", id: "cell-1-2"},
+      {type: "text", data: "张三", id: "cell-1-3"},
+      {type: "tag", data: "已完成", id: "cell-1-4"},
+      {type: "time", data: new Date("2023-05-01").getTime(), id: "cell-1-5"},
+      {type: "text", data: "2小时", id: "cell-1-6"},
+      {type: "text", data: "BUG-123", id: "cell-1-7"},
+    ],
+  },
+  {
+    row: [
+      {type: "text", data: "优化API响应时间", id: "cell-2-1"},
+      {type: "text", data: "后端开发", id: "cell-2-2"},
+      {type: "text", data: "李四", id: "cell-2-3"},
+      {type: "tag", data: "进行中", id: "cell-2-4"},
+      {type: "time", data: new Date("2023-05-02").getTime(), id: "cell-2-5"},
+      {type: "text", data: "4小时", id: "cell-2-6"},
+      {type: "text", data: "TASK-456", id: "cell-2-7"},
+    ],
+  },
 ]
 
 const sampleData = [
   {
     groupName: "劳动记录组1",
+    groupData: sampleCells,
     expanded: true,
     onClick: () => console.log("Group clicked"),
-    cells: sampleCells,
   },
   {
     groupName: "劳动记录组1",
+    groupData: sampleCells,
     expanded: true,
     onClick: () => console.log("Group clicked"),
-    cells: sampleCells,
   },
 ]
 

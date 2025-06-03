@@ -21,21 +21,22 @@ import {colors} from "@/styles/colors"
 import React from "react"
 import styled from "styled-components"
 import {Tag} from "../Tag/Tag"
-import {CellProps, TableRow} from "./TableRow"
+import {TableRow, TableRowProps} from "./TableRow"
 
 export interface TableGroupProps {
-  groupName: string
-  cells: CellProps[][]
-  expanded: boolean
-  onClick: () => void
+  groupName?: string
+  groupData: TableRowProps[]
+  expanded?: boolean
+  onClick?: () => void
   showAddRow?: boolean
 }
 
 export function TableGroup({
   groupName,
-  cells,
-  expanded: initialExpanded,
+  groupData,
+  expanded: initialExpanded = true,
   onClick,
+
   showAddRow = true,
 }: TableGroupProps) {
   const [expanded, setExpanded] = React.useState(initialExpanded)
@@ -46,21 +47,25 @@ export function TableGroup({
   }
   return (
     <TableGroupContainer>
-      <GroupHeader onClick={handleClick}>
-        <VectorIcon
-          width={14}
-          height={14}
-          style={{
-            transform: expanded ? "rotate(0deg)" : "rotate(-90deg)",
-            transition: "transform 0.2s ease",
-          }}
-        />
-        <Tag size="large">{groupName}</Tag>
-        <span>3 条记录</span>
-      </GroupHeader>
+      {groupName === undefined ? (
+        <></>
+      ) : (
+        <GroupHeader onClick={handleClick}>
+          <VectorIcon
+            width={14}
+            height={14}
+            style={{
+              transform: expanded ? "rotate(0deg)" : "rotate(-90deg)",
+              transition: "transform 0.2s ease",
+            }}
+          />
+          <Tag size="large">{groupName}</Tag>
+          <span>{groupData.length} 条记录</span>
+        </GroupHeader>
+      )}
       <GroupContent $expanded={expanded}>
-        {cells.map((rowCells, index) => (
-          <TableRow key={index} cells={rowCells} />
+        {groupData.map(({row}, index) => (
+          <TableRow key={index} row={row} />
         ))}
         {showAddRow && (
           <AddRowTR>

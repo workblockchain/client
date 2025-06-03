@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {useState} from "react"
+import {formatTimestamp} from "@/utils/secondToHMS"
 import styled from "styled-components"
 import {colors} from "../../styles/colors"
 
@@ -24,7 +24,20 @@ const DatePickerContainer = styled.div`
   display: inline-block;
 `
 
-const DateInput = styled.input`
+interface DatePickerProps {
+  value?: string | number
+  format?: "YMD" | "MD" | "HM" | "M" | "S" | "HMS"
+}
+
+export const DatePicker = ({value = 0, format = "YMD"}: DatePickerProps) => {
+  return (
+    <DatePickerContainer>
+      <Date> {formatTimestamp(value, format)}</Date>
+    </DatePickerContainer>
+  )
+}
+
+const Date = styled.div`
   padding: 8px 12px;
   border: 1px solid ${colors.Neutral200};
   border-radius: 4px;
@@ -36,24 +49,3 @@ const DateInput = styled.input`
     border-color: ${colors.Blue500};
   }
 `
-
-interface DatePickerProps {
-  value?: string
-  onChange?: (date: string) => void
-}
-
-export const DatePicker = ({value, onChange}: DatePickerProps) => {
-  const [date, setDate] = useState(value || "")
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newDate = e.target.value
-    setDate(newDate)
-    onChange?.(newDate)
-  }
-
-  return (
-    <DatePickerContainer>
-      <DateInput type="date" value={date} onChange={handleChange} />
-    </DatePickerContainer>
-  )
-}

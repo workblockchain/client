@@ -70,7 +70,8 @@ export const router = createBrowserRouter([
           {
             path: "work",
             lazy: async () => ({
-              Component: (await import("./components/Table/Table.tsx")).default,
+              Component: (await import("./components/Containers/WorkContainer"))
+                .default,
             }),
           },
         ],
