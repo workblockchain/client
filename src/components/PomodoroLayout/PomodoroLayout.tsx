@@ -15,6 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {WorkData} from "@/interfaces"
 import {paths} from "@/router"
 import {useConditionalNavigation} from "@/router/useConditionalNavigation"
 import {useConfig} from "@/stores/useConfig"
@@ -112,7 +113,7 @@ const PomodoroLayout = () => {
   const {startTimer, pauseTimer, togglePhase} = usePomodoroTimer()
   const {uid} = useUserProfile()
 
-  const {addWorkRecord, createRecord} = useSignedRecord()
+  const {addWorkRecord, createRecord, setWorkSigned} = useSignedRecord()
   const {autoSign: autoSignConfig} = useConfig()
   const [autoSign, setAutoSign] = useState(autoSignConfig)
   const handleRecord = async (isWork: boolean) => {
@@ -121,7 +122,7 @@ const PomodoroLayout = () => {
         isWork ? "工作" : "休息"
       }${description ? `: ${description}` : ""}`
       const now = Date.now()
-      const work = {
+      const work: WorkData = {
         wid: v4(),
         startTime: now - timePassed() * 1000, // timestamp in milliseconds
         endTime: now,
@@ -135,7 +136,8 @@ const PomodoroLayout = () => {
       }
       addWorkRecord(work)
       if (autoSign) {
-        const record = await createRecord(JSON.stringify(work), uid)
+        const record = await createRecord(work.wid, JSON.stringify(work))
+        setWorkSigned(work.wid, true)
         toast.success(`记录已保存: #${record.id.slice(0, 8)}`)
         return
       }
