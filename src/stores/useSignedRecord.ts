@@ -37,7 +37,7 @@ interface SignedRecordStore {
   signedRecords: SignedRecord[]
 
   // Record operations
-  createRecord: (message: string, createdBy: string) => Promise<SignedRecord>
+  createRecord: (message: string) => Promise<SignedRecord>
 
   // WorkRecord operations
   addWorkRecord: (workRecord: WorkData) => void
