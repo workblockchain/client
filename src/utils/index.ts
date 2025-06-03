@@ -16,4 +16,5 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 export * from "./base64"
+export * from "./formatDate"
 export * from "./secondToHMS"
