@@ -132,6 +132,7 @@ export async function packInBlock({
     ...header,
     hash: headerHash,
   }
+  localStorage.setItem(LAST_BLOCK_KEY, blockHeader.hash)
 
   return blockHeader
 }

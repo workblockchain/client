@@ -1,66 +1,38 @@
-import {colors} from "@/styles"
-import {secondToTime} from "@/utils"
-import {POMODORO_BREAK} from "@/utils/supportTags"
+// Copyright (c) 2025-present WorkBlockChain Team.
+//
+// WorkBlockChain Client is licensed under Mulan PubL v2.
+// You can use this software according to
+// the terms and conditions of the Mulan PubL v2.
+// You may obtain a copy of Mulan PubL v2 at:
+//
+//   http://license.coscl.org.cn/MulanPubL-2.0
+//
+// THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS,
+// WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+// INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+// MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+// See the Mulan PubL v2 for more details.
+//
+// === Auto generated, DO NOT EDIT ABOVE ===
+
 import dayjs from "dayjs"
 import {useMemo} from "react"
-import {toast} from "react-toastify"
-import styled, {css} from "styled-components"
+import styled from "styled-components"
 import {Title} from "."
-import {Record as UnsignedRecord, WorkData} from "../../interfaces/records"
 import {useSignedRecord} from "../../stores/useSignedRecord"
-import {Button} from "../Button"
-
-const workDataToRecord = (workData: WorkData): UnsignedRecord => {
-  return {
-    id: workData.wid,
-    data: JSON.stringify(workData),
-    createdBy: workData.userId,
-    createdAt: workData.startTime,
-  }
-}
+import {RecordGroupByDay} from "../History/RecordGroup"
 
 export const RecordsLayout = () => {
-  const {workRecords, signedRecords, signRecord, save} = useSignedRecord()
-
-  const isSigned = (workId: string) => {
-    return signedRecords.some((sr) => sr.id === workId)
-  }
-
-  const handleSign = async (workId: string) => {
-    const work = workRecords.find((w) => w.wid === workId)
-    if (!work) return
-
-    try {
-      const record = workDataToRecord(work)
-      await signRecord(record)
-      save()
-      toast.success("签名成功")
-    } catch (error) {
-      toast.error("签名失败")
-      console.error("签名失败:", error)
-    }
-  }
-
-  const grouped = useMemo(() => {
-    // 按startTime倒序排序
-    const sorted = [...workRecords].sort(
-      (a, b) => dayjs(b.startTime).valueOf() - dayjs(a.startTime).valueOf()
-    )
-
-    // 按日期分组
-    const groups: Record<string, WorkData[]> = {}
-    sorted.forEach((record) => {
-      const date = dayjs(record.startTime).format("YYYY-MM-DD")
-      if (!groups[date]) {
-        groups[date] = []
-      }
-      groups[date].push(record)
+  const {workRecords} = useSignedRecord()
+  const allWorkDays = useMemo(() => {
+    const days = new Set<number>()
+    workRecords.forEach((record) => {
+      const day = dayjs(record.startTime).startOf("day")
+      days.add(day.valueOf())
     })
-
-    // 转换为二维数组
-    return Object.values(groups)
+    const res = Array.from(days).sort((a, b) => b.valueOf() - a.valueOf())
+    return res
   }, [workRecords])
-
   return (
     <RecordsContainer>
       <Title>工作记录历史</Title>
@@ -71,35 +43,7 @@ export const RecordsLayout = () => {
             <span>您还没有任何工作记录</span>
           </EmptyState>
         ) : (
-          grouped.map((group, groupIndex) => (
-            <div key={groupIndex}>
-              <GroupTitle>
-                {dayjs(group[0].startTime).format("YYYY年MM月DD日")}
-              </GroupTitle>
-              {group.map((work) => {
-                const datetime = dayjs(work.startTime)
-                const isBreak = work.workTags.includes(POMODORO_BREAK)
-                return (
-                  <RecordItem
-                    key={work.wid}
-                    $isSigned={isSigned(work.wid)}
-                    $isNarrow={isBreak}
-                  >
-                    <DateTime>
-                      <span>{secondToTime(work.duration ?? 0)}</span>
-                      {!isBreak && <span>{datetime.format("HH:mm:ss")}</span>}
-                    </DateTime>
-                    <RecordContent>
-                      <p>{work.description || "工作记录"}</p>
-                    </RecordContent>
-                    {!isSigned(work.wid) && (
-                      <Button onClick={() => handleSign(work.wid)}>签名</Button>
-                    )}
-                  </RecordItem>
-                )
-              })}
-            </div>
-          ))
+          allWorkDays.map((day) => <RecordGroupByDay key={day} day={day} />)
         )}
       </RecordsList>
     </RecordsContainer>
@@ -107,17 +51,6 @@ export const RecordsLayout = () => {
 }
 
 export default RecordsLayout
-
-const DateTime = styled.span`
-  display: flex;
-  flex-direction: column;
-  color: ${colors.Neutral500};
-  width: 48px;
-
-  &:first-child {
-    font-size: 12px;
-  }
-`
 
 const RecordsContainer = styled.div`
   padding: 20px;
@@ -133,33 +66,6 @@ const RecordsList = styled.div`
   flex-direction: column;
 `
 
-const RecordItem = styled.div<{$isSigned: boolean; $isNarrow?: boolean}>`
-  padding: 8px 16px;
-  background-color: #f5f5f526;
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: center;
-  border-left: 4px solid
-    ${(props) => (props.$isSigned ? colors.Blue700 : colors.Yellow700)};
-  box-shadow: 0 0 0 1px ${colors.Neutral200};
-  transition: background-color 0.3s ease-out;
-
-  &:hover {
-    background-color: #f5f5f57f;
-  }
-
-  ${(props) =>
-    props.$isNarrow &&
-    css`
-      p {
-        font-style: italic;
-        color: ${colors.Neutral700};
-        margin: 0;
-      }
-    `}
-`
-
 const EmptyState = styled.div`
   padding: 40px;
   text-align: center;
@@ -173,15 +79,4 @@ const EmptyState = styled.div`
   span {
     font-size: 0.9rem;
   }
-`
-
-const RecordContent = styled.span`
-  flex: 1;
-`
-
-const GroupTitle = styled.div`
-  font-size: 14px;
-  margin: 16px 0;
-  color: ${colors.Neutral500};
-  font-style: italic;
 `

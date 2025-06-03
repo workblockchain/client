@@ -19,7 +19,6 @@ import {ChainBlock} from "@/interfaces"
 import {packInBlock, signRecord} from "@/utils/cryptos"
 import {t} from "i18next"
 import {toast} from "react-toastify"
-import {v4} from "uuid"
 import {create} from "zustand"
 import {
   ProjectData,
@@ -37,12 +36,13 @@ interface SignedRecordStore {
   signedRecords: SignedRecord[]
 
   // Record operations
-  createRecord: (message: string) => Promise<SignedRecord>
+  createRecord: (id: string, message: string) => Promise<SignedRecord>
 
   // WorkRecord operations
   addWorkRecord: (workRecord: WorkData) => void
   getWorkRecord: (id: string) => WorkData | undefined
   updateWorkRecord: (id: string, updates: Partial<WorkData>) => void
+  setWorkSigned: (id: string, isSigned: boolean) => void
   deleteWorkRecord: (id: string) => void
 
   // RequirementRecord operations
@@ -66,7 +66,7 @@ interface SignedRecordStore {
   clear: () => void
 
   // block chain
-  packed: Record<string, ChainBlock>
+  packed: Record<string, ChainBlock> // 已经打包的数据
   packIn: () => Promise<string>
   localBlockKeys: string[] // timestamp_hash
   loadPacked: (keys: string[]) => void
@@ -77,12 +77,13 @@ const SIGNED_RECORD_KEY = "SIGNED_RECORDS" as const
 const LOCAL_BLOCK_KEY = "LOCAL_BLOCK_KEYS" as const
 
 export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
+  // records not signed yet
   workRecords: [],
   requirementRecords: [],
   projectRecords: [],
-  signedRecords: [],
+  signedRecords: [], // records not packed yet
 
-  createRecord: async (message) => {
+  createRecord: async (id, message) => {
     const {publicKey, secretKey} = useUserProfile.getState()
     if (!publicKey) {
       toast.error(t`record.noPublicKey`)
@@ -93,7 +94,12 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
       throw new Error("No secret key available")
     }
     const record: WorkRecord = {
-      id: v4(),
+      id,
+      // TODO: message事实上是对WorkRecord的JSON字符串化，浪费了存储空间
+      // 这是因为设计时，假设了Record可以是任意类型的JSON对象，希望囊括
+      // workData, requirementData, projectData等
+      // 如果能够直接使用上述三个对象的引用，就不需要再存储一份JSON字符串了
+      // 但这样会导致签名验证时需要额外的转换逻辑
       data: message,
       createdBy: publicKey,
       createdAt: Date.now(),
@@ -112,7 +118,7 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
     get().save()
   },
 
-  getWorkRecord: (userId) => get().workRecords.find((w) => w.userId === userId),
+  getWorkRecord: (wid) => get().workRecords.find((w) => w.wid === wid),
 
   updateWorkRecord: (userId, updates) =>
     set((state) => ({
@@ -124,6 +130,13 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
   deleteWorkRecord: (userId) =>
     set((state) => ({
       workRecords: state.workRecords.filter((w) => w.userId !== userId),
+    })),
+
+  setWorkSigned: (wid, isSigned) =>
+    set((state) => ({
+      workRecords: state.workRecords.map((w) =>
+        w.wid === wid ? {...w, isSigned} : w
+      ),
     })),
 
   // RequirementRecord methods
@@ -171,13 +184,15 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
   // TODO: optimize this to only save changed records
   // use IndexedDB for better performance
   save: () => {
-    const {workRecords, requirementRecords, projectRecords} = get()
+    const {workRecords, requirementRecords, projectRecords, signedRecords} =
+      get()
     localStorage.setItem(
       STASHED_RECORD_KEY,
       JSON.stringify({
         workRecords,
         requirementRecords,
         projectRecords,
+        signedRecords,
       })
     )
   },
@@ -243,12 +258,26 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
       return bTimestamp - aTimestamp // Sort by timestamp descending
     })
     // TODO: replace with online packing logic
+    // store the packed records in localStorage
     localStorage.setItem(
       `${SIGNED_RECORD_KEY}_${blockHeader.hash}`,
       JSON.stringify(packed[blockHeader.hash])
     )
     localStorage.setItem(LOCAL_BLOCK_KEY, JSON.stringify(localBlockKeys))
+    // Clear packed workRecords from array workRecords
+    const packedIds = signedRecords.map((r) => r.id)
+    set((state) => ({
+      workRecords: state.workRecords.filter((w) => !packedIds.includes(w.wid)),
+      requirementRecords: state.requirementRecords.filter(
+        (r) => !packedIds.includes(r.rid)
+      ),
+      projectRecords: state.projectRecords.filter(
+        (p) => !packedIds.includes(p.pid)
+      ),
+    }))
     set({signedRecords: []}) // Clear after packing
+
+    get().save() // remove signed records from local storage
 
     return blockHeader.hash
   },
