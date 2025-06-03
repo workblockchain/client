@@ -25,6 +25,30 @@ interface SwitchProps {
   disabled?: boolean
 }
 
+export const Switch = ({
+  checked,
+  onChange,
+  size = "medium",
+  disabled = false,
+}: SwitchProps) => {
+  return (
+    <SwitchContainer size={size}>
+      <SwitchInput
+        type="checkbox"
+        checked={checked}
+        readOnly
+        disabled={disabled}
+      />
+      <Slider
+        checked={checked}
+        size={size}
+        disabled={disabled}
+        onClick={() => !disabled && onChange(!checked)}
+      />
+    </SwitchContainer>
+  )
+}
+
 const SwitchInput = styled.input`
   opacity: 0;
   width: 0;
@@ -67,27 +91,3 @@ const Slider = styled.span<{
     border-radius: 50%;
   }
 `
-
-export const Switch = ({
-  checked,
-  onChange,
-  size = "medium",
-  disabled = false,
-}: SwitchProps) => {
-  return (
-    <SwitchContainer size={size}>
-      <SwitchInput
-        type="checkbox"
-        checked={checked}
-        readOnly
-        disabled={disabled}
-      />
-      <Slider
-        checked={checked}
-        size={size}
-        disabled={disabled}
-        onClick={() => !disabled && onChange(!checked)}
-      />
-    </SwitchContainer>
-  )
-}

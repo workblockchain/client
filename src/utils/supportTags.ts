@@ -15,7 +15,5 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-export * from "./cryptos"
-export * from "./kanban"
-export * from "./records"
-export * from "./userInfo"
+export const POMODORO_BREAK = "pmdr-break"
+export const POMODORO_WORK = "pmdr-work"

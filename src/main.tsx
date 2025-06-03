@@ -22,32 +22,32 @@ import {ThemeProvider} from "styled-components"
 import App from "./App.tsx"
 import "./i18n"
 import "./index.css"
-import {initUserProfile} from "./init/userProfile"
+import {init} from "./init"
 import {GlobalStyles} from "./styles/globalStyles"
 import {theme} from "./styles/theme"
 
 // 初始化用户配置
-initUserProfile()
-
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ThemeProvider theme={theme}>
-      <App />
-      <GlobalStyles />
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        limit={3}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition={Bounce}
-      />
-    </ThemeProvider>
-  </StrictMode>
-)
+init().then(() => {
+  createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+      <ThemeProvider theme={theme}>
+        <App />
+        <GlobalStyles />
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          limit={3}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Bounce}
+        />
+      </ThemeProvider>
+    </StrictMode>
+  )
+})
