@@ -35,8 +35,7 @@ export interface WorkData {
 
   outcome: string // 劳动成果，链接、文档、base64等，关联到库存。
   // 后续可能需要设计outcome的metadata结构，以应对较大的、无法解码的outcome
-  previousWorkId?: string // 可选，关联到上一个工作记录ID
-  nextWorkId?: string // 可选，关联到下一个工作记录ID
+  usedOutcome?: string[] // 可选，关联到前置产出
 
   userId: string // 劳动人ID
   workTags: string[] // 劳动标签，多维度定位 optional tags for categorization
@@ -46,6 +45,29 @@ export interface WorkData {
 
   description?: string // optional description in natural language of the work record
   cover?: string // optional cover image
+
+  // client runtime fields
+  usedBy?: string[] // 可选，关联到后续产出链
+  isSigned?: boolean // 是否已签名
+}
+
+export type CompressedWorkData = Omit<WorkData, "nextWorkId">
+
+export function compressWorkData(work: WorkData): CompressedWorkData {
+  return {
+    wid: work.wid,
+    startTime: work.startTime,
+    endTime: work.endTime,
+    duration: work.duration,
+    outcome: work.outcome,
+    usedOutcome: work.usedOutcome,
+    userId: work.userId,
+    workTags: work.workTags,
+    requirementIds: work.requirementIds,
+    projectIds: work.projectIds,
+    description: work.description,
+    cover: work.cover,
+  }
 }
 
 const requirementStatusList = ["todo", "doing", "done"] as const
