@@ -23,6 +23,7 @@ export const paths = {
   config: "config",
   profile: "profile",
   records: "records",
+  dashboard: "dashboard",
 }
 
 export const router = createBrowserRouter([
@@ -58,6 +59,22 @@ export const router = createBrowserRouter([
           Component: (await import("./components/Layout/RecordsLayout"))
             .default,
         }),
+      },
+      {
+        path: paths.dashboard,
+        lazy: async () => ({
+          Component: (await import("./components/Layout/Dashboard/Dashboard"))
+            .default,
+        }),
+        children: [
+          {
+            path: "work",
+            lazy: async () => ({
+              Component: (await import("./components/Containers/WorkContainer"))
+                .default,
+            }),
+          },
+        ],
       },
     ],
   },
