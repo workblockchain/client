@@ -15,7 +15,19 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-export * from "./cryptos"
-export * from "./kanban"
-export * from "./records"
-export * from "./userInfo"
+import {SignedRecord} from "./records"
+
+export interface BlockHeader {
+  hash: string
+  previousHash: string
+  data: string
+  timestamp: number
+
+  packer: string // public key of the packer
+  signature: string
+}
+
+export interface ChainBlock {
+  header: BlockHeader
+  records: SignedRecord[]
+}

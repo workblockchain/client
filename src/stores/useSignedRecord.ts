@@ -15,23 +15,22 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import * as ed from "@noble/ed25519"
+import {ChainBlock} from "@/interfaces"
+import {packInBlock, signRecord} from "@/utils/cryptos"
 import {t} from "i18next"
 import {toast} from "react-toastify"
 import {v4} from "uuid"
 import {create} from "zustand"
 import {
   ProjectData,
-  Record,
   RequirementData,
   SignedRecord,
   WorkData,
+  Record as WorkRecord,
 } from "../interfaces/records"
-import {fromBase64, toBase64} from "../utils"
 import {useUserProfile} from "./useUserProfile"
 
 interface SignedRecordStore {
-  currentRecord: Record | null
   workRecords: WorkData[]
   requirementRecords: RequirementData[]
   projectRecords: ProjectData[]
@@ -39,8 +38,6 @@ interface SignedRecordStore {
 
   // Record operations
   createRecord: (message: string, createdBy: string) => Promise<SignedRecord>
-  signRecord: (record: Record) => Promise<SignedRecord>
-  verifyRecord: (record: SignedRecord) => Promise<boolean>
 
   // WorkRecord operations
   addWorkRecord: (workRecord: WorkData) => void
@@ -67,55 +64,44 @@ interface SignedRecordStore {
   save: () => void
   load: () => void
   clear: () => void
+
+  // block chain
+  packed: Record<string, ChainBlock>
+  packIn: () => Promise<string>
+  localBlockKeys: string[] // timestamp_hash
+  loadPacked: (keys: string[]) => void
 }
 
-const SIGNED_RECORD_KEY = "RECORDS" as const
+const STASHED_RECORD_KEY = "RECORDS" as const
+const SIGNED_RECORD_KEY = "SIGNED_RECORDS" as const
+const LOCAL_BLOCK_KEY = "LOCAL_BLOCK_KEYS" as const
 
 export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
-  currentRecord: null,
   workRecords: [],
   requirementRecords: [],
   projectRecords: [],
   signedRecords: [],
 
   createRecord: async (message) => {
-    const {uid} = useUserProfile.getState()
-    const record: Omit<Record, "signature"> = {
-      id: v4(),
-      data: message,
-      createdBy: uid,
-      createdAt: Date.now(),
+    const {publicKey, secretKey} = useUserProfile.getState()
+    if (!publicKey) {
+      toast.error(t`record.noPublicKey`)
+      throw new Error("No public key available")
     }
-    const signed = await get().signRecord(record)
-    get().signedRecords.push(signed)
-    get().save()
-    return signed
-  },
-
-  signRecord: async (record) => {
-    const {secretKey} = useUserProfile.getState()
     if (!secretKey) {
       toast.error(t`record.noSecretKey`)
       throw new Error("No secret key available")
     }
-    const secretKeyBytes = fromBase64(secretKey)
-    const msgBytes = new TextEncoder().encode(JSON.stringify(record))
-    const signature = await ed.signAsync(msgBytes, secretKeyBytes)
-    return {
-      ...record,
-      signature: toBase64(signature),
-      algorithm: "ed25519",
+    const record: WorkRecord = {
+      id: v4(),
+      data: message,
+      createdBy: publicKey,
+      createdAt: Date.now(),
     }
-  },
-
-  verifyRecord: async (record) => {
-    const {signature, ...unsignedRecord} = record
-    const {publicKey} = useUserProfile.getState()
-    if (!publicKey) throw new Error("No public key available")
-    const publicKeyBytes = fromBase64(publicKey)
-    const msgBytes = new TextEncoder().encode(JSON.stringify(unsignedRecord))
-    const signatureBytes = fromBase64(signature)
-    return await ed.verifyAsync(signatureBytes, msgBytes, publicKeyBytes)
+    const signed = await signRecord(record, secretKey)
+    get().signedRecords.push(signed)
+    get().save()
+    return signed
   },
 
   // WorkRecord methods
@@ -187,7 +173,7 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
   save: () => {
     const {workRecords, requirementRecords, projectRecords} = get()
     localStorage.setItem(
-      SIGNED_RECORD_KEY,
+      STASHED_RECORD_KEY,
       JSON.stringify({
         workRecords,
         requirementRecords,
@@ -202,21 +188,83 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
   // 3. use a web worker to load records in the background
   // 4. use IndexedDB for better performance
   load: () => {
-    const dataStr = localStorage.getItem(SIGNED_RECORD_KEY)
+    const dataStr = localStorage.getItem(STASHED_RECORD_KEY)
     if (dataStr) {
       const {workRecords, requirementRecords, projectRecords} =
         JSON.parse(dataStr)
       set({workRecords, requirementRecords, projectRecords})
     }
+
+    const localBlockKeysStr = localStorage.getItem(LOCAL_BLOCK_KEY)
+    if (localBlockKeysStr) {
+      const localBlockKeys = JSON.parse(localBlockKeysStr)
+      set({localBlockKeys})
+    }
   },
 
   clear: () => {
-    localStorage.removeItem(SIGNED_RECORD_KEY)
+    localStorage.removeItem(STASHED_RECORD_KEY)
     set({
-      currentRecord: null,
       workRecords: [],
       requirementRecords: [],
       projectRecords: [],
     })
+  },
+
+  localBlockKeys: [],
+  packed: {},
+  packIn: async () => {
+    const {signedRecords, packed, localBlockKeys} = get()
+    const {publicKey, secretKey} = useUserProfile.getState()
+
+    // calculate Merkle root
+    if (signedRecords.length === 0) {
+      return ""
+    }
+    if (signedRecords.length > 100) {
+      toast.error(t`record.tooManyRecords`)
+      throw new Error("Too many records to pack")
+    }
+
+    const blockHeader = await packInBlock({
+      signedRecords,
+      publicKey,
+      secretKey,
+    })
+
+    packed[blockHeader.hash] = {
+      header: blockHeader,
+      records: signedRecords,
+    }
+    localBlockKeys.push(`${blockHeader.timestamp}_${blockHeader.hash}`)
+    localBlockKeys.sort((a, b) => {
+      const [aTimestamp] = a.split("_").map(Number)
+      const [bTimestamp] = b.split("_").map(Number)
+      return bTimestamp - aTimestamp // Sort by timestamp descending
+    })
+    // TODO: replace with online packing logic
+    localStorage.setItem(
+      `${SIGNED_RECORD_KEY}_${blockHeader.hash}`,
+      JSON.stringify(packed[blockHeader.hash])
+    )
+    localStorage.setItem(LOCAL_BLOCK_KEY, JSON.stringify(localBlockKeys))
+    set({signedRecords: []}) // Clear after packing
+
+    return blockHeader.hash
+  },
+  loadPacked: (keys) => {
+    const loaded: Record<string, ChainBlock> = {}
+    keys.forEach((key) => {
+      const [, hash] = key.split("_")
+      const dataStr = localStorage.getItem(`${SIGNED_RECORD_KEY}_${hash}`)
+      if (dataStr) {
+        const records: SignedRecord[] = JSON.parse(dataStr)
+        loaded[hash] = {
+          header: JSON.parse(dataStr).header,
+          records,
+        }
+      }
+    })
+    set({packed: {...get().packed, ...loaded}})
   },
 }))

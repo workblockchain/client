@@ -24,7 +24,6 @@ export interface Record {
 
 export interface SignedRecord extends Record {
   signature: string
-  algorithm: "ed25519"
 }
 
 export interface WorkData {
