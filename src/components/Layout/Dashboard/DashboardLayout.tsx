@@ -20,6 +20,7 @@ import BreadcrumbContainer from "@/components/Containers/BreadcrumbContainer"
 import MenuContainer from "@/components/Containers/MenuContainer"
 import {Outlet} from "react-router"
 import styled from "styled-components"
+
 export function DashboardLayout() {
   return (
     <Layout>
