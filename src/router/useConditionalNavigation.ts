@@ -19,7 +19,7 @@ import {isTauri} from "@tauri-apps/api/core"
 import {WebviewWindow} from "@tauri-apps/api/webviewWindow"
 import {useNavigate} from "react-router"
 
-const tauriBaseUrl = "http://localhost:5173/"
+// const tauriBaseUrl = "http://localhost:5173/"
 
 interface NavigationParams {
   path: string // React Router 路径
@@ -66,7 +66,7 @@ export function useConditionalNavigation() {
           )
           existingWindow.setFocus()
         } else {
-          const url = `${tauriBaseUrl}${path}`
+          const url = "/" + path
           const window = new WebviewWindow(label, {
             url,
             center: true,
