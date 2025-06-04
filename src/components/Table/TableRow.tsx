@@ -52,13 +52,12 @@ export interface TableRowProps {
 
 export type TypedCellProps = TextCellProps | TimeCellProps | TagCellProps
 
-function renderCellContent(
-  {type = "text", renderText, ...item}: TypedCellProps,
-  titles: {hidden?: boolean; width?: number}[] | undefined,
-  index: number
-) {
+function renderCellContent({
+  type = "text",
+  renderText,
+  ...item
+}: TypedCellProps) {
   if (item.children) return item.children
-  console.log(item.data)
   try {
     switch (type) {
       case "text":
@@ -96,7 +95,7 @@ export function TableRow({row, titles}: TableRowProps) {
         (item, index) =>
           !titles?.[index]?.hidden && (
             <Td key={index} width={titles?.[index]?.width}>
-              {renderCellContent(item, titles, index)}
+              {renderCellContent(item)}
             </Td>
           )
       )}

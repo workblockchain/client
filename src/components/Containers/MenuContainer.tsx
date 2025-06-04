@@ -37,10 +37,9 @@ const menus = [
         url: "/dashboard/work",
       },
       {
-        id: "gtt",
-        label: "甘特图",
-        url: "/dashboard/work",
-        show: false,
+        id: "kanban",
+        label: "需求看板",
+        url: "/dashboard/kanban",
       },
     ],
   },
