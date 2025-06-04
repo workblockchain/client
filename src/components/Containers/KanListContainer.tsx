@@ -130,119 +130,193 @@ export function KanListContainer() {
         onClose={() => {
           setIsOpen(false)
           setEditData({
-            priority: "Medium",
-            status: "Open",
-            requirementType: "Feature",
+            priority: "",
+            status: "",
+            requirementType: "",
             progress: 0,
           })
         }}
       >
-        <div style={{padding: "20px"}}>
-          <h2>Create New Requirement</h2>
+        <div>
+          <h3 style={{marginBottom: "16px"}}>创建需求</h3>
           <form
             onSubmit={(e) => {
               e.preventDefault()
               handleSubmit()
             }}
+            style={{display: "grid", gap: "8px"}}
           >
-            <div style={{marginBottom: "15px"}}>
-              <label style={{display: "block", marginBottom: "5px"}}>
-                Description
+            <div>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "4px",
+                  fontSize: "14px",
+                }}
+              >
+                描述
               </label>
               <textarea
                 name="description"
                 value={editData.description || ""}
                 onChange={handleInputChange}
-                style={{width: "100%", height: "80px"}}
+                style={{
+                  width: "100%",
+                  height: "50px",
+                  padding: "8px",
+                  borderRadius: "4px",
+                  border: "1px solid #ddd",
+                }}
                 required
               />
             </div>
-            <div style={{marginBottom: "15px"}}>
-              <label style={{display: "block", marginBottom: "5px"}}>
-                Assigned To
+            <div>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "4px",
+                  fontSize: "14px",
+                }}
+              >
+                分配至
               </label>
               <input
                 type="text"
                 name="assignedTo"
                 value={editData.assignedTo || ""}
                 onChange={handleInputChange}
-                style={{width: "100%"}}
+                style={{
+                  width: "100%",
+                  padding: "8px",
+                  borderRadius: "4px",
+                  border: "1px solid #ddd",
+                }}
                 required
               />
             </div>
-            <div style={{marginBottom: "15px"}}>
-              <label style={{display: "block", marginBottom: "5px"}}>
-                Priority
+            <div>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "4px",
+                  fontSize: "14px",
+                }}
+              >
+                优先级
               </label>
               <select
                 name="priority"
                 value={editData.priority || "Medium"}
                 onChange={handleInputChange}
-                style={{width: "100%"}}
+                style={{
+                  width: "100%",
+                  padding: "8px",
+                  borderRadius: "4px",
+                  border: "1px solid #ddd",
+                }}
               >
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
+                <option value="High">高</option>
+                <option value="Medium">中</option>
+                <option value="Low">低</option>
               </select>
             </div>
-            <div style={{marginBottom: "15px"}}>
-              <label style={{display: "block", marginBottom: "5px"}}>
-                Status
+            <div>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "4px",
+                  fontSize: "14px",
+                }}
+              >
+                状态
               </label>
-              <select
+              <input
                 name="status"
-                value={editData.status || "Open"}
+                value={editData.status}
                 onChange={handleInputChange}
-                style={{width: "100%"}}
-              >
-                <option value="Open">Open</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Completed">Completed</option>
-              </select>
+                style={{
+                  width: "100%",
+                  padding: "8px",
+                  borderRadius: "4px",
+                  border: "1px solid #ddd",
+                }}
+              />
             </div>
-            <div style={{marginBottom: "15px"}}>
-              <label style={{display: "block", marginBottom: "5px"}}>
-                Requirement Type
+            <div>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "4px",
+                  fontSize: "14px",
+                }}
+              >
+                需求类型
               </label>
               <select
                 name="requirementType"
                 value={editData.requirementType || "Feature"}
                 onChange={handleInputChange}
-                style={{width: "100%"}}
+                style={{
+                  width: "100%",
+                  padding: "8px",
+                  borderRadius: "4px",
+                  border: "1px solid #ddd",
+                }}
               >
-                <option value="Feature">Feature</option>
-                <option value="Bug">Bug</option>
-                <option value="Task">Task</option>
+                <option value="Feature">功能</option>
+                <option value="Bug">缺陷</option>
+                <option value="Task">任务</option>
               </select>
             </div>
-            <div style={{marginBottom: "15px"}}>
-              <label style={{display: "block", marginBottom: "5px"}}>
-                Tags
+            <div>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "4px",
+                  fontSize: "14px",
+                }}
+              >
+                标签
               </label>
               <input
                 type="text"
                 name="tags"
                 value={editData.tags || ""}
                 onChange={handleInputChange}
-                style={{width: "100%"}}
-                placeholder="e.g., UI, Backend"
+                style={{
+                  width: "100%",
+                  padding: "8px",
+                  borderRadius: "4px",
+                  border: "1px solid #ddd",
+                }}
               />
             </div>
-            <div style={{marginBottom: "15px"}}>
-              <label style={{display: "block", marginBottom: "5px"}}>
-                Progress
+            <div>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "4px",
+                  fontSize: "14px",
+                }}
+              >
+                进度
               </label>
               <input
                 type="text"
                 name="progress"
-                value={editData.progress || "0%"}
+                value={editData.progress || 0}
                 onChange={handleInputChange}
-                style={{width: "100%"}}
-                placeholder="e.g., 50%"
+                style={{
+                  width: "100%",
+                  padding: "8px",
+                  borderRadius: "4px",
+                  border: "1px solid #ddd",
+                }}
+                placeholder="例如: 50%"
               />
             </div>
-            <div style={{display: "flex", gap: "10px"}}>
-              <Button type="submit">Create Requirement</Button>
+            <div style={{display: "flex", gap: "8px", marginTop: "12px"}}>
+              <Button type="submit">创建</Button>
               <Button
                 onClick={() => {
                   setIsOpen(false)
@@ -254,7 +328,7 @@ export function KanListContainer() {
                   })
                 }}
               >
-                Cancel
+                取消
               </Button>
             </div>
           </form>
