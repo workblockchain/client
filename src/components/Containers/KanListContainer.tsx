@@ -15,15 +15,17 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import Table, {titlesOption} from "@/components/Table/Table"
+import Table from "@/components/Table/Table"
 import {RequirementData} from "@/interfaces/records"
 import {useSignedRecord} from "@/stores/useSignedRecord"
-import {useUserProfile} from "@/stores/useUserProfile"
 import {useState} from "react"
+import styled from "styled-components"
 import {Button} from "../Button"
+import {Input, Textarea} from "../Input"
 import {Modal} from "../Modal/Modal"
+import {Select} from "../Select/Select"
 import {TableGroupProps} from "../Table/TableGroup"
-import {TableRowProps} from "../Table/TableRow"
+import {TableRowProps, TitlesOption} from "../Table/interface"
 
 export function KanListContainer() {
   const {requirementRecords, addRequirementRecord} = useSignedRecord()
@@ -34,16 +36,11 @@ export function KanListContainer() {
     requirementType: "Feature",
     progress: 0,
   })
-  const {uid} = useUserProfile()
 
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
-  ) => {
-    const {name, value} = e.target
-    setEditData((prev) => ({...prev, [name]: value}))
+  const handleInputChange = (label: string, value: string) => {
+    setEditData((prev) => ({...prev, [label]: value}))
   }
+
   const generateId = () =>
     `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
@@ -77,7 +74,7 @@ export function KanListContainer() {
     })
     setIsOpen(false)
   }
-  // 将 workRecords 转换为 Table 组件需要的格式
+
   const rows: TableRowProps[] = requirementRecords.map(
     (record: RequirementData) => ({
       row: [
@@ -102,7 +99,7 @@ export function KanListContainer() {
     },
   ]
 
-  const titles: titlesOption[] = [
+  const titles: TitlesOption[] = [
     {
       title: "需求id",
       width: 90,
@@ -127,6 +124,7 @@ export function KanListContainer() {
       />
       <Modal
         isOpen={isOpen}
+        title="创建需求"
         onClose={() => {
           setIsOpen(false)
           setEditData({
@@ -137,205 +135,131 @@ export function KanListContainer() {
           })
         }}
       >
-        <div>
-          <h3 style={{marginBottom: "16px"}}>创建需求</h3>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault()
-              handleSubmit()
-            }}
-            style={{display: "grid", gap: "8px"}}
-          >
-            <div>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "4px",
-                  fontSize: "14px",
-                }}
-              >
-                描述
-              </label>
-              <textarea
-                name="description"
-                value={editData.description || ""}
-                onChange={handleInputChange}
-                style={{
-                  width: "100%",
-                  height: "50px",
-                  padding: "8px",
-                  borderRadius: "4px",
-                  border: "1px solid #ddd",
-                }}
-                required
-              />
-            </div>
-            <div>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "4px",
-                  fontSize: "14px",
-                }}
-              >
-                分配至
-              </label>
-              <input
-                type="text"
-                name="assignedTo"
-                value={editData.assignedTo || ""}
-                onChange={handleInputChange}
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  borderRadius: "4px",
-                  border: "1px solid #ddd",
-                }}
-                required
-              />
-            </div>
-            <div>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "4px",
-                  fontSize: "14px",
-                }}
-              >
-                优先级
-              </label>
-              <select
-                name="priority"
-                value={editData.priority || "Medium"}
-                onChange={handleInputChange}
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  borderRadius: "4px",
-                  border: "1px solid #ddd",
-                }}
-              >
-                <option value="High">高</option>
-                <option value="Medium">中</option>
-                <option value="Low">低</option>
-              </select>
-            </div>
-            <div>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "4px",
-                  fontSize: "14px",
-                }}
-              >
-                状态
-              </label>
-              <input
-                name="status"
-                value={editData.status}
-                onChange={handleInputChange}
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  borderRadius: "4px",
-                  border: "1px solid #ddd",
-                }}
-              />
-            </div>
-            <div>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "4px",
-                  fontSize: "14px",
-                }}
-              >
-                需求类型
-              </label>
-              <select
-                name="requirementType"
-                value={editData.requirementType || "Feature"}
-                onChange={handleInputChange}
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  borderRadius: "4px",
-                  border: "1px solid #ddd",
-                }}
-              >
-                <option value="Feature">功能</option>
-                <option value="Bug">缺陷</option>
-                <option value="Task">任务</option>
-              </select>
-            </div>
-            <div>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "4px",
-                  fontSize: "14px",
-                }}
-              >
-                标签
-              </label>
-              <input
-                type="text"
-                name="tags"
-                value={editData.tags || ""}
-                onChange={handleInputChange}
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  borderRadius: "4px",
-                  border: "1px solid #ddd",
-                }}
-              />
-            </div>
-            <div>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "4px",
-                  fontSize: "14px",
-                }}
-              >
-                进度
-              </label>
-              <input
-                type="text"
-                name="progress"
-                value={editData.progress || 0}
-                onChange={handleInputChange}
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  borderRadius: "4px",
-                  border: "1px solid #ddd",
-                }}
-                placeholder="例如: 50%"
-              />
-            </div>
-            <div style={{display: "flex", gap: "8px", marginTop: "12px"}}>
-              <Button type="submit">创建</Button>
-              <Button
-                onClick={() => {
-                  setIsOpen(false)
-                  setEditData({
-                    priority: "Medium",
-                    status: "Open",
-                    requirementType: "Feature",
-                    progress: 0,
-                  })
-                }}
-              >
-                取消
-              </Button>
-            </div>
-          </form>
-        </div>
+        <FormContainer
+          onSubmit={(e) => {
+            e.preventDefault()
+            handleSubmit()
+          }}
+        >
+          <InputField>
+            <Label>描述</Label>
+            <Textarea
+              name="description"
+              value={editData.description || ""}
+              onChange={(e) => handleInputChange("description", e.target.value)}
+              placeholder="请输入需求描述"
+              required
+            />
+          </InputField>
+          <InputField>
+            <Label>分配至</Label>
+            <Input
+              type="text"
+              name="assignedTo"
+              value={editData.assignedTo || ""}
+              onChange={(e) => handleInputChange("assignedTo", e.target.value)}
+              required
+            />
+          </InputField>
+          <InputField>
+            <Label>优先级</Label>
+            <Select
+              value={editData.priority || "Medium"}
+              onChange={(val) => handleInputChange("priority", val || "")}
+              options={[
+                {value: "High", label: "高"},
+                {value: "Medium", label: "中"},
+                {value: "Low", label: "低"},
+              ]}
+            />
+          </InputField>
+          <InputField>
+            <Label>状态</Label>
+            <Input
+              name="status"
+              value={editData.status}
+              onChange={(e) => handleInputChange("status", e.target.value)}
+            />
+          </InputField>
+          <InputField>
+            <Label>需求类型</Label>
+            <Select
+              // name="requirementType"
+              value={editData.requirementType || "Feature"}
+              onChange={(val) =>
+                handleInputChange("requirementType", val || "")
+              }
+              options={[
+                {value: "Feature", label: "功能"},
+                {value: "Bug", label: "缺陷"},
+                {value: "Task", label: "任务"},
+              ]}
+            />
+          </InputField>
+          <InputField>
+            <Label>标签</Label>
+            <Input
+              type="text"
+              name="tags"
+              value={editData.tags || ""}
+              onChange={(e) => handleInputChange("tags", e.target.value)}
+            />
+          </InputField>
+          <InputField>
+            <Label>进度</Label>
+            <Input
+              type="text"
+              name="progress"
+              value={editData.progress || 0}
+              onChange={(e) => handleInputChange("progress", e.target.value)}
+              placeholder="例如: 50%"
+            />
+          </InputField>
+          <ButtonContainer>
+            <Button type="submit">创建</Button>
+            <Button
+              onClick={() => {
+                setIsOpen(false)
+                setEditData({
+                  priority: "Medium",
+                  status: "Open",
+                  requirementType: "Feature",
+                  progress: 0,
+                })
+              }}
+            >
+              取消
+            </Button>
+          </ButtonContainer>
+        </FormContainer>
       </Modal>
     </>
   )
 }
 
 export default KanListContainer
+const FormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 480px;
+`
+
+const InputField = styled.div`
+  margin-bottom: 8px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+`
+
+const Label = styled.label`
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+`
+
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+`
