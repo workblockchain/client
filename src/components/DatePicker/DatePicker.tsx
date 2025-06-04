@@ -39,7 +39,6 @@ export const DatePicker = ({value = 0, format = "YMD"}: DatePickerProps) => {
 
 const Date = styled.div`
   padding: 8px 12px;
-  border: 1px solid ${colors.Neutral200};
   border-radius: 4px;
   font-size: 14px;
   outline: none;

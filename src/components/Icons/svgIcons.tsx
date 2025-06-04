@@ -20,6 +20,7 @@ import Check from "@/assets/check.svg?react"
 import Clock from "@/assets/clock.svg?react"
 import Cross from "@/assets/cross.svg?react"
 import Gear from "@/assets/gear.svg?react"
+import Kanban from "@/assets/kanban.svg?react"
 import Key from "@/assets/key.svg?react"
 import List from "@/assets/list.svg?react"
 import Logo from "@/assets/logo.svg?react"
@@ -47,4 +48,5 @@ export const svgIcons = {
   VectorIcon,
   Workbench,
   Logo,
+  Kanban,
 }

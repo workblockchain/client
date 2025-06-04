@@ -15,17 +15,17 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import Table from "@/components/Table/Table"
+import Table, {titlesOption} from "@/components/Table/Table"
 import {WorkData} from "@/interfaces/records"
 import {useSignedRecord} from "@/stores/useSignedRecord"
+import {useUserProfile} from "@/stores/useUserProfile"
+import {v4} from "uuid"
 import {TableGroupProps} from "../Table/TableGroup"
 import {TableRowProps, TextCellProps, TimeCellProps} from "../Table/TableRow"
 
-interface WorkContainerProps {}
-
-export function WorkContainer(props: WorkContainerProps) {
-  const {workRecords} = useSignedRecord()
-
+export function WorkContainer() {
+  const {workRecords, addWorkRecord} = useSignedRecord()
+  const {uid} = useUserProfile()
   // 将 workRecords 转换为 Table 组件需要的格式
   const rows: TableRowProps[] = workRecords.map((record: WorkData) => ({
     row: [
@@ -42,7 +42,13 @@ export function WorkContainer(props: WorkContainerProps) {
       {type: "text", data: record.description} as TextCellProps,
       {type: "text", data: record.cover} as TextCellProps,
       {type: "text", data: record.usedBy} as TextCellProps,
-      {type: "text", data: record.isSigned} as TextCellProps,
+      {
+        type: "text",
+        data: record.isSigned,
+        renderText: (text) => {
+          text ? "未签名" : "已签名"
+        },
+      } as TextCellProps,
     ],
   }))
 
@@ -52,24 +58,50 @@ export function WorkContainer(props: WorkContainerProps) {
     },
   ]
 
-  const titles = [
-    "劳动id",
-    "开始时间",
-    "结束时间",
-    "持续时长",
-    "劳动成果",
-    "前置产出",
-    "劳动人ID",
-    "劳动标签",
-    "requirement ID",
-    "projectIds",
-    "描述",
-    "cover",
-    "后置产出",
-    "签名状态",
+  let editingWorkRecord: WorkData | null = null
+
+  const addEmptyWorkRecord = () => {
+    editingWorkRecord = {
+      wid: v4(),
+      startTime: Date.now(),
+      endTime: 0,
+      outcome: "",
+      userId: uid,
+      workTags: [],
+      requirementIds: [],
+      projectIds: [],
+    }
+  }
+
+  const titles: titlesOption[] = [
+    {
+      title: "劳动id",
+      width: 200,
+    },
+    {title: "开始时间"},
+    {title: "结束时间"},
+    {title: "持续时长"},
+    {title: "劳动成果"},
+    {title: "前置产出", hidden: true},
+    {title: "劳动人ID"},
+    {title: "劳动标签"},
+    {title: "requirement ID", hidden: true},
+    {title: "projectIds", hidden: true},
+    {title: "描述"},
+    {title: "cover", hidden: true},
+    {title: "后置产出", hidden: true},
+    {title: "签名状态"},
   ]
 
-  return <Table titles={titles} data={data} />
+  return (
+    <Table
+      titles={titles}
+      data={data}
+      onAddClick={() => {
+        addEmptyWorkRecord()
+      }}
+    />
+  )
 }
 
 export default WorkContainer

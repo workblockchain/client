@@ -79,7 +79,7 @@ function NavigationButton() {
         }),
     },
     {
-      icon: <svgIcons.Navigation width={24} height={24} />,
+      icon: <svgIcons.Kanban width={24} height={24} />,
       label: "后台面板",
       onClick: () =>
         navigation({

@@ -72,30 +72,3 @@ const sampleData = [
     onClick: () => console.log("Group clicked"),
   },
 ]
-
-export const Basic: Story = {
-  args: {
-    data: sampleData,
-    titles: [
-      "劳动描述",
-      "劳动分类",
-      "人员",
-      "状态",
-      "提出日期",
-      "持续时间",
-      "关联项",
-    ],
-  },
-}
-
-export const Empty: Story = {
-  args: {
-    data: [],
-  },
-}
-
-export const SingleGroup: Story = {
-  args: {
-    data: [sampleData[0]],
-  },
-}

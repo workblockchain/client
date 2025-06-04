@@ -15,17 +15,36 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {useLocation} from "react-router"
+import {paths} from "../../router"
 import {Breadcrumb} from "../Breadcrumb/Breadcrumb"
-interface BreadcrumbContainerProps {}
 
-const path = [
-  {title: "工作台", path: "/dashboard"},
-  {title: "劳动管理", path: "/dashboard/labor"},
-  {title: "表单", path: "/dashboard"},
-]
+const breadcrumbMap: Record<string, string> = {
+  [paths.home]: "首页",
+  [paths.config]: "设置",
+  [paths.profile]: "个人资料",
+  [paths.records]: "记录",
+  [paths.dashboard]: "工作台",
+  [`${paths.dashboard}/work`]: "劳动管理",
+  [`${paths.dashboard}/form`]: "表单",
+}
 
-export function BreadcrumbContainer(props: BreadcrumbContainerProps) {
-  return <Breadcrumb items={path} />
+export function BreadcrumbContainer() {
+  const location = useLocation()
+  const pathSegments = location.pathname.split("/").filter(Boolean)
+
+  // 始终包含首页
+  const items = [{title: "首页", path: paths.home}]
+
+  // 添加当前路径的面包屑项
+  pathSegments.forEach((segment, index) => {
+    const path = `${pathSegments.slice(0, index + 1).join("/")}`
+    // 优先匹配完整路径，再匹配最后一段
+    const title = breadcrumbMap[path] || breadcrumbMap[`${segment}`] || segment
+    items.push({title, path})
+  })
+
+  return <Breadcrumb items={items} />
 }
 
 export default BreadcrumbContainer

@@ -20,12 +20,14 @@ import {ReactNode} from "react"
 import styled from "styled-components"
 import {DatePicker} from "../DatePicker/DatePicker"
 import {Tag} from "../Tag/Tag"
+import {titlesOption} from "./Table"
 
 export interface CellProps {
   type: "text" | "time" | "tag"
   children?: ReactNode
   width?: number
   id?: string
+  renderText?: (value: boolean) => string
 }
 
 export interface TextCellProps extends CellProps {
@@ -45,17 +47,26 @@ export interface TagCellProps extends CellProps {
 }
 export interface TableRowProps {
   row: TypedCellProps[]
+  titles?: titlesOption[]
 }
 
 export type TypedCellProps = TextCellProps | TimeCellProps | TagCellProps
 
-function renderCellContent({type = "text", ...item}: TypedCellProps) {
+function renderCellContent(
+  {type = "text", renderText, ...item}: TypedCellProps,
+  titles: {hidden?: boolean; width?: number}[] | undefined,
+  index: number
+) {
   if (item.children) return item.children
-
+  console.log(item.data)
   try {
     switch (type) {
       case "text":
-        return <span>{item.data}</span>
+        return (
+          <Text>
+            {renderText ? renderText(item.data as boolean) : item.data}
+          </Text>
+        )
       case "time":
         const timeProps = item as TimeCellProps
         return timeProps.data ? (
@@ -64,7 +75,11 @@ function renderCellContent({type = "text", ...item}: TypedCellProps) {
           timeProps.data
         )
       case "tag":
-        return <Tag size="large">{item.data}</Tag>
+        return (
+          <Tag size="large">
+            {renderText ? renderText(item.data as boolean) : item.data}
+          </Tag>
+        )
       default:
         return null
     }
@@ -74,36 +89,53 @@ function renderCellContent({type = "text", ...item}: TypedCellProps) {
   }
 }
 
-export function TableRow({row}: TableRowProps) {
+export function TableRow({row, titles}: TableRowProps) {
   return (
     <Tr>
-      {row.map((item, index) => (
-        <Td key={item.id || index}>{renderCellContent(item)}</Td>
-      ))}
+      {row.map(
+        (item, index) =>
+          !titles?.[index]?.hidden && (
+            <Td key={index} width={titles?.[index]?.width}>
+              {renderCellContent(item, titles, index)}
+            </Td>
+          )
+      )}
     </Tr>
   )
 }
 
 export default TableRow
 
-export const Td = styled.td`
+export const Td = styled.div<{width?: number}>`
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1;
+  ${({width}) =>
+    width
+      ? `
+    width: ${width}px;
+    flex: 0 0 ${width}px;
+  `
+      : `
+    flex: 1;
+  `}
   text-align: center;
   border: 1px solid rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
   padding: 8px;
   color: ${colors.Neutral500};
   overflow: hidden; /* Hides overflow content */
-  white-space: nowrap; /* Prevents text from wrapping */
-  text-overflow: ellipsis; /* Displays ellipsis (...) for overflow text */
 `
 
-export const Tr = styled.tr`
+export const Tr = styled.div`
   display: flex;
   align-items: stretch;
   width: 100%;
   max-height: 70px;
+`
+
+const Text = styled.div`
+  white-space: nowrap; /* 禁止换行 */
+  overflow: hidden; /* 隐藏超出内容 */
+  text-overflow: ellipsis; /* 超出部分显示省略号 */
 `

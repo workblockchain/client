@@ -20,44 +20,58 @@ import {colors} from "@/styles"
 import styled from "styled-components"
 import {Button} from "../Button"
 import {TableGroup, TableGroupProps} from "./TableGroup"
-import {Td} from "./TableRow"
-interface TableProps {
-  titles?: string[]
-  data?: TableGroupProps[]
+import {Td, TypedCellProps} from "./TableRow"
+
+export interface titlesOption {
+  title: string
+  filter?: (row: TypedCellProps) => boolean
+  hidden?: boolean
+  width?: number
 }
 
-export const Table = ({data, titles = []}: TableProps) => {
+interface TableProps {
+  titles: titlesOption[]
+  data?: TableGroupProps[]
+  onAddClick: () => void
+}
+
+export const Table = ({data, titles = [], onAddClick}: TableProps) => {
   return (
     <TableContainer>
       <ToolbarActions>
-        <Button $variant="text" $size="small">
+        <Button $variant="text" $size="small" onClick={() => onAddClick()}>
           <PlusIcon />
           <span>添加记录</span>
         </Button>
-        <Button $variant="text" $size="small">
+        <Button $variant="text" $size="small" onClick={() => onAddClick()}>
           <span>字段配置</span>
         </Button>
-        <Button $variant="text" $size="small">
+        <Button $variant="text" $size="small" onClick={() => onAddClick()}>
           筛选
         </Button>
-        <Button $variant="text" $size="small">
+        <Button $variant="text" $size="small" onClick={() => onAddClick()}>
           排序
         </Button>
       </ToolbarActions>
 
       <TableTitle>
-        {titles.map((text, index) => (
-          <Td key={index}>{text}</Td>
-        ))}
+        {titles.map(
+          (title, index) =>
+            !title.hidden && (
+              <Td key={index} width={title.width}>
+                {title.title}
+              </Td>
+            )
+        )}
       </TableTitle>
 
       {data!.map((group, index) => {
-        return <TableGroup key={index} {...group}></TableGroup>
+        return <TableGroup key={index} {...group} titles={titles}></TableGroup>
       })}
-      <TableGroupAdd>
+      {/* <TableGroupAdd>
         <PlusIcon width={24} height={24} />
         <span>添加劳动分组</span>
-      </TableGroupAdd>
+      </TableGroupAdd> */}
     </TableContainer>
   )
 }
@@ -79,7 +93,7 @@ const ToolbarActions = styled.div`
   margin-bottom: 16px;
 `
 
-export const TableTitle = styled.tr`
+export const TableTitle = styled.div`
   display: flex;
   align-items: stretch;
   height: 35px;
@@ -90,7 +104,7 @@ export const TableTitle = styled.tr`
   border-radius: 16px;
   margin-bottom: 16px;
 `
-export const TableGroupAdd = styled.tr`
+export const TableGroupAdd = styled.div`
   border-radius: 16px;
   text-align: left;
   border: 1px solid rgba(0, 0, 0, 0.05);

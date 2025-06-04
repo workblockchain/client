@@ -18,7 +18,6 @@
 import List from "@/assets/list.svg?react"
 import Workbench from "@/assets/workbench.svg?react"
 import Menu from "../Menu/Menu"
-interface MenuContainerProps {}
 
 const menus = [
   {
@@ -34,32 +33,20 @@ const menus = [
     children: [
       {
         id: "lb",
-
         label: "列表",
         url: "/dashboard/work",
-        onUpdate: () => {},
-      },
-      {
-        id: "zt",
-        label: "状态",
-        url: "/",
       },
       {
         id: "gtt",
         label: "甘特图",
-        url: "/",
+        url: "/dashboard/work",
         show: false,
       },
     ],
   },
-  {
-    id: "bdy",
-    label: "表单页",
-    url: "/",
-  },
 ]
 
-export function MenuContainer(props: MenuContainerProps) {
+export function MenuContainer() {
   return <Menu items={menus}></Menu>
 }
 

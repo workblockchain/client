@@ -121,6 +121,7 @@ const MenuItem = styled.div<{
   width: 100%;
   align-items: center;
   padding: 8px 16px;
+  margin: 4px 0px;
   cursor: ${({$disabled}) => ($disabled ? "not-allowed" : "pointer")};
   background-color: ${({$disabled, $isSelected}) =>
     $disabled

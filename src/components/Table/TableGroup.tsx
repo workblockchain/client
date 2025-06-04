@@ -17,10 +17,13 @@
 
 import PlusIcon from "@/assets/plus.svg?react"
 import VectorIcon from "@/assets/vector.svg?react"
+import {useUserProfile} from "@/stores/useUserProfile"
 import {colors} from "@/styles/colors"
-import React from "react"
+import {useState} from "react"
 import styled from "styled-components"
+import {v4} from "uuid"
 import {Tag} from "../Tag/Tag"
+import {titlesOption} from "./Table"
 import {TableRow, TableRowProps} from "./TableRow"
 
 export interface TableGroupProps {
@@ -29,6 +32,7 @@ export interface TableGroupProps {
   expanded?: boolean
   onClick?: () => void
   showAddRow?: boolean
+  titles?: titlesOption[]
 }
 
 export function TableGroup({
@@ -36,11 +40,24 @@ export function TableGroup({
   groupData,
   expanded: initialExpanded = true,
   onClick,
-
+  titles,
   showAddRow = true,
 }: TableGroupProps) {
-  const [expanded, setExpanded] = React.useState(initialExpanded)
-
+  const {uid} = useUserProfile()
+  const [isEditing, setIsEditing] = useState(false)
+  const [expanded, setExpanded] = useState(initialExpanded)
+  const addEmptyWorkRecord = () => {
+    return {
+      wid: v4(),
+      startTime: Date.now(),
+      endTime: 0,
+      outcome: "",
+      userId: uid,
+      workTags: [],
+      requirementIds: [],
+      projectIds: [],
+    }
+  }
   const handleClick = () => {
     setExpanded(!expanded)
     onClick?.()
@@ -65,10 +82,16 @@ export function TableGroup({
       )}
       <GroupContent $expanded={expanded}>
         {groupData.map(({row}, index) => (
-          <TableRow key={index} row={row} />
+          <TableRow key={index} row={row} titles={titles} />
         ))}
+        {/* {isEditing ? <TableRow row={{}}></TableRow> : null} */}
+
         {showAddRow && (
-          <AddRowTR>
+          <AddRowTR
+            onClick={() => {
+              ;() => setIsEditing(!isEditing)
+            }}
+          >
             <PlusIcon width={24} height={24} />
           </AddRowTR>
         )}
@@ -77,7 +100,7 @@ export function TableGroup({
   )
 }
 
-const TableGroupContainer = styled.table`
+const TableGroupContainer = styled.div`
   border-radius: 16px;
   background-color: #fff;
   width: 100%;
@@ -87,7 +110,7 @@ const TableGroupContainer = styled.table`
   display: block;
 `
 
-const GroupHeader = styled.thead`
+const GroupHeader = styled.div`
   display: flex;
   align-items: center;
   height: 54px;
@@ -95,12 +118,12 @@ const GroupHeader = styled.thead`
   padding-left: 12px;
 `
 
-const GroupContent = styled.tbody<{$expanded: boolean}>`
+const GroupContent = styled.div<{$expanded: boolean}>`
   display: ${({$expanded}) => ($expanded ? "block" : "none")};
   width: 100%;
 `
 
-const AddRowTR = styled.tr`
+const AddRowTR = styled.div`
   text-align: left;
   border: 1px solid rgba(0, 0, 0, 0.05);
   padding: 8px 8px 8px 12px;

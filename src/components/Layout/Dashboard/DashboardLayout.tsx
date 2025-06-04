@@ -30,16 +30,16 @@ export function DashboardLayout() {
             劳动链
           </LogoName>
           <Navbar>
-            <span>你的工作</span>
+            {/* <span>你的工作</span>
             <span>项目</span>
             <span>人员</span>
-            <span>创建</span>
+            <span>创建</span> */}
           </Navbar>
         </Bar>
-        <div>搜索</div>
+        {/* <div>搜索</div> */}
       </Top>
       <Left>
-        <h2>劳动链</h2>
+        {/* <h2>劳动链</h2> */}
         <MenuContainer />
       </Left>
       <ConLayout>
