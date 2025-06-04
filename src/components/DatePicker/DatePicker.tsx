@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {formatTimestamp} from "@/utils/secondToHMS"
+import {DateFormat, formatTimestamp} from "@/utils/secondToHMS"
 import styled from "styled-components"
 import {colors} from "../../styles/colors"
 
@@ -26,18 +26,19 @@ const DatePickerContainer = styled.div`
 
 interface DatePickerProps {
   value?: string | number
-  format?: "YMD" | "MD" | "HM" | "M" | "S" | "HMS"
+  format?: DateFormat
 }
 
 export const DatePicker = ({value = 0, format = "YMD"}: DatePickerProps) => {
   return (
     <DatePickerContainer>
-      <Date> {formatTimestamp(value, format)}</Date>
+      <Date>{formatTimestamp(value, format).replace(" ", "\n")}</Date>
     </DatePickerContainer>
   )
 }
 
-const Date = styled.div`
+const Date = styled.pre`
+  font-family: inherit;
   padding: 8px 12px;
   border-radius: 4px;
   font-size: 14px;

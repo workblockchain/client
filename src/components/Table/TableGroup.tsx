@@ -17,14 +17,12 @@
 
 import PlusIcon from "@/assets/plus.svg?react"
 import VectorIcon from "@/assets/vector.svg?react"
-import {useUserProfile} from "@/stores/useUserProfile"
 import {colors} from "@/styles/colors"
 import {useState} from "react"
 import styled from "styled-components"
-import {v4} from "uuid"
 import {Tag} from "../Tag/Tag"
-import {titlesOption} from "./Table"
-import {TableRow, TableRowProps} from "./TableRow"
+import {TableRow} from "./TableRow"
+import {TableRowProps, TitlesOption} from "./interface"
 
 export interface TableGroupProps {
   groupName?: string
@@ -32,7 +30,7 @@ export interface TableGroupProps {
   expanded?: boolean
   onAddClick: () => void
   showAddRow?: boolean
-  titles?: titlesOption[]
+  titles?: TitlesOption[]
 }
 
 export function TableGroup({
@@ -43,21 +41,8 @@ export function TableGroup({
   titles,
   showAddRow = true,
 }: TableGroupProps) {
-  const {uid} = useUserProfile()
-  const [isEditing, setIsEditing] = useState(false)
+  // const [isEditing, setIsEditing] = useState(false)
   const [expanded, setExpanded] = useState(initialExpanded)
-  const addEmptyWorkRecord = () => {
-    return {
-      wid: v4(),
-      startTime: Date.now(),
-      endTime: 0,
-      outcome: "",
-      userId: uid,
-      workTags: [],
-      requirementIds: [],
-      projectIds: [],
-    }
-  }
   const handleClick = () => {
     setExpanded(!expanded)
   }

@@ -16,41 +16,15 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {colors} from "@/styles/colors"
-import {ReactNode} from "react"
 import styled from "styled-components"
 import {DatePicker} from "../DatePicker/DatePicker"
 import {Tag} from "../Tag/Tag"
-import {titlesOption} from "./Table"
-
-export interface CellProps {
-  type: "text" | "time" | "tag"
-  children?: ReactNode
-  width?: number
-  id?: string
-  renderText?: (value: boolean) => string
-}
-
-export interface TextCellProps extends CellProps {
-  type: "text"
-  data?: string | boolean | string[] | undefined | number
-}
-
-export interface TimeCellProps extends CellProps {
-  type: "time"
-  data?: number
-  format?: "YMD" | "MD" | "HM" | "M" | "S" | "HMS"
-}
-
-export interface TagCellProps extends CellProps {
-  type: "tag"
-  data?: string
-}
-export interface TableRowProps {
-  row: TypedCellProps[]
-  titles?: titlesOption[]
-}
-
-export type TypedCellProps = TextCellProps | TimeCellProps | TagCellProps
+import {
+  TableRowProps,
+  TdOptions,
+  TimeCellProps,
+  TypedCellProps,
+} from "./interface"
 
 function renderCellContent({
   type = "text",
@@ -69,7 +43,7 @@ function renderCellContent({
       case "time":
         const timeProps = item as TimeCellProps
         return timeProps.data ? (
-          <DatePicker value={timeProps.data} format={"HMS"} />
+          <DatePicker value={timeProps.data} format={timeProps.format} />
         ) : (
           timeProps.data
         )
@@ -94,7 +68,8 @@ export function TableRow({row, titles}: TableRowProps) {
       {row.map(
         (item, index) =>
           !titles?.[index]?.hidden && (
-            <Td key={index} width={titles?.[index]?.width}>
+            <Td key={index} {...titles?.[index]}>
+              {/* {renderCellContent(item, titles, index)} */}
               {renderCellContent(item)}
             </Td>
           )
@@ -105,10 +80,20 @@ export function TableRow({row, titles}: TableRowProps) {
 
 export default TableRow
 
-export const Td = styled.div<{width?: number}>`
+export const Td = styled.div<TdOptions>`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: ${({align}) => {
+    switch (align) {
+      case "left":
+        return "flex-start"
+      case "right":
+        return "flex-end"
+      case "center":
+      default:
+        return "center"
+    }
+  }};
   ${({width}) =>
     width
       ? `

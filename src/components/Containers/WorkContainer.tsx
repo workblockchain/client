@@ -15,31 +15,38 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import Table, {titlesOption} from "@/components/Table/Table"
+import Table from "@/components/Table/Table"
 import {WorkData} from "@/interfaces/records"
 import {useSignedRecord} from "@/stores/useSignedRecord"
-import {useUserProfile} from "@/stores/useUserProfile"
-import {v4} from "uuid"
 import {TableGroupProps} from "../Table/TableGroup"
-import {TableRowProps, TextCellProps, TimeCellProps} from "../Table/TableRow"
+import {
+  TableRowProps,
+  TextCellProps,
+  TimeCellProps,
+  TitlesOption,
+} from "../Table/interface"
 
 export function WorkContainer() {
-  const {workRecords, addWorkRecord} = useSignedRecord()
-  const {uid} = useUserProfile()
+  const {workRecords} = useSignedRecord()
+  // const {uid} = useUserProfile()
   // 将 workRecords 转换为 Table 组件需要的格式
   const rows: TableRowProps[] = workRecords.map((record: WorkData) => ({
     row: [
-      {type: "text", data: record.wid} as TextCellProps,
-      {type: "time", data: record.startTime} as TimeCellProps,
-      {type: "time", data: record.endTime} as TimeCellProps,
-      {type: "time", data: record.duration} as TimeCellProps,
+      // {type: "text", data: record.wid} as TextCellProps,
+      {type: "text", data: record.description} as TextCellProps,
+      {type: "time", data: record.startTime, format: "full"} as TimeCellProps,
+      {type: "time", data: record.endTime, format: "full"} as TimeCellProps,
+      {
+        type: "time",
+        data: record.duration,
+        format: "duration",
+      } as TimeCellProps,
       {type: "text", data: record.outcome} as TextCellProps,
       {type: "text", data: record.usedOutcome} as TextCellProps,
       {type: "text", data: record.userId} as TextCellProps,
       {type: "text", data: record.workTags} as TextCellProps,
       {type: "text", data: record.requirementIds} as TextCellProps,
       {type: "text", data: record.projectIds} as TextCellProps,
-      {type: "text", data: record.description} as TextCellProps,
       {type: "text", data: record.cover} as TextCellProps,
       {type: "text", data: record.usedBy} as TextCellProps,
       {
@@ -56,31 +63,32 @@ export function WorkContainer() {
     {
       groupData: rows,
       onAddClick: function (): void {
-        addEmptyWorkRecord()
+        // addEmptyWorkRecord()
       },
     },
   ]
 
-  let editingWorkRecord: WorkData | null = null
+  // let editingWorkRecord: WorkData | null = null
 
-  const addEmptyWorkRecord = () => {
-    editingWorkRecord = {
-      wid: v4(),
-      startTime: Date.now(),
-      endTime: 0,
-      outcome: "",
-      userId: uid,
-      workTags: [],
-      requirementIds: [],
-      projectIds: [],
-    }
-  }
+  // const addEmptyWorkRecord = () => {
+  //   editingWorkRecord = {
+  //     wid: v4(),
+  //     startTime: Date.now(),
+  //     endTime: 0,
+  //     outcome: "",
+  //     userId: uid,
+  //     workTags: [],
+  //     requirementIds: [],
+  //     projectIds: [],
+  //   }
+  // }
 
-  const titles: titlesOption[] = [
-    {
-      title: "劳动id",
-      width: 100,
-    },
+  const titles: TitlesOption[] = [
+    // {
+    //   title: "劳动id",
+    //   width: 100,
+    // },
+    {title: "描述", width: 200, align: "left"},
     {title: "开始时间"},
     {title: "结束时间"},
     {title: "持续时长"},
@@ -90,7 +98,6 @@ export function WorkContainer() {
     {title: "劳动标签", hidden: true},
     {title: "requirement ID", hidden: true},
     {title: "projectIds", hidden: true},
-    {title: "描述"},
     {title: "cover", hidden: true},
     {title: "后置产出", hidden: true},
     {title: "签名状态"},
@@ -101,7 +108,7 @@ export function WorkContainer() {
       titles={titles}
       data={data}
       onAddClick={() => {
-        addEmptyWorkRecord()
+        // addEmptyWorkRecord()
       }}
     />
   )

@@ -17,7 +17,16 @@
 
 import {t} from "i18next"
 
-export type DateFormat = "YMD" | "MD" | "HM" | "M" | "S" | "HMS" | "time"
+export type DateFormat =
+  | "YMD"
+  | "MD"
+  | "HM"
+  | "M"
+  | "S"
+  | "HMS"
+  | "time"
+  | "full"
+  | "duration"
 
 export function formatTimestamp(
   timestamp: number | string,
@@ -82,6 +91,10 @@ export function formatTimestamp(
       return `${seconds}`
     case "HMS":
       return `${hours}:${minutes}:${seconds}`
+    case "full":
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+    case "duration":
+      return secondToTime(ts)
     default:
       throw new Error("Invalid format")
   }

@@ -20,17 +20,11 @@ import {colors} from "@/styles"
 import styled from "styled-components"
 import {Button} from "../Button"
 import {TableGroup, TableGroupProps} from "./TableGroup"
-import {Td, TypedCellProps} from "./TableRow"
-
-export interface titlesOption {
-  title: string
-  filter?: (row: TypedCellProps) => boolean
-  hidden?: boolean
-  width?: number
-}
+import {Td} from "./TableRow"
+import {TitlesOption} from "./interface"
 
 interface TableProps {
-  titles: titlesOption[]
+  titles: TitlesOption[]
   data?: TableGroupProps[]
   onAddClick: () => void
 }
