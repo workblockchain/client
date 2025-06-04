@@ -40,6 +40,12 @@ const menus = [
         id: "kanban",
         label: "需求看板",
         url: "/dashboard/kanban",
+        show: false,
+      },
+      {
+        id: "kanban-list",
+        label: "需求看板",
+        url: "/dashboard/kanbanList",
       },
     ],
   },

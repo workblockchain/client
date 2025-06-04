@@ -30,7 +30,7 @@ export interface TableGroupProps {
   groupName?: string
   groupData: TableRowProps[]
   expanded?: boolean
-  onClick?: () => void
+  onAddClick: () => void
   showAddRow?: boolean
   titles?: titlesOption[]
 }
@@ -39,7 +39,7 @@ export function TableGroup({
   groupName,
   groupData,
   expanded: initialExpanded = true,
-  onClick,
+  onAddClick,
   titles,
   showAddRow = true,
 }: TableGroupProps) {
@@ -60,7 +60,6 @@ export function TableGroup({
   }
   const handleClick = () => {
     setExpanded(!expanded)
-    onClick?.()
   }
   return (
     <TableGroupContainer>
@@ -87,11 +86,7 @@ export function TableGroup({
         {/* {isEditing ? <TableRow row={{}}></TableRow> : null} */}
 
         {showAddRow && (
-          <AddRowTR
-            onClick={() => {
-              ;() => setIsEditing(!isEditing)
-            }}
-          >
+          <AddRowTR onClick={() => onAddClick()}>
             <PlusIcon width={24} height={24} />
           </AddRowTR>
         )}

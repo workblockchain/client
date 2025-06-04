@@ -43,7 +43,7 @@ export const Table = ({data, titles = [], onAddClick}: TableProps) => {
           <PlusIcon />
           <span>添加记录</span>
         </Button>
-        <Button $variant="text" $size="small" onClick={() => onAddClick()}>
+        {/* <Button $variant="text" $size="small" onClick={() => onAddClick()}>
           <span>字段配置</span>
         </Button>
         <Button $variant="text" $size="small" onClick={() => onAddClick()}>
@@ -51,7 +51,7 @@ export const Table = ({data, titles = [], onAddClick}: TableProps) => {
         </Button>
         <Button $variant="text" $size="small" onClick={() => onAddClick()}>
           排序
-        </Button>
+        </Button> */}
       </ToolbarActions>
 
       <TableTitle>

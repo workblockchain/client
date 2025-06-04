@@ -32,7 +32,7 @@ export interface CellProps {
 
 export interface TextCellProps extends CellProps {
   type: "text"
-  data?: string | boolean | string[] | undefined
+  data?: string | boolean | string[] | undefined | number
 }
 
 export interface TimeCellProps extends CellProps {

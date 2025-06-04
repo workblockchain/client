@@ -27,6 +27,7 @@ const breadcrumbMap: Record<string, string> = {
   [paths.dashboard]: "工作台",
   [`${paths.dashboard}/work`]: "劳动管理",
   [`${paths.dashboard}/kanban`]: "需求看板",
+  [`${paths.dashboard}/kanbanList`]: "需求看板",
 }
 
 export function BreadcrumbContainer() {

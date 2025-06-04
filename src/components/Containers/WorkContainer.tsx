@@ -55,6 +55,9 @@ export function WorkContainer() {
   const data: TableGroupProps[] = [
     {
       groupData: rows,
+      onAddClick: function (): void {
+        addEmptyWorkRecord()
+      },
     },
   ]
 
@@ -76,7 +79,7 @@ export function WorkContainer() {
   const titles: titlesOption[] = [
     {
       title: "劳动id",
-      width: 200,
+      width: 100,
     },
     {title: "开始时间"},
     {title: "结束时间"},
@@ -84,7 +87,7 @@ export function WorkContainer() {
     {title: "劳动成果"},
     {title: "前置产出", hidden: true},
     {title: "劳动人ID"},
-    {title: "劳动标签"},
+    {title: "劳动标签", hidden: true},
     {title: "requirement ID", hidden: true},
     {title: "projectIds", hidden: true},
     {title: "描述"},

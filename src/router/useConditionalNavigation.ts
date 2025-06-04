@@ -50,7 +50,9 @@ export function useConditionalNavigation() {
       )
       try {
         const existingWindow = await WebviewWindow.getByLabel(label)
+
         if (existingWindow) {
+          existingWindow.onDragDropEvent(() => {})
           const minimized = await existingWindow.isMinimized()
           console.log(
             `Tauri: Window with label "${label}" already exists, minimized is ${minimized}.`
