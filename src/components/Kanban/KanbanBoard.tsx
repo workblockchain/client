@@ -79,10 +79,7 @@ export const KanbanBoard = ({title, list}: Props) => {
 
 const Container = styled.div`
   display: flex;
-  gap: 16px;
-  padding: 16px;
-  background-color: #f4f5f7;
-  border-radius: 8px;
+  gap: 10px;
 `
 
 const Title = styled.h2`
