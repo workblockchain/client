@@ -15,7 +15,6 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import Table from "@/components/Table/Table"
 import {RequirementData} from "@/interfaces/records"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {useState} from "react"
@@ -115,13 +114,13 @@ export function KanListContainer() {
 
   return (
     <>
-      <Table
+      {/* <Table
         titles={titles}
         data={data}
         onAddClick={() => {
           setIsOpen(!isOpen)
         }}
-      />
+      /> */}
       <Modal
         isOpen={isOpen}
         title="创建需求"
