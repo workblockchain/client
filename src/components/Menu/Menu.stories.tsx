@@ -56,15 +56,22 @@ export const Default: Story = {
             onUpdate: () => {},
           },
           {
-            id: "zt",
+            id: "zt1",
             label: "状态",
-            url: "/",
+            url: "/zt1",
           },
           {
-            id: "gtt",
+            id: "gtt111",
             label: "甘特图",
-            url: "/",
-            show: false,
+            url: "/zt11",
+            children: [
+              {
+                id: "lsgfb",
+                icon: "",
+                label: "列表",
+                url: "/dashboard/labor1",
+              },
+            ],
           },
         ],
       },
@@ -72,8 +79,41 @@ export const Default: Story = {
         id: "bdy",
         label: "表单页",
         url: "/",
+        children: [
+          {
+            id: "lb1",
+            icon: "",
+            label: "列表",
+            url: "/dashboard/labor",
+            onUpdate: () => {},
+          },
+          {
+            id: "zt11",
+            label: "状态",
+            url: "/zt1",
+          },
+          {
+            id: "gtt1111",
+            label: "甘特图",
+            url: "/zt11",
+            children: [
+              {
+                id: "lsgfb1",
+                icon: "",
+                label: "列表",
+                url: "/dashboard/labor1",
+              },
+            ],
+          },
+        ],
       },
     ],
+  },
+}
+
+export const Empty: Story = {
+  args: {
+    items: [],
   },
 }
 
