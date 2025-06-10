@@ -22,6 +22,8 @@ export const paths = {
   home: "/",
   config: "config",
   profile: "profile",
+  records: "records",
+  dashboard: "dashboard",
 }
 
 export const router = createBrowserRouter([
@@ -51,6 +53,37 @@ export const router = createBrowserRouter([
           ).default,
         }),
       },
+      {
+        path: paths.records,
+        lazy: async () => ({
+          Component: (await import("./components/Layout/RecordsLayout"))
+            .default,
+        }),
+      },
+      // {
+      //   path: paths.dashboard,
+      //   lazy: async () => ({
+      //     Component: (await import("./components/Layout/Dashboard/Dashboard"))
+      //       .default,
+      //   }),
+      //   children: [
+      //     {
+      //       path: "work",
+      //       lazy: async () => ({
+      //         Component: (await import("./components/Containers/WorkContainer"))
+      //           .default,
+      //       }),
+      //     },
+      //     {
+      //       path: "kanbanList",
+      //       lazy: async () => ({
+      //         Component: (
+      //           await import("./components/Containers/KanListContainer")
+      //         ).default,
+      //       }),
+      //     },
+      //   ],
+      // },
     ],
   },
 ])
