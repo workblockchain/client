@@ -16,31 +16,12 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {useTranslation} from "react-i18next"
+import {useMediaQuery} from "react-responsive"
 import styled from "styled-components"
 import {Button} from ".."
 import type {TimerPhaseType} from "../../stores/usePomodoroTimer"
 import {colors} from "../../styles"
 import {TimeDisplay} from "../TimeDisplay/TimeDisplay"
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 1rem;
-  height: fit-content;
-
-  @media screen and (min-width: 768px) {
-    gap: 2rem;
-  }
-`
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  max-height: 600px;
-`
 
 export type TimerLayoutProps = {
   onCountStart: () => void
@@ -60,6 +41,7 @@ export const TimerLayout = ({
   remainingTime,
 }: TimerLayoutProps) => {
   const {t} = useTranslation()
+  const isLarge = useMediaQuery({query: "(min-width: 768px)"})
   const primaryColor = phase === "work" ? colors.Red500 : colors.Blue700
 
   return (
@@ -69,7 +51,7 @@ export const TimerLayout = ({
         {status === "running" ? (
           <Button
             $primaryColor={primaryColor}
-            $size="small"
+            $size={isLarge ? "large" : "small"}
             onClick={onCountPause}
           >
             {t`timer.pause`}
@@ -77,14 +59,14 @@ export const TimerLayout = ({
         ) : (
           <Button
             $primaryColor={primaryColor}
-            $size="small"
+            $size={isLarge ? "large" : "small"}
             onClick={onCountStart}
           >
             {t`timer.start`}
           </Button>
         )}
         <Button
-          $size="small"
+          $size={isLarge ? "large" : "small"}
           $variant="text"
           onClick={onSkip}
           style={{padding: "0 20px"}}
@@ -95,3 +77,24 @@ export const TimerLayout = ({
     </Container>
   )
 }
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 1rem;
+  height: fit-content;
+
+  @media screen and (min-width: 768px) {
+    gap: 2rem;
+  }
+`
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  max-height: 600px;
+  margin: auto;
+`

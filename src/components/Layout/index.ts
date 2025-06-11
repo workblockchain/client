@@ -32,11 +32,16 @@ export const HintText = styled.span`
 `
 
 export const ConfigContainer = styled.div`
-  padding: 20px;
   min-width: 400px;
   max-width: 600px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+`
+
+export const Title = styled.h2`
+  font-size: 18px;
+  padding: 0;
+  margin: 0;
 `

@@ -16,7 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import type {Meta, StoryObj} from "@storybook/react"
-import {PomodoroLayout} from "./PomodoroLayout"
+import PomodoroLayout from "./PomodoroLayout"
 
 const meta: Meta<typeof PomodoroLayout> = {
   title: "Layouts/PomodoroLayout",
