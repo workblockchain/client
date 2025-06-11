@@ -16,7 +16,6 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {Meta, StoryObj} from "@storybook/react"
-import {useState} from "react"
 import {Checkbox} from "./Checkbox"
 
 const meta: Meta<typeof Checkbox> = {
@@ -47,10 +46,7 @@ export const Primary: Story = {
   args: {
     checked: false,
     size: "medium",
-  },
-  render: (args) => {
-    const [checked, setChecked] = useState(args.checked)
-    return <Checkbox {...args} checked={checked} onChange={setChecked} />
+    onChange: (checked) => console.log("Switch toggled:", checked),
   },
 }
 
@@ -59,10 +55,7 @@ export const WithLabel: Story = {
     label: "Checkbox Label",
     checked: true,
     size: "medium",
-  },
-  render: (args) => {
-    const [checked, setChecked] = useState(args.checked)
-    return <Checkbox {...args} checked={checked} onChange={setChecked} />
+    onChange: (checked) => console.log("Switch toggled:", checked),
   },
 }
 
@@ -70,10 +63,7 @@ export const SmallSize: Story = {
   args: {
     size: "small",
     label: "Small Checkbox",
-  },
-  render: (args) => {
-    const [checked, setChecked] = useState(false)
-    return <Checkbox {...args} checked={checked} onChange={setChecked} />
+    onChange: (checked) => console.log("Switch toggled:", checked),
   },
 }
 
@@ -81,10 +71,7 @@ export const Disabled: Story = {
   args: {
     disabled: true,
     label: "Disabled Checkbox",
-  },
-  render: (args) => {
-    const [checked, setChecked] = useState(false)
-    return <Checkbox {...args} checked={checked} onChange={setChecked} />
+    onChange: (checked) => console.log("Switch toggled:", checked),
   },
 }
 
