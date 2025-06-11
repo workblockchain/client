@@ -60,30 +60,30 @@ export const router = createBrowserRouter([
             .default,
         }),
       },
-      // {
-      //   path: paths.dashboard,
-      //   lazy: async () => ({
-      //     Component: (await import("./components/Layout/Dashboard/Dashboard"))
-      //       .default,
-      //   }),
-      //   children: [
-      //     {
-      //       path: "work",
-      //       lazy: async () => ({
-      //         Component: (await import("./components/Containers/WorkContainer"))
-      //           .default,
-      //       }),
-      //     },
-      //     {
-      //       path: "kanbanList",
-      //       lazy: async () => ({
-      //         Component: (
-      //           await import("./components/Containers/KanListContainer")
-      //         ).default,
-      //       }),
-      //     },
-      //   ],
-      // },
+      {
+        path: paths.dashboard,
+        lazy: async () => ({
+          Component: (await import("./components/Layout/Dashboard/Dashboard"))
+            .default,
+        }),
+        children: [
+          {
+            path: "work",
+            lazy: async () => ({
+              Component: (await import("./components/Containers/WorkContainer"))
+                .default,
+            }),
+          },
+          {
+            path: "kanban",
+            lazy: async () => ({
+              Component: (
+                await import("./components/Containers/KanbanContainer")
+              ).default,
+            }),
+          },
+        ],
+      },
     ],
   },
 ])
