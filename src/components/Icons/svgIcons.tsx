@@ -29,6 +29,8 @@ import People from "@/assets/people.svg?react"
 import PlusIcon from "@/assets/plus.svg?react"
 import Pomodoro from "@/assets/pomodoro.svg?react"
 import ReactIcon from "@/assets/react.svg?react"
+import RightIcon from "@/assets/right.svg?react"
+import Unchecked from "@/assets/unchecked.svg?react"
 import Workbench from "@/assets/workbench.svg?react"
 export const svgIcons = {
   ReactIcon,
@@ -44,7 +46,9 @@ export const svgIcons = {
   Arrow,
   ArrowRound,
   PlusIcon,
+  RightIcon,
   Workbench,
   Logo,
+  Unchecked,
   Kanban,
 }
