@@ -16,6 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import type {Meta, StoryObj} from "@storybook/react"
+import {expect, within} from "@storybook/test"
 import {Breadcrumb} from "./Breadcrumb"
 
 const meta: Meta<typeof Breadcrumb> = {
@@ -34,13 +35,24 @@ export const Basic: Story = {
   },
 }
 
+const items = [
+  {title: "首页", path: "/"},
+  {title: "产品", path: "/products"},
+  {title: "详情", path: "/products/123"},
+]
+
 export const WithLinks: Story = {
-  args: {
-    items: [
-      {title: "首页", path: "/"},
-      {title: "产品", path: "/products"},
-      {title: "详情", path: "/products/123"},
-    ],
+  args: {items},
+
+  play: async ({canvasElement}) => {
+    const canvas = within(canvasElement)
+    const links = canvas.getAllByRole("link")
+
+    expect(links).toHaveLength(3)
+    for (let i = 0; i < links.length; i++) {
+      expect(links[i]).toHaveTextContent(items[i].title) // rendered text
+      expect(links[i]).toHaveAttribute("href", items[i].path) // rendered href
+    }
   },
 }
 

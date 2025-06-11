@@ -16,8 +16,10 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import Vector from "@/assets/vector.svg?react"
-import {Fragment, ReactNode, useState} from "react"
-import {useLocation, useNavigate} from "react-router"
+import {colors} from "@/styles/colors"
+import {Fragment, memo, ReactNode, useState} from "react"
+import {useTranslation} from "react-i18next"
+import {useNavigate} from "react-router"
 import styled from "styled-components"
 
 export interface MenuItem {
@@ -34,14 +36,26 @@ export interface MenuItem {
 
 interface MenuProps {
   items: MenuItem[]
+  initialSelectedId?: string
 }
 
-export function Menu({items}: MenuProps) {
+export const Menu = memo(function Menu({items, initialSelectedId}: MenuProps) {
   const navigate = useNavigate()
-  const location = useLocation()
+  const {t} = useTranslation()
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
-    Object.fromEntries(items.map((item) => [item.id, item.expand ?? false]))
+    () =>
+      Object.fromEntries(items.map((item) => [item.id, item.expand ?? false]))
   )
+  const [selectedId, setSelectedId] = useState<string | undefined>(
+    initialSelectedId
+  )
+
+  function hasSelectedChild(item: MenuItem, id?: string): boolean {
+    if (!item.children || !id) return false
+    return item.children.some(
+      (child) => child.id === id || hasSelectedChild(child, id)
+    )
+  }
 
   const toggleExpand = (id: string) => {
     setExpandedItems((prev) => ({
@@ -55,7 +69,10 @@ export function Menu({items}: MenuProps) {
       toggleExpand(item.id)
     } else if (item.url) {
       navigate(item.url)
-      item.onUpdate?.()
+      setSelectedId(item.id)
+      if (typeof item.onUpdate === "function") {
+        item.onUpdate()
+      }
     }
   }
 
@@ -64,14 +81,18 @@ export function Menu({items}: MenuProps) {
 
     const $hasChildren = !!item.children?.length
     const $isExpanded = expandedItems[item.id] ?? false
-    const $isSelected = item.url === location.pathname
+    const $isSelected = item.id === selectedId
 
     return (
       <Fragment key={item.id}>
         <MenuItem
+          role="menuitem"
+          aria-disabled={item.disabled ?? false}
+          aria-expanded={$hasChildren ? $isExpanded : undefined}
           $hasChildren={$hasChildren}
           $disabled={item.disabled ?? false}
           $isSelected={$isSelected}
+          $isParentOfExpanded={hasSelectedChild(item, selectedId)}
           onClick={() => !item.disabled && handleItemClick(item)}
         >
           {item.icon && <MenuItemIcon>{item.icon}</MenuItemIcon>}
@@ -82,9 +103,9 @@ export function Menu({items}: MenuProps) {
             </MenuItemArrow>
           )}
         </MenuItem>
-        {$hasChildren && (
+        {$hasChildren && $isExpanded && item.children && (
           <MenuSubItems $isExpanded={$isExpanded}>
-            {item.children!.map(renderMenuItem)}
+            {item.children.map(renderMenuItem)}
           </MenuSubItems>
         )}
       </Fragment>
@@ -94,42 +115,60 @@ export function Menu({items}: MenuProps) {
   return (
     <MenuContainer>
       {items.length ? (
-        items.map((item) => renderMenuItem(item))
+        items.map((item) => (
+          <Fragment key={item.id}>{renderMenuItem(item)}</Fragment>
+        ))
       ) : (
-        <MenuEmpty>暂无菜单项</MenuEmpty>
+        <MenuEmpty>{t("menu.empty")}</MenuEmpty>
       )}
     </MenuContainer>
   )
-}
+})
 
-// Styled components
-const MenuContainer = styled.div`
+const MenuContainer = styled.div<{$drawerMode?: boolean}>`
   width: 100%;
   display: flex;
   flex-direction: column;
+  ${({$drawerMode}) =>
+    $drawerMode &&
+    `
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    background: white;
+    z-index: 1000;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+    padding: 16px;
+    box-sizing: border-box;
+  `}
 `
 
 const MenuItem = styled.div<{
   $hasChildren?: boolean
   $disabled?: boolean
   $isSelected?: boolean
+  $isParentOfExpanded?: boolean
+  $drawerMode?: boolean
 }>`
   display: flex;
   border-radius: 8px;
   overflow: hidden;
   flex-direction: row;
   width: 100%;
+  box-sizing: border-box;
   align-items: center;
-  padding: 8px 16px;
+  padding: 8px;
   margin: 4px 0px;
   cursor: ${({$disabled}) => ($disabled ? "not-allowed" : "pointer")};
   background-color: ${({$disabled, $isSelected}) =>
     $disabled
-      ? "#f5f5f5"
+      ? colors.Neutral200
       : $isSelected
-        ? "rgba(255, 232, 219, 1)"
+        ? colors.Red100
         : "transparent"};
-  color: ${({$isSelected}) => ($isSelected ? "rgba(238, 125, 37, 1)" : "#333")};
+  color: ${({$isSelected, $isParentOfExpanded}) =>
+    $isSelected || $isParentOfExpanded ? colors.Red400 : colors.Neutral900};
   opacity: ${({$disabled}) => ($disabled ? 0.6 : 1)};
   transition:
     background-color 0.3s ease,
@@ -139,10 +178,10 @@ const MenuItem = styled.div<{
   &:hover {
     background-color: ${({$disabled, $isSelected}) =>
       $disabled
-        ? "#f5f5f5"
+        ? colors.Neutral200
         : $isSelected
-          ? "rgba(255, 232, 219, 0.7)"
-          : "rgba(255, 232, 219, 0.46)"};
+          ? colors.Red100
+          : colors.Red100};
   }
 `
 
@@ -174,6 +213,7 @@ const MenuSubItems = styled.div<{$isExpanded: boolean}>`
   opacity: ${({$isExpanded}) => ($isExpanded ? 1 : 0)};
   overflow: hidden;
   padding-left: 24px;
+  padding-right: 4px;
   transition:
     max-height 0.3s ease,
     opacity 0.3s ease;
@@ -182,7 +222,7 @@ const MenuSubItems = styled.div<{$isExpanded: boolean}>`
 const MenuEmpty = styled.div`
   padding: 16px;
   text-align: center;
-  color: #666;
+  color: ${colors.Neutral300};
   font-size: 14px;
 `
 

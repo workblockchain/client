@@ -28,16 +28,19 @@ interface BreadcrumbProps {
 export function Breadcrumb({items}: BreadcrumbProps) {
   return (
     <BreadcrumbContainer>
-      {items.map((item, index) => (
-        <span key={index}>
-          {<span>{item.title}</span>}
-          {index < items.length - 1 && (
-            <Separator>
-              <Vector />
-            </Separator>
-          )}
-        </span>
-      ))}
+      {items.map((item, index) => {
+        const isLastItem = index === items.length - 1
+        return (
+          <span key={index}>
+            {<a href={item.path}>{item.title}</a>}
+            {!isLastItem && (
+              <Separator>
+                <Vector />
+              </Separator>
+            )}
+          </span>
+        )
+      })}
     </BreadcrumbContainer>
   )
 }
@@ -47,6 +50,11 @@ const BreadcrumbContainer = styled.div`
   align-items: center;
   font-size: 14px;
   padding-left: 8px;
+
+  span a {
+    color: currentColor;
+    text-decoration: none;
+  }
 `
 
 const Separator = styled.div`

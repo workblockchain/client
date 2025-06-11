@@ -35,7 +35,6 @@ interface Props extends BaseCard {
 
 export const KanbanCard = ({
   id,
-  title,
   index,
   listId,
   description,
@@ -127,11 +126,6 @@ const Container = styled.div<{$isDragging: boolean}>`
   &:active {
     transform: translateY(0);
   }
-`
-
-const CardTitle = styled.h4`
-  margin: 0 0 8px 0;
-  font-size: 14px;
 `
 
 const MoveButton = styled.div`

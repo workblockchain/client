@@ -15,7 +15,6 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import Table from "@/components/Table/Table"
 import {RequirementData} from "@/interfaces/records"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {useState} from "react"
@@ -24,11 +23,9 @@ import {Button} from "../Button"
 import {Input, Textarea} from "../Input"
 import {Modal} from "../Modal/Modal"
 import {Select} from "../Select/Select"
-import {TableGroupProps} from "../Table/TableGroup"
-import {TableRowProps, TitlesOption} from "../Table/interface"
 
 export function KanListContainer() {
-  const {requirementRecords, addRequirementRecord} = useSignedRecord()
+  const {addRequirementRecord} = useSignedRecord()
   const [isOpen, setIsOpen] = useState(false)
   const [editData, setEditData] = useState<Partial<RequirementData>>({
     priority: "Medium",
@@ -75,53 +72,53 @@ export function KanListContainer() {
     setIsOpen(false)
   }
 
-  const rows: TableRowProps[] = requirementRecords.map(
-    (record: RequirementData) => ({
-      row: [
-        {type: "text", data: record.rid},
-        {type: "text", data: record.priority},
-        {type: "text", data: record.status},
-        {type: "text", data: record.assignedTo},
-        {type: "text", data: record.tags},
-        {type: "text", data: record.description},
-        {type: "text", data: record.requirementType},
-        {type: "text", data: record.progress},
-      ],
-    })
-  )
+  // const rows: TableRowProps[] = requirementRecords.map(
+  //   (record: RequirementData) => ({
+  //     row: [
+  //       {type: "text", data: record.rid},
+  //       {type: "text", data: record.priority},
+  //       {type: "text", data: record.status},
+  //       {type: "text", data: record.assignedTo},
+  //       {type: "text", data: record.tags},
+  //       {type: "text", data: record.description},
+  //       {type: "text", data: record.requirementType},
+  //       {type: "text", data: record.progress},
+  //     ],
+  //   })
+  // )
 
-  const data: TableGroupProps[] = [
-    {
-      groupData: rows,
-      onAddClick: function (): void {
-        setIsOpen(!isOpen)
-      },
-    },
-  ]
+  // const data: TableGroupProps[] = [
+  //   {
+  //     groupData: rows,
+  //     onAddClick: function (): void {
+  //       setIsOpen(!isOpen)
+  //     },
+  //   },
+  // ]
 
-  const titles: TitlesOption[] = [
-    {
-      title: "需求id",
-      width: 90,
-    },
-    {title: "优先级", hidden: true},
-    {title: "状态", width: 70},
-    {title: "被分配人ID"},
-    {title: "标签", width: 60},
-    {title: "描述", width: 120},
-    {title: "劳动标签"},
-    {title: "进度"},
-  ]
+  // const titles: TitlesOption[] = [
+  //   {
+  //     title: "需求id",
+  //     width: 90,
+  //   },
+  //   {title: "优先级", hidden: true},
+  //   {title: "状态", width: 70},
+  //   {title: "被分配人ID"},
+  //   {title: "标签", width: 60},
+  //   {title: "描述", width: 120},
+  //   {title: "劳动标签"},
+  //   {title: "进度"},
+  // ]
 
   return (
     <>
-      <Table
+      {/* <Table
         titles={titles}
         data={data}
         onAddClick={() => {
           setIsOpen(!isOpen)
         }}
-      />
+      /> */}
       <Modal
         isOpen={isOpen}
         title="创建需求"
