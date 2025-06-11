@@ -15,15 +15,16 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import styled from "styled-components"
-import {styledCommon} from "../../styles/common"
-import {inputCommon, type InputVariantType} from "./common.styles"
+import type {Meta, StoryObj} from "@storybook/react"
+import {Dashboard} from "./Dashboard"
 
-export const Textarea = styled.textarea<InputVariantType>`
-  ${styledCommon.base}
-  ${inputCommon()}
-  height: 108px;
-  padding: 8px;
-  border-radius: 8px;
-  resize: none;
-`
+const meta: Meta<typeof Dashboard> = {
+  title: "Layouts/Dashboard",
+  component: Dashboard,
+}
+
+export default meta
+
+type Story = StoryObj<typeof Dashboard>
+
+export const Default: Story = {}

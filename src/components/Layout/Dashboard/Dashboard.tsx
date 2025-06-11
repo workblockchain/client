@@ -15,15 +15,10 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import styled from "styled-components"
-import {styledCommon} from "../../styles/common"
-import {inputCommon, type InputVariantType} from "./common.styles"
+import DashboardLayout from "./DashboardLayout"
 
-export const Textarea = styled.textarea<InputVariantType>`
-  ${styledCommon.base}
-  ${inputCommon()}
-  height: 108px;
-  padding: 8px;
-  border-radius: 8px;
-  resize: none;
-`
+export function Dashboard() {
+  return <DashboardLayout />
+}
+
+export default Dashboard

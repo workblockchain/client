@@ -15,15 +15,19 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import styled from "styled-components"
-import {styledCommon} from "../../styles/common"
-import {inputCommon, type InputVariantType} from "./common.styles"
+import Descriptor from "../Descriptor/Descriptor"
 
-export const Textarea = styled.textarea<InputVariantType>`
-  ${styledCommon.base}
-  ${inputCommon()}
-  height: 108px;
-  padding: 8px;
-  border-radius: 8px;
-  resize: none;
-`
+type CheckboxProps = {
+  descriptor?: string
+  onClick?: (event: React.MouseEvent<HTMLInputElement>) => void
+}
+
+export function Checkbox({descriptor, onClick}: CheckboxProps) {
+  return (
+    <Descriptor labelPosition="right" descriptor={descriptor}>
+      <input type="checkbox" onClick={onClick} />
+    </Descriptor>
+  )
+}
+
+export default Checkbox
