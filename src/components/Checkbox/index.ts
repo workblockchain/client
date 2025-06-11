@@ -15,7 +15,4 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-export * from "./Button"
 export * from "./Checkbox"
-export * from "./Input"
-export * from "./TimeDisplay/TimeDisplay"
