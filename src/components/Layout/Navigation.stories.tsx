@@ -41,7 +41,6 @@ const meta = {
     },
   },
 } satisfies Meta<typeof Navigation>
-
 export default meta
 type Story = StoryObj<typeof meta>
 

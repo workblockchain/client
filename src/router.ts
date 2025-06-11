@@ -22,6 +22,7 @@ export const paths = {
   home: "/",
   config: "config",
   profile: "profile",
+  records: "records",
   dashboard: "dashboard",
 }
 

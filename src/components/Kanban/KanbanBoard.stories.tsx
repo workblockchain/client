@@ -34,9 +34,14 @@ export const Primary: Story = {
     list: [
       {
         id: "card 1",
-        title: "待办",
+        title: "To do",
         cards: [
-          {id: "eat", title: "吃", description: "222"},
+          {
+            id: "eat",
+            title: "吃",
+            description:
+              "有个嘲笑心理学的老笑话，也可以套用在精神分析或哲学上面：​“所谓心理学，就是用艰深晦涩的说法，来解释生活中简单的道理",
+          },
           {id: "sleep 1", title: "睡"},
           {id: "eat11", title: "吃", description: "222"},
           {id: "sleep111", title: "睡"},
@@ -49,7 +54,12 @@ export const Primary: Story = {
       {
         id: "card 2",
         title: "进行中",
-        cards: [{id: "card3", title: "Task 3"}],
+        cards: [{id: "card4643", title: "Task 3"}],
+      },
+      {
+        id: "card 3",
+        title: "完成",
+        cards: [{id: "car45645664d3", title: "Task 3"}],
       },
     ],
   },

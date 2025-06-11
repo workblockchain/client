@@ -35,7 +35,6 @@ interface Props extends BaseCard {
 
 export const KanbanCard = ({
   id,
-  title,
   index,
   listId,
   description,
@@ -100,7 +99,7 @@ export const KanbanCard = ({
 
   return (
     <Container ref={ref} $isDragging={isDragging}>
-      <CardTitle>{title}</CardTitle>
+      {/* <CardTitle>{title}</CardTitle> */}
       {description || props.children}
       <MoveButton></MoveButton>
     </Container>
@@ -109,8 +108,10 @@ export const KanbanCard = ({
 
 const Container = styled.div<{$isDragging: boolean}>`
   background-color: white;
+  display: flex;
+  gap: 12;
   border-radius: 4px;
-  padding: 12px;
+  padding: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   cursor: ${({$isDragging}) => ($isDragging ? "move" : "grab")};
   opacity: ${({$isDragging}) => ($isDragging ? 0.4 : 1)};
@@ -125,11 +126,6 @@ const Container = styled.div<{$isDragging: boolean}>`
   &:active {
     transform: translateY(0);
   }
-`
-
-const CardTitle = styled.h4`
-  margin: 0 0 8px 0;
-  font-size: 14px;
 `
 
 const MoveButton = styled.div`

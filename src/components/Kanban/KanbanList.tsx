@@ -85,10 +85,10 @@ export const KanbanList = ({id, cards, title, onCardMove}: Props) => {
 }
 
 const Container = styled.div`
-  background-color: #ebecf0;
+  background-color: #f6f8f9;
   border-radius: 4px;
-  width: 300px;
-  padding: 8px;
+  width: 356px;
+  padding: 12px 8px;
   transition: opacity 0.2s ease;
 `
 
@@ -99,7 +99,8 @@ const CardList = styled.div`
 `
 
 const Title = styled.h3`
-  font-size: 14px;
+  font-size: 24px;
+  color: #767676;
   margin: 0 0 8px 0;
   padding: 8px;
 `
