@@ -25,7 +25,7 @@ interface Props extends BaseList {
   onDrop: (dragId: string, dropId: string) => void
 }
 
-export const KanbanList = ({id, cards, title, onDrop}: Props) => {
+export const KanbanList = ({cards, title, onDrop}: Props) => {
   const ref = useRef<HTMLDivElement>(null)
   // 实现列表作为放置目标
   const [_, drop] = useDrop({
