@@ -16,6 +16,8 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import Logo from "@/assets/logo.svg?react"
+import BreadcrumbContainer from "@/components/Containers/BreadcrumbContainer"
+import MenuContainer from "@/components/Containers/MenuContainer"
 import {Outlet} from "react-router"
 import styled from "styled-components"
 
@@ -39,10 +41,12 @@ export function Dashboard() {
       </Top>
       <Left>
         {/* <h2>劳动链</h2> */}
-        {/* <MenuContainer /> */}
+        <MenuContainer />
       </Left>
       <ConLayout>
-        <BreadcrumbWrapper>{/* <BreadcrumbContainer /> */}</BreadcrumbWrapper>
+        <BreadcrumbWrapper>
+          <BreadcrumbContainer />
+        </BreadcrumbWrapper>
         <Con>
           <Outlet />
         </Con>
