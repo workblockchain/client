@@ -16,84 +16,53 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {BaseCard} from "@/interfaces"
+import {colors} from "@/styles"
 import {useRef} from "react"
 import {useDrag, useDrop} from "react-dnd"
 import styled from "styled-components"
 import {ItemTypes} from "./types"
 
-interface Props extends BaseCard {
-  index: number // 卡片在列表中的索引
-  listId: string // 卡片所属的列表 ID
-  moveCard: (
-    dragId: string,
-    hoverId: string,
-    sourceListId: string,
-    targetListId: string
-  ) => void
+export interface Props extends BaseCard {
+  onDrop: (dragId: string, dropId: string) => void
   children?: React.ReactNode
 }
 
 export const KanbanCard = ({
   id,
-  index,
-  listId,
+  tags,
+  subTasks,
   description,
-  moveCard,
+  onDrop,
   ...props
 }: Props) => {
   const ref = useRef<HTMLDivElement>(null)
-
-  const [{isDragging}, drag] = useDrag({
-    type: ItemTypes.CARD,
-    item: {id: id, index, listId},
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
+  const [{isDragging}, drag] = useDrag(
+    () => ({
+      type: ItemTypes.CARD,
+      item: {id},
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+      end: (item, monitor) => {
+        const didDrop = monitor.didDrop()
+        if (!didDrop) {
+          onDrop(item.id, id)
+        }
+      },
     }),
-  })
+    [id, onDrop]
+  )
 
-  const [_, drop] = useDrop({
-    accept: ItemTypes.CARD,
-    hover: (item: {id: string; index: number; listId: string}, monitor) => {
-      if (!ref.current) return
-      if (item.id === id) return // 防止卡片与自身交互
-
-      const dragIndex = item.index // 拖拽卡片的索引
-      const hoverIndex = index // 当前卡片的索引
-
-      if (dragIndex === hoverIndex) return // 不能是自己
-
-      const sourceListId = item.listId // 拖拽卡片的来源列表
-      const targetListId = listId // 目标卡片的列表
-
-      // 如果卡片在同一列表内且索引相同，不处理
-      if (sourceListId === targetListId && dragIndex === hoverIndex) return
-
-      // 获取鼠标位置和卡片边界，判断拖拽方向
-      const hoverBoundingRect = ref.current.getBoundingClientRect()
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
-      const clientOffset = monitor.getClientOffset()
-      const hoverClientY = clientOffset!.y - hoverBoundingRect.top
-
-      // 仅当鼠标移动超过卡片高度的中间点时触发排序
-      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) return
-      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) return
-
-      // 调用父组件的 moveCard 函数，更新卡片顺序
-      moveCard(item.id, id, sourceListId, targetListId)
-
-      // 更新拖拽卡片的索引，防止重复触发
-      item.index = hoverIndex
-      item.listId = targetListId
-    },
-    drop: (item: {id: string; index: number; listId: string}, _monitor) => {
-      // 确认放置，调用 moveCard
-      moveCard(item.id, id, item.listId, listId)
-    },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
+  const [_, drop] = useDrop(
+    () => ({
+      accept: ItemTypes.CARD,
+      hover: (item: {id: string}) => {
+        if (!ref.current) return
+        onDrop(item.id, id)
+      },
     }),
-  })
+    [onDrop, id]
+  )
 
   drag(drop(ref))
 
@@ -101,7 +70,15 @@ export const KanbanCard = ({
     <Container ref={ref} $isDragging={isDragging}>
       {/* <CardTitle>{title}</CardTitle> */}
       {description || props.children}
-      <MoveButton></MoveButton>
+      <SubTasks>
+        <h5 style={{margin: "5px 0", color: colors.Neutral400}}>子任务</h5>
+        {subTasks?.map((task, index) => (
+          <div key={index}>
+            <input type="checkbox" /> {task.label}
+          </div>
+        ))}
+      </SubTasks>
+      <div>{tags?.map((tag, index) => <Tag key={index}>{tag}</Tag>)}</div>
     </Container>
   )
 }
@@ -109,7 +86,7 @@ export const KanbanCard = ({
 const Container = styled.div<{$isDragging: boolean}>`
   background-color: white;
   display: flex;
-  gap: 12;
+  gap: 12px;
   border-radius: 4px;
   padding: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
@@ -117,7 +94,9 @@ const Container = styled.div<{$isDragging: boolean}>`
   opacity: ${({$isDragging}) => ($isDragging ? 0.4 : 1)};
   transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
   position: relative;
-
+  color: ${colors.Neutral800};
+  font-size: 13px;
+  flex-direction: column;
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -128,12 +107,15 @@ const Container = styled.div<{$isDragging: boolean}>`
   }
 `
 
-const MoveButton = styled.div`
-  height: 15px;
-  width: 15px;
-  background-color: red;
-  opacity: 0.3;
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
+const SubTasks = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`
+
+const Tag = styled.span`
+  padding: 2px 6px;
+  background-color: green;
+  border-radius: 8px;
+  margin: 0 5px;
 `

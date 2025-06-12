@@ -30,7 +30,6 @@ type Story = StoryObj<typeof KanbanBoard>
 export const Primary: Story = {
   args: {
     id: "board1",
-    title: "看板 1",
     list: [
       {
         id: "card 1",
@@ -41,6 +40,11 @@ export const Primary: Story = {
             title: "吃",
             description:
               "有个嘲笑心理学的老笑话，也可以套用在精神分析或哲学上面：​“所谓心理学，就是用艰深晦涩的说法，来解释生活中简单的道理",
+            subTasks: [
+              {label: "任务1", state: "finished"},
+              {label: "任务2", state: "unfinished"},
+            ],
+            tags: ["this is tag1", "this is tag2"],
           },
           {id: "sleep 1", title: "睡"},
           {id: "eat11", title: "吃", description: "222"},

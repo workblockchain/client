@@ -21,63 +21,35 @@ import {useDrop} from "react-dnd"
 import styled from "styled-components"
 import {KanbanCard} from "./KanbanCard"
 import {ItemTypes} from "./types"
-
 interface Props extends BaseList {
-  onCardMove?: (
-    cardId: string,
-    sourceColumnId: string,
-    targetColumnId: string,
-    targetIndex: number
-  ) => void
+  onDrop: (dragId: string, dropId: string) => void
 }
 
-export const KanbanList = ({id, cards, title, onCardMove}: Props) => {
+export const KanbanList = ({cards, title, onDrop}: Props) => {
   const ref = useRef<HTMLDivElement>(null)
   // 实现列表作为放置目标
   const [_, drop] = useDrop({
     accept: ItemTypes.CARD,
-    drop: (dropItem: {id: string; listId: string}, monitor) => {
-      if (!monitor.didDrop()) {
-        // 如果没有在卡片上放下，则将卡片添加到列表末尾
-        onCardMove?.(dropItem.id, dropItem.listId, id, cards.length)
-      }
+    hover: (item: {id: string}) => {
+      if (!ref.current) return
+      if (
+        cards.some((card) => {
+          return card.id === item.id
+        })
+      )
+        return
+      onDrop(item.id, cards[cards.length - 1].id)
     },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver({shallow: true}),
-    }),
   })
 
-  // 卡片移动逻辑，供 KanbanCard 使用
-  const moveCard = (
-    dragId: string,
-    hoverId: string,
-    sourceListId: string,
-    targetListId: string
-  ) => {
-    const targetIndex = cards.findIndex((card) => card.id === hoverId)
-    onCardMove?.(
-      dragId,
-      sourceListId,
-      targetListId,
-      targetIndex === -1 ? cards.length : targetIndex
-    )
-  }
   drop(ref)
 
   return (
     <Container ref={ref}>
       <Title>{title}</Title>
       <CardList>
-        {cards.map((card, index) => (
-          <KanbanCard
-            key={card.id}
-            id={card.id}
-            title={card.title}
-            description={card.description}
-            index={index}
-            listId={id}
-            moveCard={moveCard}
-          />
+        {cards.map((card) => (
+          <KanbanCard key={card.id} {...card} onDrop={onDrop} />
         ))}
       </CardList>
     </Container>
