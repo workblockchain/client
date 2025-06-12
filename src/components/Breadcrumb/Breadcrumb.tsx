@@ -18,14 +18,12 @@
 import Vector from "@/assets/vector.svg?react"
 import styled from "styled-components"
 
-interface BreadcrumbProps {
-  items: Array<{
-    title: string
-    path?: string
-  }>
+export interface BreadcrumbProps {
+  title: string
+  path?: string
 }
 
-export function Breadcrumb({items}: BreadcrumbProps) {
+export function Breadcrumb(items: BreadcrumbProps[]) {
   return (
     <BreadcrumbContainer>
       {items.map((item, index) => {

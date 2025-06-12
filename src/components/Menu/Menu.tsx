@@ -34,7 +34,7 @@ export interface MenuItem {
   expand?: boolean
 }
 
-interface MenuProps {
+export interface MenuProps {
   items: MenuItem[]
   initialSelectedId?: string
 }
