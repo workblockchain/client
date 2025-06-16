@@ -28,6 +28,7 @@ interface NavigationParams {
     title?: string // Tauri 新窗口的标题 (可选)
     width?: number // Tauri 新窗口的宽度 (可选)
     height?: number // Tauri 新窗口的高度 (可选)
+    dragDropEnabled?: boolean //Tauri 拖拽启用 (可选)
   }
 }
 
@@ -44,15 +45,14 @@ export function useConditionalNavigation() {
         height = 600,
         label = `${path.replace(/\//g, "-")}`,
         title = `Workchain - ${path}`,
+        dragDropEnabled = true,
       } = tauriWindowOptions
       console.log(
         `Tauri: Navigating to ${path} in new window (label: ${label})`
       )
       try {
         const existingWindow = await WebviewWindow.getByLabel(label)
-
         if (existingWindow) {
-          existingWindow.onDragDropEvent(() => {})
           const minimized = await existingWindow.isMinimized()
           console.log(
             `Tauri: Window with label "${label}" already exists, minimized is ${minimized}.`
@@ -74,6 +74,7 @@ export function useConditionalNavigation() {
             height,
             resizable: true,
             title,
+            dragDropEnabled,
           })
           console.log(
             `Tauri: Created new window with label "${label}" by URL "${url}"`
