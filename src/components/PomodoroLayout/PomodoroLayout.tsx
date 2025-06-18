@@ -87,6 +87,7 @@ function NavigationButton() {
           tauriWindowOptions: {
             label: "dashboard",
             title: "Workchain - 后台面板",
+            dragDropEnabled: false,
           },
         }),
     },
