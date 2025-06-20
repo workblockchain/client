@@ -75,10 +75,10 @@ export const router = createBrowserRouter([
             }),
           },
           {
-            path: "kanbanList",
+            path: "kanban",
             lazy: async () => ({
               Component: (
-                await import("./components/Containers/KanListContainer")
+                await import("./components/Containers/KanbanContainer")
               ).default,
             }),
           },

@@ -15,44 +15,32 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import List from "@/assets/list.svg?react"
-import Workbench from "@/assets/workbench.svg?react"
-import Menu from "../Menu/Menu"
-
-const menus = [
-  {
-    id: "gzt",
-    icon: <Workbench width={18} height={18} />,
-    label: "工作台",
-    url: "/dashboard",
-  },
-  {
-    id: "work",
-    icon: <List width={18} height={18} />,
-    label: "劳动管理",
-    children: [
-      {
-        id: "lb",
-        label: "列表",
-        url: "/dashboard/work",
-      },
-      {
-        id: "kanban",
-        label: "需求看板",
-        url: "/dashboard/kanban",
-        show: false,
-      },
-      {
-        id: "kanban-list",
-        label: "需求看板",
-        url: "/dashboard/kanbanList",
-      },
-    ],
-  },
-]
+import {svgIcons} from "../Icons/svgIcons"
+import Menu, {MenuItem} from "../Menu/Menu"
 
 export function MenuContainer() {
-  return <Menu items={menus}></Menu>
+  const menuData: MenuItem[] = [
+    {
+      id: "work",
+      label: "劳动管理",
+      icon: <svgIcons.List width={24} height={24} />,
+      children: [
+        {
+          id: "work-recode",
+          label: "劳动记录",
+          icon: <svgIcons.Navigation width={24} height={24} />,
+          url: "/dashboard/work",
+        },
+        {
+          id: "work-kanban",
+          label: "需求列表",
+          icon: <svgIcons.Workbench width={24} height={24} />,
+          url: "/dashboard/kanban",
+        },
+      ],
+    },
+  ]
+  return <Menu items={menuData}></Menu>
 }
 
 export default MenuContainer

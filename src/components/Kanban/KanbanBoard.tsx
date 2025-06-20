@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {BaseList} from "@/interfaces"
+import {BaseCard, BaseList} from "@/interfaces"
 import {useCallback, useState} from "react"
 import {DndProvider} from "react-dnd"
 import {HTML5Backend} from "react-dnd-html5-backend"
@@ -32,31 +32,75 @@ export const KanbanBoard = ({title, list}: Props) => {
   const [boardData, setBoardData] = useState<BaseList[]>(list)
 
   // 处理卡片移动的逻辑
-  const handleCardMove = useCallback(
-    (
-      dragID: string,
-      sourceListId: string,
-      targetListId: string,
-      targetIndex: number
-    ) => {
+  const onDrop = useCallback(
+    (dragID: string, dropId: string) => {
       setBoardData((prevBoards) => {
+        // 1. 创建新数组避免直接修改状态
         const newBoards = [...prevBoards]
 
-        const sourceList = list.find((c) => c.id === sourceListId)
-        const targetList = list.find((c) => c.id === targetListId)
+        // 2. 相同卡片不处理
+        if (dragID === dropId) return newBoards
 
-        if (!sourceList || !targetList) return prevBoards
+        // 3. 优化查找逻辑 - 使用对象缓存提高性能
+        let dragCard: BaseCard | undefined
+        let dragListIndex = -1
+        let dropListIndex = -1
+        let dropIndex = -1
 
-        const card = sourceList.cards.find((c) => c.id === dragID)
-        if (!card) return prevBoards
+        // 4. 单次遍历查找源卡片和目标位置
+        for (let i = 0; i < newBoards.length; i++) {
+          const list = newBoards[i]
 
-        sourceList.cards = sourceList.cards.filter((c) => c.id !== dragID)
-        targetList.cards.splice(targetIndex, 0, card)
+          // 查找拖拽卡片
+          const cardIndex = list.cards.findIndex((card) => card.id === dragID)
+          if (cardIndex !== -1) {
+            dragCard = list.cards[cardIndex]
+            dragListIndex = i
+          }
 
-        return newBoards
+          // 查找放置位置
+          const dropCardIndex = list.cards.findIndex(
+            (card) => card.id === dropId
+          )
+          if (dropCardIndex !== -1) {
+            dropListIndex = i
+            dropIndex = dropCardIndex
+          }
+
+          // 如果都找到则提前退出循环
+          if (dragCard && dropListIndex !== -1) break
+        }
+
+        // 5. 边界条件检查
+        if (!dragCard || dragListIndex === -1 || dropListIndex === -1) {
+          console.warn("Invalid drag/drop operation - card not found")
+          return prevBoards
+        }
+
+        // 6. 执行卡片移动
+        try {
+          // 从源列表移除卡片
+          newBoards[dragListIndex].cards = newBoards[
+            dragListIndex
+          ].cards.filter((card) => card.id !== dragID)
+
+          // 添加到目标列表
+          // 如果拖拽到同一列表，需要调整插入位置
+          const insertIndex =
+            dragListIndex === dropListIndex && dropIndex > -1
+              ? dropIndex
+              : dropIndex + 1
+
+          newBoards[dropListIndex].cards.splice(insertIndex, 0, dragCard)
+
+          return newBoards
+        } catch (error) {
+          console.error("Card move failed:", error)
+          return prevBoards
+        }
       })
     },
-    [list]
+    [] // 移除 list 依赖，避免不必要的重渲染
   )
 
   return (
@@ -69,7 +113,7 @@ export const KanbanBoard = ({title, list}: Props) => {
             id={kanbanList.id}
             title={kanbanList.title}
             cards={kanbanList.cards}
-            onCardMove={handleCardMove}
+            onDrop={onDrop}
           />
         ))}
       </Container>

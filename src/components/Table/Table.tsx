@@ -15,96 +15,159 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import PlusIcon from "@/assets/plus.svg?react"
-import {colors} from "@/styles"
+import {Fragment} from "react"
 import styled from "styled-components"
-import {Button} from "../Button"
-import {TableGroup, TableGroupProps} from "./TableGroup"
-import {Td} from "./TableRow"
-import {TitlesOption} from "./interface"
+import {colors} from "../../styles/colors"
 
-interface TableProps {
-  titles: TitlesOption[]
-  data?: TableGroupProps[]
-  onAddClick: () => void
+export interface TableColumn<T> {
+  key: string
+  title: string
+  width?: number
+  render?: (value: any, record: T) => React.ReactNode
 }
 
-export const Table = ({data, titles = [], onAddClick}: TableProps) => {
+export interface TableProps<T> {
+  data: T[]
+  columns: TableColumn<T>[]
+  rowKey: string | ((record: T) => string)
+  loading?: boolean
+  onRowClick?: (record: T) => void
+  groupBy?: string | ((record: T) => string)
+  renderGroupHeader?: (groupKey: string) => React.ReactNode
+}
+
+export const Table = <T extends Record<string, any>>({
+  data,
+  columns,
+  rowKey,
+  onRowClick,
+  groupBy,
+  renderGroupHeader,
+}: TableProps<T>) => {
+  const renderUngroupedData = () => {
+    return data.map((record) => (
+      <TableRow key={getRowKey(record)} onClick={() => onRowClick?.(record)}>
+        {columns.map((column) => (
+          <TableCell key={column.key} width={column.width}>
+            {column.render
+              ? column.render(record[column.key], record)
+              : record[column.key]}
+          </TableCell>
+        ))}
+      </TableRow>
+    ))
+  }
+
+  const renderGroupedData = () => {
+    const groups: Record<string, T[]> = {}
+    const getGroupKey =
+      typeof groupBy === "function"
+        ? groupBy
+        : (record: T) => record[groupBy as string]
+
+    data.forEach((record) => {
+      const key = getGroupKey(record)
+      if (!groups[key]) {
+        groups[key] = []
+      }
+      groups[key].push(record)
+    })
+
+    return Object.entries(groups).map(([groupKey, groupData]) => (
+      <Fragment key={groupKey}>
+        <TableGroupHeader>
+          <td colSpan={columns.length}>
+            {renderGroupHeader ? renderGroupHeader(groupKey) : groupKey}
+          </td>
+        </TableGroupHeader>
+        {groupData.map((record) => (
+          <TableRow
+            key={getRowKey(record)}
+            onClick={() => onRowClick?.(record)}
+          >
+            {columns.map((column) => (
+              <TableCell key={column.key} width={column.width}>
+                {column.render
+                  ? column.render(record[column.key], record)
+                  : record[column.key]}
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </Fragment>
+    ))
+  }
+  const getRowKey = (record: T) => {
+    return typeof rowKey === "function" ? rowKey(record) : record[rowKey]
+  }
+
   return (
     <TableContainer>
-      <ToolbarActions>
-        <Button $variant="text" $size="small" onClick={() => onAddClick()}>
-          <PlusIcon />
-          <span>添加记录</span>
-        </Button>
-        {/* <Button $variant="text" $size="small" onClick={() => onAddClick()}>
-          <span>字段配置</span>
-        </Button>
-        <Button $variant="text" $size="small" onClick={() => onAddClick()}>
-          筛选
-        </Button>
-        <Button $variant="text" $size="small" onClick={() => onAddClick()}>
-          排序
-        </Button> */}
-      </ToolbarActions>
-
-      <TableTitle>
-        {titles.map(
-          (title, index) =>
-            !title.hidden && (
-              <Td key={index} width={title.width}>
-                {title.title}
-              </Td>
-            )
-        )}
-      </TableTitle>
-
-      {data!.map((group, index) => {
-        return <TableGroup key={index} {...group} titles={titles}></TableGroup>
-      })}
-      {/* <TableGroupAdd>
-        <PlusIcon width={24} height={24} />
-        <span>添加劳动分组</span>
-      </TableGroupAdd> */}
+      <TableHeader>
+        <TableRow>
+          {columns.map((column) => (
+            <TableHeaderCell key={column.key} width={column.width}>
+              {column.title}
+            </TableHeaderCell>
+          ))}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {groupBy ? renderGroupedData() : renderUngroupedData()}
+      </TableBody>
     </TableContainer>
   )
 }
 
-export default Table
-
-const TableContainer = styled.div`
+const TableContainer = styled.table`
   width: 100%;
-  overflow: hidden;
-  display: flex;
-  padding: 5px;
-  flex-direction: column;
-  gap: 8px;
+  border-collapse: collapse;
+  table-layout: auto;
 `
 
-const ToolbarActions = styled.div`
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
+const TableHeader = styled.thead`
+  font-weight: 500;
 `
 
-export const TableTitle = styled.div`
-  display: flex;
-  align-items: stretch;
-  height: 35px;
-  width: 100%;
-  background-color: #fff;
-  overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 16px;
-  margin-bottom: 16px;
+const TableBody = styled.tbody``
+
+const TableRow = styled.tr`
+  border-bottom: 1px solid ${colors.Neutral100};
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: ${colors.Neutral100};
+    cursor: pointer;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
 `
-export const TableGroupAdd = styled.div`
-  border-radius: 16px;
-  text-align: left;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  padding: 8px 8px 8px 12px;
+
+const TableHeaderCell = styled.th<{width?: number}>`
+  padding: 12px 16px;
+  width: ${({width}) => (width ? `${width}px` : "auto")};
+  font-size: 14px;
   color: ${colors.Neutral500};
-  width: 100%;
-  display: flex;
-  align-items: stretch;
+  text-align: left;
+`
+
+const TableGroupHeader = styled.tr`
+  & > td {
+    padding: 12px 16px;
+    font-weight: 500;
+    border: 1px solid #00000020;
+  }
+`
+
+const TableCell = styled.td<{width?: number}>`
+  padding: 12px 16px;
+  width: ${({width}) => (width ? `${width}px` : "auto")};
+  font-size: 14px;
+  color: ${colors.Neutral800};
+  border: 1px solid #00000020;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `

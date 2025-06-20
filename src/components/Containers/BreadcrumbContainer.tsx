@@ -17,35 +17,44 @@
 
 import {useLocation} from "react-router"
 import {paths} from "../../router"
-import {Breadcrumb} from "../Breadcrumb/Breadcrumb"
+import {Breadcrumb, BreadcrumbProps} from "../Breadcrumb/Breadcrumb"
 
-const breadcrumbMap: Record<string, string> = {
+const routeTitles: Record<string, string> = {
   [paths.home]: "首页",
   [paths.config]: "设置",
   [paths.profile]: "个人资料",
   [paths.records]: "记录",
   [paths.dashboard]: "工作台",
-  [`${paths.dashboard}/work`]: "劳动管理",
-  [`${paths.dashboard}/kanban`]: "需求看板",
-  [`${paths.dashboard}/kanbanList`]: "需求看板",
+  work: "工作区",
+  kanban: "看板",
 }
 
 export function BreadcrumbContainer() {
   const location = useLocation()
   const pathSegments = location.pathname.split("/").filter(Boolean)
 
-  // 始终包含首页
-  const items = [{title: "首页", path: paths.home}]
+  const path: BreadcrumbProps[] = pathSegments.reduce((acc, segment, index) => {
+    const fullPath = `/${pathSegments.slice(0, index + 1).join("/")}`
+    const title = routeTitles[segment] || segment
 
-  // 添加当前路径的面包屑项
-  pathSegments.forEach((segment, index) => {
-    const path = `${pathSegments.slice(0, index + 1).join("/")}`
-    // 优先匹配完整路径，再匹配最后一段
-    const title = breadcrumbMap[path] || breadcrumbMap[`${segment}`] || segment
-    items.push({title, path})
-  })
+    return [
+      ...acc,
+      {
+        title,
+        path: fullPath,
+      },
+    ]
+  }, [] as BreadcrumbProps[])
 
-  return <Breadcrumb items={items} />
+  // 添加首页
+  if (path.length === 0 || path[0].path !== "/") {
+    path.unshift({
+      title: routeTitles[paths.home],
+      path: "/",
+    })
+  }
+
+  return Breadcrumb(path)
 }
 
 export default BreadcrumbContainer
