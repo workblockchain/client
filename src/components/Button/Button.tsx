@@ -64,7 +64,9 @@ const $variantStyles = (
     box-shadow: none;
     padding: 0;
     height: auto;
-
+    display: inline-flex;
+    gap: 12px;
+    align-items: center;
     &:hover:not(:disabled) {
       filter: brightness(1.2);
     }
