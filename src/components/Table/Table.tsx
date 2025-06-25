@@ -1,29 +1,12 @@
-// Copyright (c) 2025-present WorkBlockChain Team.
-//
-// WorkBlockChain Client is licensed under Mulan PubL v2.
-// You can use this software according to
-// the terms and conditions of the Mulan PubL v2.
-// You may obtain a copy of Mulan PubL v2 at:
-//
-//   http://license.coscl.org.cn/MulanPubL-2.0
-//
-// THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS,
-// WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
-// INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-// MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-// See the Mulan PubL v2 for more details.
-//
-// === Auto generated, DO NOT EDIT ABOVE ===
-
-import {Fragment} from "react"
+import React from "react"
 import styled from "styled-components"
 import {colors} from "../../styles/colors"
 
 export interface TableColumn<T> {
   key: string
   title: string
-  width?: number
-  render?: (value: any, record: T) => React.ReactNode
+  width?: number | string
+  render?: (value: any, record: T, index: number) => React.ReactNode
 }
 
 export interface TableProps<T> {
@@ -33,7 +16,7 @@ export interface TableProps<T> {
   loading?: boolean
   onRowClick?: (record: T) => void
   groupBy?: string | ((record: T) => string)
-  renderGroupHeader?: (groupKey: string) => React.ReactNode
+  renderGroupHeader?: (groupKey: string, groupData: T[]) => React.ReactNode
 }
 
 export const Table = <T extends Record<string, any>>({
@@ -44,13 +27,30 @@ export const Table = <T extends Record<string, any>>({
   groupBy,
   renderGroupHeader,
 }: TableProps<T>) => {
-  const renderUngroupedData = () => {
-    return data.map((record) => (
-      <TableRow key={getRowKey(record)} onClick={() => onRowClick?.(record)}>
+  const gridTemplateColumns = columns
+    .map((c) => {
+      if (typeof c.width === "number") return `${c.width}px`
+      if (typeof c.width === "string") return c.width
+      return "1fr"
+    })
+    .join(" ")
+
+  const getRowKey = (record: T) => {
+    return typeof rowKey === "function" ? rowKey(record) : record[rowKey]
+  }
+
+  const renderTableRows = (records: T[]) => {
+    return records.map((record, index) => (
+      <TableRow
+        key={getRowKey(record)}
+        onClick={() => onRowClick?.(record)}
+        hasClickHandler={!!onRowClick}
+        gridTemplateColumns={gridTemplateColumns}
+      >
         {columns.map((column) => (
-          <TableCell key={column.key} width={column.width}>
+          <TableCell key={column.key}>
             {column.render
-              ? column.render(record[column.key], record)
+              ? column.render(record[column.key], record, index)
               : record[column.key]}
           </TableCell>
         ))}
@@ -58,7 +58,15 @@ export const Table = <T extends Record<string, any>>({
     ))
   }
 
-  const renderGroupedData = () => {
+  const renderBody = () => {
+    if (!groupBy) {
+      return (
+        <TableBodyContentWrapper>
+          {renderTableRows(data)}
+        </TableBodyContentWrapper>
+      )
+    }
+
     const groups: Record<string, T[]> = {}
     const getGroupKey =
       typeof groupBy === "function"
@@ -74,100 +82,145 @@ export const Table = <T extends Record<string, any>>({
     })
 
     return Object.entries(groups).map(([groupKey, groupData]) => (
-      <Fragment key={groupKey}>
-        <TableGroupHeader>
-          <td colSpan={columns.length}>
-            {renderGroupHeader ? renderGroupHeader(groupKey) : groupKey}
-          </td>
+      <TableGroup key={groupKey}>
+        <TableGroupHeader colSpan={columns.length}>
+          {renderGroupHeader
+            ? renderGroupHeader(groupKey, groupData)
+            : groupKey}
         </TableGroupHeader>
-        {groupData.map((record) => (
-          <TableRow
-            key={getRowKey(record)}
-            onClick={() => onRowClick?.(record)}
-          >
-            {columns.map((column) => (
-              <TableCell key={column.key} width={column.width}>
-                {column.render
-                  ? column.render(record[column.key], record)
-                  : record[column.key]}
-              </TableCell>
-            ))}
-          </TableRow>
-        ))}
-      </Fragment>
+        {renderTableRows(groupData)}
+      </TableGroup>
     ))
-  }
-  const getRowKey = (record: T) => {
-    return typeof rowKey === "function" ? rowKey(record) : record[rowKey]
   }
 
   return (
     <TableContainer>
-      <TableHeader>
-        <TableRow>
-          {columns.map((column) => (
-            <TableHeaderCell key={column.key} width={column.width}>
-              {column.title}
-            </TableHeaderCell>
-          ))}
-        </TableRow>
+      <TableHeader gridTemplateColumns={gridTemplateColumns}>
+        {columns.map((column) => (
+          <TableHeaderCell key={column.key}>{column.title}</TableHeaderCell>
+        ))}
       </TableHeader>
+
       <TableBody>
-        {groupBy ? renderGroupedData() : renderUngroupedData()}
+        {data.length > 0 ? (
+          renderBody()
+        ) : (
+          <EmptyState colSpan={columns.length}>No Data</EmptyState>
+        )}
       </TableBody>
     </TableContainer>
   )
 }
 
-const TableContainer = styled.table`
+const TableContainer = styled.div`
+  gap: 20px;
   width: 100%;
-  border-collapse: collapse;
-  table-layout: auto;
+  display: flex;
+  padding: 8px;
+  border-radius: 8px;
+  flex-direction: column;
+  background-color: ${colors.Table.Background};
 `
 
-const TableHeader = styled.thead`
-  font-weight: 500;
+const BaseGrid = styled.div<{gridTemplateColumns: string}>`
+  display: grid;
+  align-items: center;
+  grid-template-columns: ${({gridTemplateColumns}) => gridTemplateColumns};
 `
 
-const TableBody = styled.tbody``
+const TableHeader = styled(BaseGrid)`
+  top: 0;
+  z-index: 10;
+  position: sticky;
+  border-radius: 8px;
+  border: 1px solid ${colors.Table.Border};
+  background-color: ${colors.Table.TitleBackground};
+`
 
-const TableRow = styled.tr`
-  border-bottom: 1px solid ${colors.Neutral100};
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: ${colors.Neutral100};
-    cursor: pointer;
-  }
+const TableHeaderCell = styled.div`
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  overflow: hidden;
+  padding: 12px 16px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border-right: 1px solid ${colors.Table.Border};
 
   &:last-child {
+    border-right: none;
+  }
+`
+const TableBody = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const TableRow = styled(BaseGrid)<{hasClickHandler?: boolean}>`
+  transition: background-color 0.1s ease-in-out;
+
+  ${({hasClickHandler}) =>
+    hasClickHandler &&
+    `
+    cursor: pointer;
+  `}
+
+  &:hover {
+    background-color: ${colors.Neutral200};
+  }
+`
+
+const TableCell = styled.div`
+  font-size: 14px;
+  overflow: hidden;
+  padding: 8px 16px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: ${colors.Neutral800};
+  border-bottom: 1px solid ${colors.Neutral100};
+  border-right: 1px solid ${colors.Neutral100};
+
+  &:last-child {
+    border-right: none;
+  }
+
+  ${TableRow}:last-child > & {
     border-bottom: none;
   }
 `
 
-const TableHeaderCell = styled.th<{width?: number}>`
-  padding: 12px 16px;
-  width: ${({width}) => (width ? `${width}px` : "auto")};
-  font-size: 14px;
-  color: ${colors.Neutral500};
-  text-align: left;
+const TableGroupHeader = styled.div<{colSpan: number}>`
+  grid-column: 1 / span ${({colSpan}) => colSpan};
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: 15px;
+  color: ${colors.Neutral800};
+  border-bottom: 1px solid ${colors.Neutral100};
+  border-top: 1px solid ${colors.Neutral100};
+  margin-top: -1px;
 `
 
-const TableGroupHeader = styled.tr`
-  & > td {
-    padding: 12px 16px;
-    font-weight: 500;
-    border: 1px solid #00000020;
+const TableBodyContentWrapper = styled.div`
+  border: 1px solid ${colors.Table.Border};
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: ${colors.Table.TitleBackground};
+`
+
+const TableGroup = styled(TableBodyContentWrapper)`
+  /* 
+   * grid-column is not necessary here because its parent (TableBody) is a flex container.
+   * We only need to keep the margin that separates the groups.
+   */
+  margin-bottom: 8px;
+
+  &:last-child {
+    margin-bottom: 0;
   }
 `
-
-const TableCell = styled.td<{width?: number}>`
-  padding: 12px 16px;
-  width: ${({width}) => (width ? `${width}px` : "auto")};
-  font-size: 14px;
-  color: ${colors.Neutral800};
-  border: 1px solid #00000020;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+const EmptyState = styled.div<{colSpan: number}>`
+  grid-column: 1 / span ${({colSpan}) => colSpan};
+  padding: 48px 16px;
+  text-align: center;
+  color: ${colors.Neutral500};
 `
