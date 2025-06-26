@@ -78,7 +78,11 @@ export const KanbanCard = ({
           </div>
         ))}
       </SubTasks>
-      <div>{tags?.map((tag, index) => <Tag key={index}>{tag}</Tag>)}</div>
+      <div>
+        {tags?.map((tag, index) => (
+          <Tag key={index}>{tag}</Tag>
+        ))}
+      </div>
     </Container>
   )
 }
