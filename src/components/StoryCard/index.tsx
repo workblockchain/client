@@ -1,3 +1,20 @@
+// Copyright (c) 2025-present WorkBlockChain Team.
+//
+// WorkBlockChain Client is licensed under Mulan PubL v2.
+// You can use this software according to
+// the terms and conditions of the Mulan PubL v2.
+// You may obtain a copy of Mulan PubL v2 at:
+//
+//   http://license.coscl.org.cn/MulanPubL-2.0
+//
+// THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS,
+// WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+// INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+// MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+// See the Mulan PubL v2 for more details.
+//
+// === Auto generated, DO NOT EDIT ABOVE ===
+
 import {colors} from "@/styles"
 import {forwardRef} from "react"
 import styled from "styled-components"
@@ -28,7 +45,9 @@ const StoryCard = forwardRef<HTMLDivElement, Props>(
           ))}
         </SubTasks>
         <TagGroup>
-          {tags?.map((tag, index) => <Tag key={index}>{tag}</Tag>)}
+          {tags?.map((tag, index) => (
+            <Tag key={index}>{tag}</Tag>
+          ))}
         </TagGroup>
         {(!!cid || !!assignee) && (
           <InfoGroup>
