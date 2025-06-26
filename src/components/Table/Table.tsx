@@ -18,6 +18,53 @@
 import React from "react"
 import styled from "styled-components"
 import {colors} from "../../styles/colors"
+import {TableGroup} from "./TableGroup"
+
+/**
+ * 表格组件的属性接口
+ * @template T - 表格数据的类型
+ */
+export interface TableProps<T> {
+  /**
+   * 表格的数据源
+   */
+  data: T[]
+
+  /**
+   * 表格列的配置
+   */
+  columns: TableColumn<T>[]
+
+  /**
+   * 每行数据的唯一标识，可以是字段名或生成唯一键的函数
+   */
+  rowKey: string | ((record: T) => string)
+
+  /**
+   * 是否显示加载状态
+   * @default false
+   */
+  loading?: boolean
+
+  /**
+   * 行点击事件处理函数
+   * @param record - 点击的行数据
+   */
+  onRowClick?: (record: T) => void
+
+  /**
+   * 分组依据，可以是字段名或生成分组键的函数
+   */
+  groupBy?: string | ((record: T) => string)
+
+  /**
+   * 自定义分组头部渲染函数
+   * @param groupKey - 分组的键值
+   * @param groupData - 分组的数据
+   * @returns 自定义的分组头部节点
+   */
+  renderGroupHeader?: (groupKey: string, groupData: T[]) => React.ReactNode
+}
 
 export interface TableColumn<T> {
   key: string
@@ -26,22 +73,13 @@ export interface TableColumn<T> {
   render?: (value: any, record: T, index: number) => React.ReactNode
 }
 
-export interface TableProps<T> {
-  data: T[]
-  columns: TableColumn<T>[]
-  rowKey: string | ((record: T) => string)
-  loading?: boolean
-  onRowClick?: (record: T) => void
-  groupBy?: string | ((record: T) => string)
-  renderGroupHeader?: (groupKey: string, groupData: T[]) => React.ReactNode
-}
-
 export const Table = <T extends Record<string, any>>({
   data,
   columns,
   rowKey,
   onRowClick,
   groupBy,
+  loading = false,
   renderGroupHeader,
 }: TableProps<T>) => {
   const gridTemplateColumns = columns
@@ -56,35 +94,9 @@ export const Table = <T extends Record<string, any>>({
     return typeof rowKey === "function" ? rowKey(record) : record[rowKey]
   }
 
-  const renderTableRows = (records: T[]) => {
-    return records.map((record, index) => (
-      <TableRow
-        key={getRowKey(record)}
-        onClick={() => onRowClick?.(record)}
-        hasClickHandler={!!onRowClick}
-        gridTemplateColumns={gridTemplateColumns}
-      >
-        {columns.map((column) => (
-          <TableCell key={column.key}>
-            {column.render
-              ? column.render(record[column.key], record, index)
-              : record[column.key]}
-          </TableCell>
-        ))}
-      </TableRow>
-    ))
-  }
+  const groups: Record<string, T[]> = {}
 
-  const renderBody = () => {
-    if (!groupBy) {
-      return (
-        <TableBodyContentWrapper>
-          {renderTableRows(data)}
-        </TableBodyContentWrapper>
-      )
-    }
-
-    const groups: Record<string, T[]> = {}
+  if (groupBy) {
     const getGroupKey =
       typeof groupBy === "function"
         ? groupBy
@@ -97,17 +109,8 @@ export const Table = <T extends Record<string, any>>({
       }
       groups[key].push(record)
     })
-
-    return Object.entries(groups).map(([groupKey, groupData]) => (
-      <TableGroup key={groupKey}>
-        <TableGroupHeader colSpan={columns.length}>
-          {renderGroupHeader
-            ? renderGroupHeader(groupKey, groupData)
-            : groupKey}
-        </TableGroupHeader>
-        {renderTableRows(groupData)}
-      </TableGroup>
-    ))
+  } else {
+    groups[""] = [...data]
   }
 
   return (
@@ -119,14 +122,37 @@ export const Table = <T extends Record<string, any>>({
       </TableHeader>
 
       <TableBody>
-        {data.length > 0 ? (
-          renderBody()
+        {loading ? (
+          <EmptyState colSpan={columns.length}>加载中...</EmptyState>
+        ) : data.length === 0 ? (
+          <EmptyState colSpan={columns.length}>暂无数据</EmptyState>
         ) : (
-          <EmptyState colSpan={columns.length}>No Data</EmptyState>
+          Object.entries(groups).map(([groupKey, groupData]) => (
+            <TableGroup
+              key={groupKey}
+              groupHeader={
+                renderGroupHeader
+                  ? renderGroupHeader(groupKey, groupData)
+                  : groupKey
+              }
+              groupData={groupData}
+              columns={columns}
+              gridTemplateColumns={gridTemplateColumns}
+              onRowClick={onRowClick}
+              getRowKey={getRowKey}
+            />
+          ))
         )}
       </TableBody>
     </TableContainer>
   )
+}
+
+Table.getRowKey = <T extends Record<string, any>>(
+  rowKey: string | ((record: T) => string),
+  record: T
+): string => {
+  return typeof rowKey === "function" ? rowKey(record) : record[rowKey]
 }
 
 const TableContainer = styled.div`
@@ -173,68 +199,6 @@ const TableBody = styled.div`
   flex-direction: column;
 `
 
-const TableRow = styled(BaseGrid)<{hasClickHandler?: boolean}>`
-  transition: background-color 0.1s ease-in-out;
-
-  ${({hasClickHandler}) =>
-    hasClickHandler &&
-    `
-    cursor: pointer;
-  `}
-
-  &:hover {
-    background-color: ${colors.Neutral200};
-  }
-`
-
-const TableCell = styled.div`
-  font-size: 14px;
-  overflow: hidden;
-  padding: 8px 16px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  color: ${colors.Neutral800};
-  border-bottom: 1px solid ${colors.Neutral100};
-  border-right: 1px solid ${colors.Neutral100};
-
-  &:last-child {
-    border-right: none;
-  }
-
-  ${TableRow}:last-child > & {
-    border-bottom: none;
-  }
-`
-
-const TableGroupHeader = styled.div<{colSpan: number}>`
-  grid-column: 1 / span ${({colSpan}) => colSpan};
-  padding: 10px 16px;
-  font-weight: 600;
-  font-size: 15px;
-  color: ${colors.Neutral800};
-  border-bottom: 1px solid ${colors.Neutral100};
-  border-top: 1px solid ${colors.Neutral100};
-  margin-top: -1px;
-`
-
-const TableBodyContentWrapper = styled.div`
-  border: 1px solid ${colors.Table.Border};
-  border-radius: 8px;
-  overflow: hidden;
-  background-color: ${colors.Table.TitleBackground};
-`
-
-const TableGroup = styled(TableBodyContentWrapper)`
-  /* 
-   * grid-column is not necessary here because its parent (TableBody) is a flex container.
-   * We only need to keep the margin that separates the groups.
-   */
-  margin-bottom: 8px;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-`
 const EmptyState = styled.div<{colSpan: number}>`
   grid-column: 1 / span ${({colSpan}) => colSpan};
   padding: 48px 16px;
