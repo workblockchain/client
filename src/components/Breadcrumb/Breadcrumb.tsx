@@ -23,7 +23,11 @@ export interface BreadcrumbProps {
   path?: string
 }
 
-export function Breadcrumb(items: BreadcrumbProps[]) {
+interface props {
+  items: BreadcrumbProps[]
+}
+
+export function Breadcrumb({items}: props) {
   return (
     <BreadcrumbContainer>
       {items.map((item, index) => {

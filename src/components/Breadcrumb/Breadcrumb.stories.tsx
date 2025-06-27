@@ -30,7 +30,9 @@ export default meta
 type Story = StoryObj<typeof Breadcrumb>
 
 export const Basic: Story = {
-  args: [{title: "首页"}, {title: "用户中心"}, {title: "个人资料"}],
+  args: {
+    items: [{title: "首页"}, {title: "用户中心"}, {title: "个人资料"}],
+  },
 }
 
 const items = [
@@ -40,7 +42,7 @@ const items = [
 ]
 
 export const WithLinks: Story = {
-  args: {...items},
+  args: {items},
 
   play: async ({canvasElement}) => {
     const canvas = within(canvasElement)
@@ -55,11 +57,13 @@ export const WithLinks: Story = {
 }
 
 export const LongBreadcrumb: Story = {
-  args: [
-    {title: "首页"},
-    {title: "文档"},
-    {title: "API参考"},
-    {title: "用户管理"},
-    {title: "权限设置"},
-  ],
+  args: {
+    items: [
+      {title: "首页"},
+      {title: "文档"},
+      {title: "API参考"},
+      {title: "用户管理"},
+      {title: "权限设置"},
+    ],
+  },
 }
