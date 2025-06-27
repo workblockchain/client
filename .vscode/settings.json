@@ -39,6 +39,7 @@
     "oxlint",
     "pmdr",
     "Pomodoro",
+    "reqs",
     "rlib",
     "serde",
     "staticlib",
