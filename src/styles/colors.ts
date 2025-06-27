@@ -63,16 +63,9 @@ const Neutral = {
   Neutral900: "#1D1D1D",
 } as const
 
-const Table = {
-  TitleBackground: "#FFFFFF",
-  Border: "rgba(0, 0, 0, 0.05)",
-  Background: "#f6f8f9",
-}
-
 export const colors = {
   ...Yellow,
   ...Red,
   ...Blue,
   ...Neutral,
-  Table,
 } as const
