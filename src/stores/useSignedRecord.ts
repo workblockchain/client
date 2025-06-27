@@ -207,7 +207,9 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
     if (dataStr) {
       const {workRecords, requirementRecords, projectRecords} =
         JSON.parse(dataStr)
-      set({workRecords, requirementRecords, projectRecords})
+      const req = requirementRecords as RequirementData[]
+      req.push(...MOCKED_REQUIREMENT_RECORDS)
+      set({workRecords, requirementRecords: req, projectRecords})
     }
 
     const localBlockKeysStr = localStorage.getItem(LOCAL_BLOCK_KEY)
@@ -297,3 +299,69 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
     set({packed: {...get().packed, ...loaded}})
   },
 }))
+
+const MOCKED_REQUIREMENT_RECORDS: RequirementData[] = [
+  {
+    rid: "REQ-001",
+    priority: "High",
+    status: "WIP",
+    assignedTo: "user_alice",
+    estimated: 40,
+    tags: ["Frontend", "Authentication", "Urgent"],
+    requirementType: "Feature",
+    description:
+      "Implement user login and registration flow with social media integration.",
+    projectIds: ["PROJ-ALPHA", "PROJ-BETA"],
+    workRecordIds: ["WR-001", "WR-002", "WR-003"],
+    relationship: {
+      parent: ["EPIC-2025-001"],
+      depends_on: ["REQ-20250627-005"],
+      blocked_by: [],
+    },
+    progress: 75,
+    contributors: ["user_alice", "user_bob"],
+    relatedOutcomes: ["OUTCOME-FEAT-001"],
+  },
+  {
+    rid: "REQ-002",
+    priority: "Medium",
+    status: "WIP",
+    assignedTo: "user_charlie",
+    estimated: 16,
+    tags: ["Backend", "Database", "Performance"],
+    requirementType: "Bug Fix",
+    description:
+      "Optimize database queries for user profile retrieval to reduce latency.",
+    projectIds: ["PROJ-ALPHA"],
+    workRecordIds: ["WR-004", "WR-005"],
+    relationship: {
+      parent: [],
+      depends_on: [],
+      blocked_by: [],
+    },
+    progress: 100,
+    contributors: ["user_charlie"],
+    relatedOutcomes: ["OUTCOME-BUG-001"],
+  },
+  {
+    rid: "REQ-003",
+    priority: "Low",
+    status: "Backlog",
+    assignedTo: "",
+    estimated: 8,
+    tags: ["UI/UX", "Accessibility"],
+    requirementType: "Enhancement",
+    description:
+      "Improve keyboard navigation for all interactive elements on the dashboard.",
+    projectIds: ["PROJ-BETA"],
+    workRecordIds: [],
+    relationship: {
+      parent: ["EPIC-2025-002"],
+      depends_on: [],
+      blocked_by: [],
+    },
+    progress: 0,
+    contributors: [],
+    relatedOutcomes: [],
+  },
+]
