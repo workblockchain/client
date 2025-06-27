@@ -116,7 +116,7 @@ export const CompactTable: Story = {
       {key: "name", title: "Name", width: 120},
       {key: "age", title: "Age", width: 80},
       {key: "department", title: "Dept", width: 100},
-      {key: "status", title: "Status", width: 100},
+      {key: "status", title: "Status"},
     ],
     rowKey: "id",
   },

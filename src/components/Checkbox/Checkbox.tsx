@@ -55,7 +55,7 @@ export const Checkbox = ({
             height={size === "small" ? 16 : 20}
           />
         ) : (
-          <svgIcons.RightIcon
+          <svgIcons.Right
             width={size === "small" ? 16 : 20}
             height={size === "small" ? 16 : 20}
           />
