@@ -16,6 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {colors} from "@/styles/colors"
+import {memo} from "react"
 import {styled} from "styled-components"
 import {TableColumn, TableRow} from "./TableRows"
 
@@ -54,36 +55,38 @@ interface TableGroupProps<T> {
   getRowKey: (rowData: T) => string
 }
 
-export const TableGroup = <T extends Record<string, any>>({
-  key,
-  columns,
-  groupData,
-  groupHeader,
-  getRowKey,
-  gridTemplateColumns,
-  onRowClick,
-}: TableGroupProps<T>) => {
-  return (
-    <TableGroupContainer key={key}>
-      {groupHeader == "" ? null : (
-        <TableGroupHeader colSpan={columns.length}>
-          {groupHeader ?? "没有分组"}
-        </TableGroupHeader>
-      )}
+export const TableGroup = memo(
+  <T extends Record<string, any>>({
+    key,
+    columns,
+    groupData,
+    groupHeader,
+    getRowKey,
+    gridTemplateColumns,
+    onRowClick,
+  }: TableGroupProps<T>) => {
+    return (
+      <TableGroupContainer key={key}>
+        {groupHeader == "" ? null : (
+          <TableGroupHeader colSpan={columns.length}>
+            {groupHeader ?? "没有分组"}
+          </TableGroupHeader>
+        )}
 
-      {groupData.map((rowData, index) => (
-        <TableRow
-          key={getRowKey(rowData)}
-          onRowClick={() => onRowClick?.(rowData)}
-          gridTemplateColumns={gridTemplateColumns}
-          columns={columns}
-          rowData={rowData}
-          rowIndex={index}
-        ></TableRow>
-      ))}
-    </TableGroupContainer>
-  )
-}
+        {groupData.map((rowData, index) => (
+          <TableRow
+            key={getRowKey(rowData)}
+            onRowClick={() => onRowClick?.(rowData)}
+            gridTemplateColumns={gridTemplateColumns}
+            columns={columns as TableColumn<Record<string, any>>[]}
+            rowData={rowData}
+            rowIndex={index}
+          ></TableRow>
+        ))}
+      </TableGroupContainer>
+    )
+  }
+)
 
 const TableGroupContainer = styled.div`
   margin-bottom: 8px;

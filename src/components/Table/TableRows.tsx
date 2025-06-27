@@ -16,6 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {colors} from "@/styles/colors"
+import {memo} from "react"
 import styled from "styled-components"
 import {TableCell} from "./TableCell"
 
@@ -58,31 +59,33 @@ interface TableRowProps<T> {
   rowIndex: number
 }
 
-export const TableRow = <T extends Record<string, any>>({
-  columns,
-  key,
-  onRowClick,
-  gridTemplateColumns,
-  rowData,
-  rowIndex,
-}: TableRowProps<T>) => {
-  return (
-    <TableRowContainer
-      key={key}
-      onClick={() => onRowClick?.(rowData)}
-      hasClickHandler={!!onRowClick}
-      gridTemplateColumns={gridTemplateColumns}
-    >
-      {columns.map((column) => (
-        <TableCell key={column.key}>
-          {column.render
-            ? column.render(rowData[column.key], rowData, rowIndex)
-            : rowData[column.key]}
-        </TableCell>
-      ))}
-    </TableRowContainer>
-  )
-}
+export const TableRow = memo(
+  <T extends Record<string, any>>({
+    columns,
+    key,
+    onRowClick,
+    gridTemplateColumns,
+    rowData,
+    rowIndex,
+  }: TableRowProps<T>) => {
+    return (
+      <TableRowContainer
+        key={key}
+        onClick={() => onRowClick?.(rowData)}
+        hasClickHandler={!!onRowClick}
+        gridTemplateColumns={gridTemplateColumns}
+      >
+        {columns.map((column) => (
+          <TableCell key={column.key}>
+            {column.render
+              ? column.render(rowData[column.key], rowData, rowIndex)
+              : rowData[column.key]}
+          </TableCell>
+        ))}
+      </TableRowContainer>
+    )
+  }
+)
 
 const BaseGrid = styled.div<{gridTemplateColumns: string}>`
   display: grid;

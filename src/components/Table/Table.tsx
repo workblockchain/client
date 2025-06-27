@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import React from "react"
+import React, {useCallback, useMemo} from "react"
 import styled from "styled-components"
 import {colors} from "../../styles/colors"
 import {TableGroup} from "./TableGroup"
@@ -82,36 +82,45 @@ export const Table = <T extends Record<string, any>>({
   loading = false,
   renderGroupHeader,
 }: TableProps<T>) => {
-  const gridTemplateColumns = columns
-    .map((c) => {
-      if (typeof c.width === "number") return `${c.width}px`
-      if (typeof c.width === "string") return c.width
-      return "1fr"
-    })
-    .join(" ")
+  const gridTemplateColumns = useMemo(
+    () =>
+      columns
+        .map((c) => {
+          if (typeof c.width === "number") return `${c.width}px`
+          if (typeof c.width === "string") return c.width
+          return "1fr"
+        })
+        .join(" "),
+    [columns]
+  )
 
-  const getRowKey = (record: T) => {
-    return typeof rowKey === "function" ? rowKey(record) : record[rowKey]
-  }
+  const getRowKey = useCallback(
+    (record: T) => {
+      return typeof rowKey === "function" ? rowKey(record) : record[rowKey]
+    },
+    [rowKey]
+  )
 
-  const groups: Record<string, T[]> = {}
+  const groups = useMemo(() => {
+    const result: Record<string, T[]> = {}
+    if (groupBy) {
+      const getGroupKey =
+        typeof groupBy === "function"
+          ? groupBy
+          : (record: T) => record[groupBy as string]
 
-  if (groupBy) {
-    const getGroupKey =
-      typeof groupBy === "function"
-        ? groupBy
-        : (record: T) => record[groupBy as string]
-
-    data.forEach((record) => {
-      const key = getGroupKey(record)
-      if (!groups[key]) {
-        groups[key] = []
-      }
-      groups[key].push(record)
-    })
-  } else {
-    groups[""] = [...data]
-  }
+      data.forEach((record) => {
+        const key = getGroupKey(record)
+        if (!result[key]) {
+          result[key] = []
+        }
+        result[key].push(record)
+      })
+    } else {
+      result[""] = [...data]
+    }
+    return result
+  }, [data, groupBy])
 
   return (
     <TableContainer>
@@ -136,10 +145,14 @@ export const Table = <T extends Record<string, any>>({
                   : groupKey
               }
               groupData={groupData}
-              columns={columns}
+              columns={columns as TableColumn<Record<string, any>>[]}
               gridTemplateColumns={gridTemplateColumns}
-              onRowClick={onRowClick}
-              getRowKey={getRowKey}
+              onRowClick={
+                onRowClick as
+                  | ((record: Record<string, any>) => void)
+                  | undefined
+              }
+              getRowKey={getRowKey as (rowData: Record<string, any>) => string}
             />
           ))
         )}
