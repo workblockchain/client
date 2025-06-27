@@ -34,6 +34,8 @@ import styled from "styled-components"
 
 interface AvatarPreviewProps {
   avatar?: string
+  isText?: boolean
+  size?: number
 }
 
 const PreviewContainer = styled.div`
@@ -49,18 +51,22 @@ const PreviewContainer = styled.div`
   white-space: nowrap;
 `
 
-export function AvatarPreview({avatar}: AvatarPreviewProps) {
+function AvatarPreview({avatar, size = 40, isText}: AvatarPreviewProps) {
   return (
-    <PreviewContainer>
-      {avatar ? (
-        <img
-          src={avatar}
-          alt="头像预览"
-          style={{width: "40px", height: "40px", borderRadius: "50%"}}
-        />
-      ) : (
-        <span style={{color: "#666"}}>暂无预览</span>
-      )}
+    <PreviewContainer style={{width: size, height: size}}>
+      {!isText &&
+        (avatar ? (
+          <img
+            src={avatar}
+            alt="头像预览"
+            style={{width: size, height: size, borderRadius: "50%"}}
+          />
+        ) : (
+          <span style={{color: "#666"}}>暂无预览</span>
+        ))}
+      {isText && avatar?.slice(0, 1).toUpperCase()}
     </PreviewContainer>
   )
 }
+
+export default AvatarPreview

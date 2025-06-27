@@ -15,17 +15,17 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import type {Meta, StoryObj} from "@storybook/react"
-import {Tag} from "./Tag"
+import type {Meta} from "@storybook/react"
+import Tag from "."
 
 const meta = {
-  title: "Components/Tag",
+  title: "Components/StoryElements/Tag",
   component: Tag,
   tags: ["autodocs"],
   argTypes: {
     variant: {
       control: {type: "radio"},
-      options: ["primary", "success", "warning", "error"],
+      options: ["primary", "success", "warning", "error", "text"],
     },
     size: {
       control: {type: "radio"},
@@ -38,15 +38,6 @@ const meta = {
 } satisfies Meta<typeof Tag>
 
 export default meta
-type Story = StoryObj<typeof meta>
-
-export const Primary: Story = {
-  args: {
-    children: "Primary Tag",
-    variant: "primary",
-    size: "medium",
-  },
-}
 
 export const AllVariants = () => (
   <div style={{display: "flex", gap: "8px"}}>
@@ -54,6 +45,7 @@ export const AllVariants = () => (
     <Tag variant="success">Success</Tag>
     <Tag variant="warning">Warning</Tag>
     <Tag variant="error">Error</Tag>
+    <Tag variant="text">Text</Tag>
   </div>
 )
 
