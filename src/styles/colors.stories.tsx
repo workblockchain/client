@@ -49,12 +49,12 @@ const ColorPalette = ({colorGroup}: {colorGroup: string}) => (
         <Item
           key={name}
           style={{
-            backgroundColor: value,
+            backgroundColor: value.toString(),
             color: parseInt(name.slice(-3)) > 500 ? "#fff" : "#333",
           }}
         >
           <div style={{fontWeight: 600}}>{name}</div>
-          <div>{value}</div>
+          <div>{value.toString()}</div>
         </Item>
       ))}
   </Palette>
