@@ -16,6 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {colors} from "@/styles/colors"
+import {memo} from "react"
 import styled from "styled-components"
 
 interface TableCellProps {
@@ -23,9 +24,9 @@ interface TableCellProps {
   children: string
 }
 
-export const TableCell = ({key, children}: TableCellProps) => {
+export const TableCell = memo(({key, children}: TableCellProps) => {
   return <TableCellContainer key={key}>{children ?? "空"}</TableCellContainer>
-}
+})
 
 const TableCellContainer = styled.div`
   font-size: 14px;
