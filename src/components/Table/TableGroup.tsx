@@ -90,10 +90,10 @@ export const TableGroup = memo(
 
 const TableGroupContainer = styled.div`
   margin-bottom: 8px;
-  border: 1px solid ${colors.Table.Border};
+  border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: 8px;
   overflow: hidden;
-  background-color: ${colors.Table.TitleBackground};
+  background-color: #ffffff;
   &:last-child {
     margin-bottom: 0;
   }

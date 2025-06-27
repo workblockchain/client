@@ -66,12 +66,6 @@ export interface TableProps<T> {
   renderGroupHeader?: (groupKey: string, groupData: T[]) => React.ReactNode
 }
 
-const TableColor = {
-  TitleBackground: "#FFFFFF",
-  Border: "rgba(0, 0, 0, 0.05)",
-  Background: "#f6f8f9",
-}
-
 export interface TableColumn<T> {
   key: string
   title: string
@@ -181,7 +175,7 @@ const TableContainer = styled.div`
   padding: 8px;
   border-radius: 8px;
   flex-direction: column;
-  background-color: ${TableColor.Background};
+  background-color: #f6f8f9;
 `
 
 const BaseGrid = styled.div<{gridTemplateColumns: string}>`
@@ -195,8 +189,8 @@ const TableHeader = styled(BaseGrid)`
   z-index: 10;
   position: sticky;
   border-radius: 8px;
-  border: 1px solid ${TableColor.Border};
-  background-color: ${TableColor.TitleBackground};
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: #ffffff;
 `
 
 const TableHeaderCell = styled.div`
@@ -207,7 +201,7 @@ const TableHeaderCell = styled.div`
   padding: 12px 16px;
   white-space: nowrap;
   text-overflow: ellipsis;
-  border-right: 1px solid ${TableColor.Border};
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
 
   &:last-child {
     border-right: none;
