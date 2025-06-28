@@ -17,7 +17,7 @@
 
 import Vector from "@/assets/vector.svg?react"
 import {colors} from "@/styles/colors"
-import {Fragment, memo, ReactNode, useState} from "react"
+import {Fragment, ReactNode, useCallback, useState} from "react"
 import {useTranslation} from "react-i18next"
 import {useNavigate} from "react-router"
 import styled from "styled-components"
@@ -38,92 +38,155 @@ export interface MenuProps {
   items: MenuItem[]
   initialSelectedId?: string
 }
-
-export const Menu = memo(function Menu({items, initialSelectedId}: MenuProps) {
+export const Menu = ({items, initialSelectedId}: MenuProps) => {
   const navigate = useNavigate()
   const {t} = useTranslation()
-  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
-    () =>
-      Object.fromEntries(items.map((item) => [item.id, item.expand ?? false]))
+
+  // 查找从根节点到目标节点的父级路径（用于展开菜单）
+  const findParentPath = useCallback(
+    (
+      targetId: string,
+      menuItems: MenuItem[],
+      currentPath: string[] = []
+    ): string[] => {
+      for (const item of menuItems) {
+        if (item.id === targetId) {
+          return currentPath // 返回到达目标节点的父级路径
+        }
+
+        if (item.children?.length) {
+          const foundPath = findParentPath(targetId, item.children, [
+            ...currentPath,
+            item.id,
+          ])
+          if (
+            foundPath.length > 0 ||
+            item.children.some((child) => child.id === targetId)
+          ) {
+            return item.children.some((child) => child.id === targetId)
+              ? [...currentPath, item.id]
+              : foundPath
+          }
+        }
+      }
+      return []
+    },
+    []
   )
+
+  // 检查某个项是否有选中的子项
+  const hasSelectedChild = useCallback(
+    (item: MenuItem, selectedId: string | undefined): boolean => {
+      if (!selectedId || !item.children?.length) return false
+
+      const checkChildren = (children: MenuItem[]): boolean => {
+        return children.some(
+          (child) =>
+            child.id === selectedId ||
+            (child.children?.length && checkChildren(child.children))
+        )
+      }
+
+      return checkChildren(item.children)
+    },
+    []
+  )
+
+  // 展开项
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(() => {
+    if (!initialSelectedId) return new Set()
+    const parentPath = findParentPath(initialSelectedId, items)
+    return new Set(parentPath)
+  })
+  //选中项
   const [selectedId, setSelectedId] = useState<string | undefined>(
     initialSelectedId
   )
 
-  function hasSelectedChild(item: MenuItem, id?: string): boolean {
-    if (!item.children || !id) return false
-    return item.children.some(
-      (child) => child.id === id || hasSelectedChild(child, id)
-    )
-  }
+  const toggleExpand = useCallback((id: string) => {
+    if (!id) return
 
-  const toggleExpand = (id: string) => {
-    setExpandedItems((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }))
-  }
-
-  const handleItemClick = (item: MenuItem) => {
-    if (item.children) {
-      toggleExpand(item.id)
-    } else if (item.url) {
-      navigate(item.url)
-      setSelectedId(item.id)
-      if (typeof item.onUpdate === "function") {
-        item.onUpdate()
+    setExpandedItems((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(id)) {
+        newSet.delete(id)
+      } else {
+        newSet.add(id)
       }
-    }
-  }
+      return newSet
+    })
+  }, [])
 
-  const renderMenuItem = (item: MenuItem) => {
-    if (item.show === false) return null
+  const handleItemClick = useCallback(
+    (item: MenuItem) => {
+      if (!item?.id) return
 
-    const $hasChildren = !!item.children?.length
-    const $isExpanded = expandedItems[item.id] ?? false
-    const $isSelected = item.id === selectedId
+      const hasChildren =
+        Array.isArray(item.children) && item.children.length > 0
 
-    return (
-      <Fragment key={item.id}>
-        <MenuItem
-          role="menuitem"
-          aria-disabled={item.disabled ?? false}
-          aria-expanded={$hasChildren ? $isExpanded : undefined}
-          $hasChildren={$hasChildren}
-          $disabled={item.disabled ?? false}
-          $isSelected={$isSelected}
-          $isParentOfExpanded={hasSelectedChild(item, selectedId)}
-          onClick={() => !item.disabled && handleItemClick(item)}
-        >
-          {item.icon && <MenuItemIcon>{item.icon}</MenuItemIcon>}
-          <MenuItemTitle>{item.label}</MenuItemTitle>
-          {$hasChildren && (
-            <MenuItemArrow $isExpanded={$isExpanded}>
-              <Vector />
-            </MenuItemArrow>
+      if (hasChildren) {
+        toggleExpand(item.id)
+      } else if (item.url) {
+        try {
+          navigate(item.url)
+          setSelectedId(item.id)
+          if (typeof item.onUpdate === "function") {
+            item.onUpdate()
+          }
+        } catch (error) {
+          console.error("Navigation or callback execution failed:", error)
+        }
+      }
+    },
+    [navigate, toggleExpand]
+  )
+
+  const renderMenuItem = useCallback(
+    (item: MenuItem): React.ReactNode => {
+      if (!item?.id || item.show === false) return null
+
+      const hasChildren =
+        Array.isArray(item.children) && item.children.length > 0
+
+      const isExpanded = expandedItems.has(item.id)
+      return (
+        <Fragment key={item.id}>
+          <MenuItem
+            $hasChildren={hasChildren}
+            $disabled={item.disabled}
+            $isSelected={item.id === selectedId}
+            $isParentOfExpanded={hasSelectedChild(item, selectedId)}
+            onClick={() => !item.disabled && handleItemClick(item)}
+          >
+            {item.icon && <MenuItemIcon>{item.icon}</MenuItemIcon>}
+            <MenuItemTitle>{item.label}</MenuItemTitle>
+            {hasChildren && (
+              <MenuItemArrow $isExpanded={isExpanded}>
+                <Vector />
+              </MenuItemArrow>
+            )}
+          </MenuItem>
+          {hasChildren && isExpanded && item.children && (
+            <MenuSubItems $isExpanded={isExpanded}>
+              {item.children.map(renderMenuItem)}
+            </MenuSubItems>
           )}
-        </MenuItem>
-        {$hasChildren && $isExpanded && item.children && (
-          <MenuSubItems $isExpanded={$isExpanded}>
-            {item.children.map(renderMenuItem)}
-          </MenuSubItems>
-        )}
-      </Fragment>
-    )
-  }
+        </Fragment>
+      )
+    },
+    [expandedItems, selectedId, handleItemClick, hasSelectedChild]
+  )
 
   return (
     <MenuContainer>
-      {items.length ? (
-        items.map((item) => (
-          <Fragment key={item.id}>{renderMenuItem(item)}</Fragment>
-        ))
+      {items.length > 0 ? (
+        items.map(renderMenuItem)
       ) : (
-        <MenuEmpty>{t("menu.empty")}</MenuEmpty>
+        <MenuEmpty>{t("MenuEmpty")}</MenuEmpty>
       )}
     </MenuContainer>
   )
-})
+}
 
 const MenuContainer = styled.div<{$drawerMode?: boolean}>`
   width: 100%;
