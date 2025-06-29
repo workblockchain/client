@@ -207,9 +207,9 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
   load: () => {
     const dataStr = localStorage.getItem(STASHED_RECORD_KEY)
     if (dataStr) {
-      const {workRecords, requirementRecords, projectRecords} =
+      const {workRecords, requirementRecords, projectRecords, signedRecords} =
         JSON.parse(dataStr)
-      set({workRecords, requirementRecords, projectRecords})
+      set({workRecords, requirementRecords, projectRecords, signedRecords})
     }
 
     const localBlockKeysStr = localStorage.getItem(LOCAL_BLOCK_KEY)
