@@ -64,8 +64,7 @@ export const RecordItem = ({work}: RecordItemProps & {work: WorkData}) => {
 }
 
 async function handleSign(workId: string) {
-  const {workRecords, createRecord, setWorkSigned, save} =
-    useSignedRecord.getState()
+  const {workRecords, createRecord, setWorkSigned} = useSignedRecord.getState()
   const work = workRecords.find((w) => w.wid === workId)
 
   if (!work) {
@@ -76,7 +75,6 @@ async function handleSign(workId: string) {
   try {
     await createRecord(workId, JSON.stringify(work))
     setWorkSigned(workId, true)
-    save()
     toast.success("签名成功")
   } catch (error) {
     toast.error("签名失败")

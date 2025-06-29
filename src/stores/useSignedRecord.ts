@@ -132,12 +132,14 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
       workRecords: state.workRecords.filter((w) => w.userId !== userId),
     })),
 
-  setWorkSigned: (wid, isSigned) =>
+  setWorkSigned: (wid, isSigned) => {
     set((state) => ({
       workRecords: state.workRecords.map((w) =>
         w.wid === wid ? {...w, isSigned} : w
       ),
-    })),
+    }))
+    get().save()
+  },
 
   // RequirementRecord methods
   addRequirementRecord: (requirementRecord) =>
