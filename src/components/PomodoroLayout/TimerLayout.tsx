@@ -22,7 +22,7 @@ import {Button} from ".."
 import type {TimerPhaseType} from "../../stores/usePomodoroTimer"
 import {colors} from "../../styles"
 import {TimeDisplay} from "../TimeDisplay/TimeDisplay"
-import WipBar from "./wipBar"
+import WipBar from "./WipBar"
 
 export type TimerLayoutProps = {
   onCountStart: () => void
