@@ -67,6 +67,7 @@ export const KanbanCard = ({
 
   return (
     <StoryCard
+      draggable
       isDragging={isDragging}
       tags={tags}
       subTasks={subTasks}

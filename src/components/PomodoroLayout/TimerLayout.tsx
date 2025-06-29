@@ -22,6 +22,7 @@ import {Button} from ".."
 import type {TimerPhaseType} from "../../stores/usePomodoroTimer"
 import {colors} from "../../styles"
 import {TimeDisplay} from "../TimeDisplay/TimeDisplay"
+import WipBar from "./WipBar"
 
 export type TimerLayoutProps = {
   onCountStart: () => void
@@ -47,6 +48,7 @@ export const TimerLayout = ({
   return (
     <Container>
       <TimeDisplay style={{color: primaryColor}} seconds={remainingTime} />
+      <WipBar />
       <ButtonGroup>
         {status === "running" ? (
           <Button
@@ -89,6 +91,7 @@ const ButtonGroup = styled.div`
 `
 
 const Container = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-around;

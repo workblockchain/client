@@ -48,7 +48,9 @@ export const RecordItem = ({work}: RecordItemProps & {work: WorkData}) => {
         <span>{secondToTime(work.duration ?? 0)}</span>
       </DateTime>
       <RecordContent>
-        <p>{work.description || "工作"}</p>
+        <Tags>{work.requirementIds.map((rid) => `#${rid}`)}</Tags>
+        <span>{work.description || "工作"}</span>
+        <Tags>{work.outcome}</Tags>
       </RecordContent>
       {!isSigned ? (
         <Button $size="small" onClick={() => handleSign(work.wid)}>
@@ -64,8 +66,7 @@ export const RecordItem = ({work}: RecordItemProps & {work: WorkData}) => {
 }
 
 async function handleSign(workId: string) {
-  const {workRecords, createRecord, setWorkSigned, save} =
-    useSignedRecord.getState()
+  const {workRecords, createRecord, setWorkSigned} = useSignedRecord.getState()
   const work = workRecords.find((w) => w.wid === workId)
 
   if (!work) {
@@ -76,7 +77,6 @@ async function handleSign(workId: string) {
   try {
     await createRecord(workId, JSON.stringify(work))
     setWorkSigned(workId, true)
-    save()
     toast.success("签名成功")
   } catch (error) {
     toast.error("签名失败")
@@ -116,7 +116,7 @@ const StyledRecordItem = styled.div<{$isSigned: boolean; $isNarrow?: boolean}>`
     `}
 `
 
-const DateTime = styled.span`
+const DateTime = styled.div`
   display: flex;
   flex-direction: column;
   color: ${colors.Neutral500};
@@ -127,6 +127,18 @@ const DateTime = styled.span`
   }
 `
 
-const RecordContent = styled.span`
+const RecordContent = styled.div`
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`
+
+const Tags = styled.div`
+  display: flex;
+  gap: 4px;
+  color: ${colors.Neutral500};
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `
