@@ -1,3 +1,20 @@
+// Copyright (c) 2025-present WorkBlockChain Team.
+//
+// WorkBlockChain Client is licensed under Mulan PubL v2.
+// You can use this software according to
+// the terms and conditions of the Mulan PubL v2.
+// You may obtain a copy of Mulan PubL v2 at:
+//
+//   http://license.coscl.org.cn/MulanPubL-2.0
+//
+// THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS,
+// WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+// INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+// MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+// See the Mulan PubL v2 for more details.
+//
+// === Auto generated, DO NOT EDIT ABOVE ===
+
 import {colors} from "@/styles/colors"
 import type {Meta, StoryObj} from "@storybook/react"
 import {Button} from "../Button"
@@ -35,13 +52,13 @@ export const WithTitle: Story = {
 export const DifferentSizes: Story = {
   render: () => (
     <div style={{display: "flex", gap: "16px", flexDirection: "column"}}>
-      <Card size="small" cardTitle="小尺寸卡片">
+      <Card id="small" size="small" cardTitle="小尺寸卡片">
         这是小尺寸卡片内容
       </Card>
-      <Card size="medium" cardTitle="中尺寸卡片">
+      <Card id="medium" size="medium" cardTitle="中尺寸卡片">
         这是中尺寸卡片内容
       </Card>
-      <Card size="large" cardTitle="大尺寸卡片">
+      <Card id="large" size="large" cardTitle="大尺寸卡片">
         这是大尺寸卡片内容
       </Card>
     </div>
