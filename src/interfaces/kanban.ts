@@ -20,16 +20,52 @@ export interface Task {
   state: "finished" | "unfinished"
 }
 
-export interface BaseCard {
+export interface DragItem<T extends {id: string}> {
   id: string
-  title: string // 卡片标题
-  description?: string // 卡片内容描述
-  subTasks?: Task[]
-  tags?: string[]
+  /** 被拖拽的卡片数据 */
+  data: T
+  /** 源列表ID */
+  listId: string
+  /** 卡片在源列表中的索引 */
+  index: number
 }
 
-export interface BaseList {
-  id: string // 列表标题
+export interface DropResult<T extends {id: string}> {
+  /** 被拖拽的卡片 */
+  item: DragItem<T>
+  /** 目标列表ID */
+  toListId: string
+  /** 卡片在目标列表的新索引 */
+  toIndex: number
+  /** 可选的放置目标卡片（用于插入到特定卡片前后） */
+  targetCard?: T
+}
+
+export interface CardProps<T extends {id: string}> {
+  id: string
+  data: T
+  index: number
+  listId: string
+  onMove?: (result: DropResult<T>) => void
+}
+
+export interface ListProps<T extends {id: string}> {
+  id: string
   title: string
-  cards: BaseCard[]
+  cards: T[]
+  onAdd?: (listId: string, data: T) => void
+  onMove?: (props: DropResult<T>) => void
+  onRemove?: (card: DropResult<T>) => void
+  onChange?: (card: DropResult<T>) => void
+}
+
+export interface BoardProps<T extends {id: string}> {
+  id: string
+  title?: string
+  list: ListProps<T>[]
+  isLoading?: boolean
+  onAdd?: (listId: string, data: T) => void
+  onMove?: (props: DropResult<T>) => void
+  onRemove?: (card: DropResult<T>) => void
+  onChange?: (card: DropResult<T>) => void
 }

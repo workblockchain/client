@@ -15,65 +15,44 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {BaseCard} from "@/interfaces"
+import {CardProps, DragItem} from "@/interfaces/kanban"
 import {useRef} from "react"
 import {useDrag, useDrop} from "react-dnd"
 import StoryCard from "../StoryCard"
 import {ItemTypes} from "./types"
 
-export interface Props extends BaseCard {
-  onDrop: (dragId: string, dropId: string) => void
-  children?: React.ReactNode
-}
-
-export const KanbanCard = ({
-  id,
-  tags,
-  subTasks,
-  description,
-  onDrop,
-  ...props
-}: Props) => {
+export const KanbanCard = <T extends {id: string}>({
+  data,
+  index,
+  listId,
+  onMove,
+}: CardProps<T>) => {
   const ref = useRef<HTMLDivElement>(null)
-  const [{isDragging}, drag] = useDrag(
-    () => ({
-      type: ItemTypes.CARD,
-      item: {id},
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-      }),
-      end: (item, monitor) => {
-        const didDrop = monitor.didDrop()
-        if (!didDrop) {
-          onDrop(item.id, id)
-        }
-      },
+  // 拖拽源配置
+  const [{isDragging}, drag] = useDrag({
+    type: ItemTypes.CARD,
+    item: {data, index, listId},
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
     }),
-    [id, onDrop]
-  )
+  })
 
-  const [_, drop] = useDrop(
-    () => ({
-      accept: ItemTypes.CARD,
-      hover: (item: {id: string}) => {
-        if (!ref.current) return
-        onDrop(item.id, id)
-      },
-    }),
-    [onDrop, id]
-  )
+  // 放置目标配置
+  const [_, drop] = useDrop({
+    accept: ItemTypes.CARD,
+
+    drop: (item: DragItem<T>) => {
+      if (!ref.current || item.data.id === data.id) return
+      onMove!({
+        item,
+        toListId: listId,
+        toIndex: index,
+        targetCard: data,
+      })
+    },
+  })
 
   drag(drop(ref))
 
-  return (
-    <StoryCard
-      isDragging={isDragging}
-      tags={tags}
-      subTasks={subTasks}
-      ref={ref}
-    >
-      {description}
-      {props.children}
-    </StoryCard>
-  )
+  return <StoryCard isDragging={isDragging} {...data} ref={ref}></StoryCard>
 }
