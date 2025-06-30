@@ -15,9 +15,8 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {useConfig} from "@/stores/useConfig"
 import {useSignedRecord} from "@/stores/useSignedRecord"
-import dayjs from "dayjs"
-import duration from "dayjs/plugin/duration"
 import {useUserProfile} from "../stores/useUserProfile"
 
 // TODO: refactor to async progress
@@ -37,13 +36,13 @@ async function initRecords() {
   })
 }
 
-async function dayjsPlugin() {
+async function loadConfig() {
   return new Promise<void>((resolve) => {
-    dayjs.extend(duration)
+    useConfig.getState().load()
     resolve()
   })
 }
 
 export async function init() {
-  await Promise.all([initUserProfile(), initRecords(), dayjsPlugin()])
+  await Promise.all([initUserProfile(), initRecords(), loadConfig()])
 }
