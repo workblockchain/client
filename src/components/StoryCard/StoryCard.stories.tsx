@@ -37,5 +37,6 @@ export const Default: Story = {
     size: "small",
     cid: "QmXyz123",
     assignee: "user1",
+    draggable: true,
   },
 }

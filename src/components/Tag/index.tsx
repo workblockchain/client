@@ -39,6 +39,7 @@ const TagContainer = styled.span<{$variant: TagVariant; $size?: TagSize}>`
   border-radius: 8px;
   font-weight: 500;
   line-height: 1.5;
+  white-space: nowrap;
 
   ${({$size}) => {
     switch ($size) {

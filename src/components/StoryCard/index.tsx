@@ -16,53 +16,91 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {colors} from "@/styles"
-import {forwardRef} from "react"
-import styled from "styled-components"
+import {forwardRef, HTMLAttributes} from "react"
+import styled, {css} from "styled-components"
 import Avatar from "../Avatar/AvatarPreview"
-import {Card, CardProps} from "../Card/Card"
 import Tag from "../Tag"
 
-export interface Props extends CardProps {
+export interface Props extends HTMLAttributes<HTMLDivElement> {
+  id: string
   tags?: string[]
   subTasks?: {label: string}[]
   children?: React.ReactNode
   isDragging?: boolean
+  draggable?: boolean
   size?: "full" | "small"
   cid?: string
   assignee?: string
 }
 
 const StoryCard = forwardRef<HTMLDivElement, Props>(
-  ({tags, subTasks, isDragging, children, cid, assignee, ...props}, ref) => {
+  (
+    {
+      tags,
+      subTasks,
+      draggable,
+      isDragging,
+      children,
+      cid,
+      assignee,
+      size,
+      ...props
+    },
+    ref
+  ) => {
     return (
-      <StyledCard $isDragging={!!isDragging} ref={ref} {...props}>
-        <Context>
-          {children}
-          {subTasks?.length ? (
-            <SubTasks>
-              <h5 style={{margin: "5px 0", color: colors.Neutral400}}>
-                子任务
-              </h5>
-              {subTasks?.map((task, index) => (
-                <div key={index}>
-                  <input type="checkbox" /> {task.label}
-                </div>
-              ))}
-            </SubTasks>
-          ) : null}
-          <TagGroup>
-            {tags?.map((tag, index) => (
-              <Tag key={index}>{tag}</Tag>
+      <Container
+        $draggable={draggable}
+        $isDragging={!!isDragging}
+        ref={ref}
+        {...props}
+      >
+        <Content $size={size}>{children}</Content>
+        {size !== "small" && !!subTasks?.length && (
+          <SubTasks>
+            <h5 style={{margin: "5px 0", color: colors.Neutral400}}>子任务</h5>
+            {subTasks?.map((task, index) => (
+              <div key={index}>
+                <input type="checkbox" /> {task.label}
+              </div>
             ))}
-          </TagGroup>
-          {(!!cid || !!assignee) && (
-            <InfoGroup>
-              {!!cid && <Tag variant="text">{cid}</Tag>}
-              {!!assignee && <Avatar avatar={assignee} isText size={24} />}
-            </InfoGroup>
-          )}
-        </Context>
-      </StyledCard>
+          </SubTasks>
+        )}
+        {size !== "small" && (
+          <>
+            {!!tags?.length && (
+              <TagGroup>
+                {tags?.map((tag, index) => (
+                  <Tag key={index}>{tag}</Tag>
+                ))}
+              </TagGroup>
+            )}
+            {(!!cid || !!assignee) && (
+              <InfoGroup>
+                {!!cid && <Tag variant="text">{cid}</Tag>}
+                {!!assignee && <Avatar avatar={assignee} isText size={24} />}
+              </InfoGroup>
+            )}
+          </>
+        )}
+        {size === "small" && (
+          <SmallLine>
+            {!!tags?.length && (
+              <TagGroup>
+                {tags?.map((tag, index) => (
+                  <Tag key={index}>{tag}</Tag>
+                ))}
+              </TagGroup>
+            )}
+            {(!!cid || !!assignee) && (
+              <InfoGroup>
+                {!!cid && <Tag variant="text">{cid}</Tag>}
+                {!!assignee && <Avatar avatar={assignee} isText size={24} />}
+              </InfoGroup>
+            )}
+          </SmallLine>
+        )}
+      </Container>
     )
   }
 )
@@ -71,29 +109,28 @@ export default StoryCard
 
 StoryCard.displayName = "StoryCard"
 
-const StyledCard = styled(Card)<{$isDragging: boolean}>`
-  cursor: ${({$isDragging}) => ($isDragging ? "move" : "grab")};
-  opacity: ${({$isDragging}) => ($isDragging ? 0.4 : 1)};
-  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
-  color: ${colors.Neutral800};
-  font-size: 13px;
-  max-width: 520px;
-  min-width: 200px;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
+export const CardContainer = styled.div`
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+  background-color: white;
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  padding: 16px;
 `
 
-const Context = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+const Content = styled.div<{$size?: "full" | "small"}>`
+  margin-bottom: auto;
+  ${({$size}) =>
+    $size === "small" &&
+    css`
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+    `}
 `
 
 const SubTasks = styled.div`
@@ -124,4 +161,50 @@ const InfoGroup = styled.div`
   gap: 8px;
   justify-content: center;
   align-items: center;
+`
+
+const SmallLine = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  ${TagGroup} {
+    width: 100%;
+    flex-shrink: 1;
+    overflow: hidden;
+    flex-wrap: nowrap;
+  }
+
+  ${InfoGroup} {
+    flex-shrink: 0;
+  }
+`
+
+const Container = styled(CardContainer)<{
+  $isDragging: boolean
+  $draggable?: boolean
+}>`
+  ${({$draggable, $isDragging}) => {
+    if ($draggable) {
+      return css`
+        cursor: ${$isDragging ? "move" : "grab"};
+        opacity: ${$isDragging ? 0.4 : 1};
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        &:active {
+          transform: translateY(0);
+        }
+      `
+    }
+    return css`
+      cursor: pointer;
+    `
+  }}
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+  position: relative;
+  color: ${colors.Neutral800};
 `

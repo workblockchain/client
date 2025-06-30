@@ -19,9 +19,9 @@ import {DragItem, ListProps} from "@/interfaces"
 import {useRef, useState} from "react"
 import {useDrop} from "react-dnd"
 import styled from "styled-components"
-import {Card} from "../Card/Card"
 import {Drawer} from "../Drawer/Drawer"
 import {svgIcons} from "../Icons/svgIcons"
+import {CardContainer} from "../StoryCard"
 import {KanbanCard} from "./KanbanCard"
 import {ItemTypes} from "./types"
 
@@ -254,7 +254,7 @@ const SubmitButton = styled.button`
   }
 `
 
-const AddCardButton = styled(Card)`
+const AddCardButton = styled(CardContainer)`
   transition: all 0.2s ease;
   border: 2px dashed transparent;
 

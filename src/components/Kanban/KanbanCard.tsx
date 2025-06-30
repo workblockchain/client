@@ -16,12 +16,12 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {CardProps, DragItem} from "@/interfaces/kanban"
-import {useRef} from "react"
+import {ReactNode, useRef} from "react"
 import {useDrag, useDrop} from "react-dnd"
 import StoryCard from "../StoryCard"
 import {ItemTypes} from "./types"
 
-export const KanbanCard = <T extends {id: string}>({
+export const KanbanCard = <T extends {id: string; children?: ReactNode}>({
   data,
   index,
   listId,
@@ -54,5 +54,9 @@ export const KanbanCard = <T extends {id: string}>({
 
   drag(drop(ref))
 
-  return <StoryCard isDragging={isDragging} {...data} ref={ref}></StoryCard>
+  return (
+    <StoryCard draggable isDragging={isDragging} ref={ref} {...data}>
+      {data.children}
+    </StoryCard>
+  )
 }

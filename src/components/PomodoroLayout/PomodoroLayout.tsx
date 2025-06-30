@@ -37,6 +37,7 @@ import {Navigation} from "../Layout/Navigation"
 import {Portal} from "../Portal"
 import {CommitLayout} from "./CommitLayout"
 import {TimerLayout} from "./TimerLayout"
+import usePomodoroStore from "./usePomodoroStore"
 
 // const PhaseTitle = styled.h2`
 //   font-size: 1.5rem;
@@ -117,14 +118,15 @@ function NavigationButton() {
 }
 
 const PomodoroLayout = () => {
-  const [currentLayout, setCurrentLayout] = useState<
-    "timer" | "commit" | "config"
-  >("timer")
+  const [currentLayout, setCurrentLayout] = useState<"timer" | "commit">(
+    "timer"
+  )
   const [description, setDescription] = useState("")
 
   const {status, remainingTime, timePassed, timerPhase} = usePomodoroTimer()
   const {startTimer, pauseTimer, togglePhase} = usePomodoroTimer()
   const {uid} = useUserProfile()
+  const curRid = usePomodoroStore((state) => state.currentRequirementId)
 
   const {addWorkRecord, createRecord, setWorkSigned} = useSignedRecord()
   const {autoSign: autoSignConfig} = useConfig()
@@ -143,7 +145,7 @@ const PomodoroLayout = () => {
         outcome: "",
         userId: uid,
         workTags: isWork ? [POMODORO_WORK] : [POMODORO_BREAK],
-        requirementIds: [],
+        requirementIds: [curRid],
         projectIds: [],
         description: message,
       }
@@ -152,6 +154,7 @@ const PomodoroLayout = () => {
         const record = await createRecord(work.wid, JSON.stringify(work))
         setWorkSigned(work.wid, true)
         toast.success(`记录已保存: #${record.id.slice(0, 8)}`)
+        setDescription("")
         return
       }
       toast.success(`记录暂存`)
