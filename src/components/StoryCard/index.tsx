@@ -22,7 +22,6 @@ import Avatar from "../Avatar/AvatarPreview"
 import Tag from "../Tag"
 
 export interface Props extends HTMLAttributes<HTMLDivElement> {
-  id: string
   tags?: string[]
   subTasks?: {label: string}[]
   children?: React.ReactNode

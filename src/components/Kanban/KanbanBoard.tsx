@@ -16,50 +16,73 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {BoardProps as Props} from "@/interfaces"
+import {useState} from "react"
 import {DndProvider} from "react-dnd"
 import {HTML5Backend} from "react-dnd-html5-backend"
 import styled from "styled-components"
-import {KanbanList} from "./KanbanList"
+import {Drawer} from "../Drawer"
+import {KanbanColumn} from "./KanbanColumn"
 
-export const KanbanBoard = <T extends {id: string}>({
+export const KanbanBoard = ({
   title,
-  list,
+  column,
   isLoading,
-  onAdd,
-  onMove,
-  onRemove,
-  onChange,
-}: Props<T>) => {
+  addCard,
+  moveCard,
+  deleteCard,
+  upDateCard,
+  renderCard,
+  renderFrom,
+}: Props) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const [selectedColumnId, setSelectedColumnId] = useState<string>("")
   return (
     <DndProvider backend={HTML5Backend}>
-      <Title>{title}</Title>
-      <Container $isLoading={isLoading}>
-        {list.map((item, index) => (
-          <KanbanList<T>
-            key={index}
-            id={item.id}
-            title={item.title}
-            cards={item.cards}
-            onAdd={onAdd}
-            onMove={onMove}
-            onRemove={onRemove}
-            onChange={onChange}
-          />
-        ))}
-      </Container>
+      {title ? <Title>{title}</Title> : null}
+      {isLoading ? (
+        "正在加载"
+      ) : (
+        <>
+          <Container>
+            {column.map(({id, columnTitle, cards}, index) => (
+              <KanbanColumn
+                key={index}
+                id={id}
+                columnTitle={columnTitle}
+                cards={cards}
+                addCard={addCard}
+                moveCard={moveCard}
+                deleteCard={deleteCard}
+                upDateCard={upDateCard}
+                renderCard={renderCard}
+                openDrawer={(id) => {
+                  setIsOpen(!isOpen)
+                  setSelectedColumnId(id)
+                }}
+              />
+            ))}
+          </Container>
+          <Drawer
+            isOpen={isOpen}
+            onClose={() => setIsOpen(!isOpen)}
+            children={
+              renderFrom && addCard
+                ? renderFrom((data: any) => addCard(selectedColumnId, data))
+                : null
+            }
+          ></Drawer>
+        </>
+      )}
     </DndProvider>
   )
 }
 
 KanbanBoard.displayName = "KanbanBoard"
 
-// 样式组件
-const Container = styled.div<{$isLoading?: boolean}>`
+const Container = styled.div`
   display: flex;
   gap: 10px;
   position: relative;
-  opacity: ${(props) => (props.$isLoading ? 0.7 : 1)};
-  pointer-events: ${(props) => (props.$isLoading ? "none" : "auto")};
   transition: opacity 0.2s ease;
 `
 

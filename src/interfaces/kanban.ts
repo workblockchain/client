@@ -15,57 +15,63 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-export interface Task {
-  label: string
-  state: "finished" | "unfinished"
+import {ReactNode, Ref} from "react"
+
+export interface CardProps extends DropItem {
+  moveCard?: (
+    dragIndex: number,
+    hoverIndex: number,
+    sourceColumnId: string
+  ) => void
+  renderCard?: (
+    ref: Ref<HTMLDivElement>,
+    props: Record<string, any>
+  ) => ReactNode
 }
 
-export interface DragItem<T extends {id: string}> {
-  id: string
-  /** 被拖拽的卡片数据 */
-  data: T
-  /** 源列表ID */
-  listId: string
-  /** 卡片在源列表中的索引 */
+export interface DropItem {
   index: number
+  content: Record<string, any>
+  columnId: string
 }
 
-export interface DropResult<T extends {id: string}> {
-  /** 被拖拽的卡片 */
-  item: DragItem<T>
-  /** 目标列表ID */
-  toListId: string
-  /** 卡片在目标列表的新索引 */
-  toIndex: number
-  /** 可选的放置目标卡片（用于插入到特定卡片前后） */
-  targetCard?: T
-}
-
-export interface CardProps<T extends {id: string}> {
+export interface ColumnProps {
   id: string
-  data: T
-  index: number
-  listId: string
-  onMove?: (result: DropResult<T>) => void
+  columnTitle: string
+  cards: Record<string, any>[]
+  addCard?: (columnId: string, content: any) => void
+  moveCard?: (
+    dragIndex: number,
+    hoverIndex: number,
+    sourceColumnId: string,
+    targetColumnId: string
+  ) => void
+  deleteCard?: (columnId: string, targetIndex: number) => void
+  upDateCard?: (columnId: string, targetIndex: number, content: any) => void
+  renderCard?: (
+    ref: Ref<HTMLDivElement>,
+    props: Record<string, any>
+  ) => ReactNode
+  openDrawer?: (id: string) => void
 }
 
-export interface ListProps<T extends {id: string}> {
-  id: string
-  title: string
-  cards: T[]
-  onAdd?: (listId: string, data: T) => void
-  onMove?: (props: DropResult<T>) => void
-  onRemove?: (card: DropResult<T>) => void
-  onChange?: (card: DropResult<T>) => void
-}
-
-export interface BoardProps<T extends {id: string}> {
+export interface BoardProps {
   id: string
   title?: string
-  list: ListProps<T>[]
+  column: ColumnProps[]
   isLoading?: boolean
-  onAdd?: (listId: string, data: T) => void
-  onMove?: (props: DropResult<T>) => void
-  onRemove?: (card: DropResult<T>) => void
-  onChange?: (card: DropResult<T>) => void
+  addCard?: (columnId: string, content: any) => void
+  moveCard?: (
+    dragIndex: number,
+    hoverIndex: number,
+    sourceColumnId: string,
+    targetColumnId: string
+  ) => void
+  deleteCard?: (columnId: string, targetIndex: number) => void
+  upDateCard?: (columnId: string, targetIndex: number, content: any) => void
+  renderCard?: (
+    ref: Ref<HTMLDivElement>,
+    props: Record<string, any>
+  ) => ReactNode
+  renderFrom?: (callBack: (data: any) => void) => ReactNode
 }

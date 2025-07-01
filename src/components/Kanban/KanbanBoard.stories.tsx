@@ -15,11 +15,9 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {Props as StoryCard} from "@/components/StoryCard"
 import {BoardProps} from "@/interfaces/kanban"
 import {Meta, StoryObj} from "@storybook/react"
 import {KanbanBoard} from "./KanbanBoard"
-
 const meta: Meta<typeof KanbanBoard> = {
   title: "Components/KanbanBoard",
   component: KanbanBoard,
@@ -28,14 +26,14 @@ const meta: Meta<typeof KanbanBoard> = {
 
 export default meta
 
-type Story = StoryObj<BoardProps<StoryCard>>
+type Story = StoryObj<BoardProps>
 
-const kanbanData: BoardProps<StoryCard> = {
+const kanbanData: BoardProps = {
   id: "board1",
-  list: [
+  column: [
     {
       id: "card 1",
-      title: "To do",
+      columnTitle: "To do",
       cards: [
         {
           id: "eat",
@@ -55,12 +53,12 @@ const kanbanData: BoardProps<StoryCard> = {
     },
     {
       id: "card 2",
-      title: "进行中",
+      columnTitle: "进行中",
       cards: [{id: "card4643"}],
     },
     {
       id: "card 3",
-      title: "完成",
+      columnTitle: "完成",
       cards: [{id: "car45645664d3"}],
     },
   ],
@@ -72,6 +70,6 @@ export const Primary: Story = {
 
 export const EmptyList: Story = {
   args: {
-    list: [{id: "empty", title: "空列表", cards: []}],
+    column: [{id: "empty", columnTitle: "空列表", cards: []}],
   },
 }

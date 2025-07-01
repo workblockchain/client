@@ -15,23 +15,18 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {CardProps, DragItem} from "@/interfaces/kanban"
-import {ReactNode, useRef} from "react"
+import {CardProps, DropItem} from "@/interfaces/kanban"
+import {useRef} from "react"
 import {useDrag, useDrop} from "react-dnd"
 import StoryCard from "../StoryCard"
 import {ItemTypes} from "./types"
 
-export const KanbanCard = <T extends {id: string; children?: ReactNode}>({
-  data,
-  index,
-  listId,
-  onMove,
-}: CardProps<T>) => {
+export const KanbanCard = (props: CardProps) => {
   const ref = useRef<HTMLDivElement>(null)
   // 拖拽源配置
   const [{isDragging}, drag] = useDrag({
     type: ItemTypes.CARD,
-    item: {data, index, listId},
+    item: props as DropItem,
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
@@ -41,22 +36,34 @@ export const KanbanCard = <T extends {id: string; children?: ReactNode}>({
   const [_, drop] = useDrop({
     accept: ItemTypes.CARD,
 
-    drop: (item: DragItem<T>) => {
-      if (!ref.current || item.data.id === data.id) return
-      onMove!({
-        item,
-        toListId: listId,
-        toIndex: index,
-        targetCard: data,
-      })
+    drop: (item: DropItem) => {
+      if (
+        !ref.current ||
+        (item.index === props.index && item.columnId === props.columnId)
+      )
+        return
+      props.moveCard
+        ? props.moveCard(item.index, props.index, item.columnId)
+        : console.log("moveCard is not defined")
     },
   })
 
   drag(drop(ref))
 
   return (
-    <StoryCard draggable isDragging={isDragging} ref={ref} {...data}>
-      {data.children}
-    </StoryCard>
+    <>
+      {props.renderCard ? (
+        props.renderCard(ref, {...props.content})
+      ) : (
+        <StoryCard
+          draggable
+          isDragging={isDragging}
+          ref={ref}
+          {...props.content}
+        >
+          {props.content.children}
+        </StoryCard>
+      )}
+    </>
   )
 }
