@@ -34,6 +34,52 @@ export interface MenuItem {
   expand?: boolean
 }
 
+const findParentPath = (
+  targetId: string,
+  menuItems: MenuItem[],
+  currentPath: string[] = []
+): string[] => {
+  for (const item of menuItems) {
+    if (item.id === targetId) {
+      return currentPath // 返回到达目标节点的父级路径
+    }
+
+    if (item.children?.length) {
+      const foundPath = findParentPath(targetId, item.children, [
+        ...currentPath,
+        item.id,
+      ])
+      if (
+        foundPath.length > 0 ||
+        item.children.some((child) => child.id === targetId)
+      ) {
+        return item.children.some((child) => child.id === targetId)
+          ? [...currentPath, item.id]
+          : foundPath
+      }
+    }
+  }
+  return []
+}
+
+// 检查某个项是否有选中的子项
+const hasSelectedChild = (
+  item: MenuItem,
+  selectedId: string | undefined
+): boolean => {
+  if (!selectedId || !item.children?.length) return false
+
+  const checkChildren = (children: MenuItem[]): boolean => {
+    return children.some(
+      (child) =>
+        child.id === selectedId ||
+        (child.children?.length && checkChildren(child.children))
+    )
+  }
+
+  return checkChildren(item.children)
+}
+
 export interface MenuProps {
   items: MenuItem[]
   initialSelectedId?: string
@@ -43,54 +89,6 @@ export const Menu = ({items, initialSelectedId}: MenuProps) => {
   const {t} = useTranslation()
 
   // 查找从根节点到目标节点的父级路径（用于展开菜单）
-  const findParentPath = useCallback(
-    (
-      targetId: string,
-      menuItems: MenuItem[],
-      currentPath: string[] = []
-    ): string[] => {
-      for (const item of menuItems) {
-        if (item.id === targetId) {
-          return currentPath // 返回到达目标节点的父级路径
-        }
-
-        if (item.children?.length) {
-          const foundPath = findParentPath(targetId, item.children, [
-            ...currentPath,
-            item.id,
-          ])
-          if (
-            foundPath.length > 0 ||
-            item.children.some((child) => child.id === targetId)
-          ) {
-            return item.children.some((child) => child.id === targetId)
-              ? [...currentPath, item.id]
-              : foundPath
-          }
-        }
-      }
-      return []
-    },
-    []
-  )
-
-  // 检查某个项是否有选中的子项
-  const hasSelectedChild = useCallback(
-    (item: MenuItem, selectedId: string | undefined): boolean => {
-      if (!selectedId || !item.children?.length) return false
-
-      const checkChildren = (children: MenuItem[]): boolean => {
-        return children.some(
-          (child) =>
-            child.id === selectedId ||
-            (child.children?.length && checkChildren(child.children))
-        )
-      }
-
-      return checkChildren(item.children)
-    },
-    []
-  )
 
   // 展开项
   const [expandedItems, setExpandedItems] = useState<Set<string>>(() => {
@@ -103,19 +101,22 @@ export const Menu = ({items, initialSelectedId}: MenuProps) => {
     initialSelectedId
   )
 
-  const toggleExpand = useCallback((id: string) => {
-    if (!id) return
+  const toggleExpand = useCallback(
+    (id: string) => {
+      if (!id) return
 
-    setExpandedItems((prev) => {
-      const newSet = new Set(prev)
-      if (newSet.has(id)) {
-        newSet.delete(id)
-      } else {
-        newSet.add(id)
-      }
-      return newSet
-    })
-  }, [])
+      setExpandedItems((prev) => {
+        const newSet = new Set(prev)
+        if (newSet.has(id)) {
+          newSet.delete(id)
+        } else {
+          newSet.add(id)
+        }
+        return newSet
+      })
+    },
+    [setExpandedItems]
+  )
 
   const handleItemClick = useCallback(
     (item: MenuItem) => {
@@ -182,7 +183,7 @@ export const Menu = ({items, initialSelectedId}: MenuProps) => {
       {items.length > 0 ? (
         items.map(renderMenuItem)
       ) : (
-        <MenuEmpty>{t("MenuEmpty")}</MenuEmpty>
+        <MenuEmpty>{t("menu.empty")}</MenuEmpty>
       )}
     </MenuContainer>
   )
