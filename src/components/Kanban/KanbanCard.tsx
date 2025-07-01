@@ -16,12 +16,12 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {CardProps, DropItem} from "@/interfaces/kanban"
-import {useRef} from "react"
+import {memo, useRef} from "react"
 import {useDrag, useDrop} from "react-dnd"
 import StoryCard from "../StoryCard"
 import {ItemTypes} from "./types"
 
-export const KanbanCard = (props: CardProps) => {
+export const KanbanCard = memo((props: CardProps) => {
   const ref = useRef<HTMLDivElement>(null)
   // 拖拽源配置
   const [{isDragging}, drag] = useDrag({
@@ -66,4 +66,4 @@ export const KanbanCard = (props: CardProps) => {
       )}
     </>
   )
-}
+})

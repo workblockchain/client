@@ -16,7 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {ColumnProps, DropItem} from "@/interfaces"
-import {useRef} from "react"
+import {memo, useRef} from "react"
 import {useDrop} from "react-dnd"
 import styled from "styled-components"
 import {svgIcons} from "../Icons/svgIcons"
@@ -24,71 +24,75 @@ import {KanbanCard} from "./KanbanCard"
 import {ItemTypes} from "./types"
 
 // 主组件
-export const KanbanColumn = ({
-  id,
-  cards,
-  columnTitle,
-  addCard,
-  moveCard,
-  openDrawer,
-  renderCard,
-}: ColumnProps) => {
-  const ref = useRef<HTMLDivElement>(null)
+export const KanbanColumn = memo(
+  ({
+    id,
+    cards,
+    columnTitle,
+    addCard,
+    moveCard,
+    openDrawer,
+    renderCard,
+  }: ColumnProps) => {
+    const ref = useRef<HTMLDivElement>(null)
 
-  // 作为放置目标
-  const [_, drop] = useDrop({
-    accept: ItemTypes.CARD,
+    // 作为放置目标
+    const [_, drop] = useDrop({
+      accept: ItemTypes.CARD,
 
-    drop: (item: DropItem, monitor) => {
-      // 如果是当前列表
-      if (item.columnId === id) return
+      drop: (item: DropItem, monitor) => {
+        // 如果是当前列表
+        if (item.columnId === id) return
 
-      // 如果被其他可拖拽的元素覆盖
-      if (!monitor.isOver({shallow: true})) return
+        // 如果被其他可拖拽的元素覆盖
+        if (!monitor.isOver({shallow: true})) return
 
-      moveCard
-        ? moveCard!(item.index, cards.length, item.columnId, id)
-        : console.log("moveCard is undefined")
-    },
-  })
+        moveCard
+          ? moveCard!(item.index, cards.length, item.columnId, id)
+          : console.log("moveCard is undefined")
+      },
+    })
 
-  drop(ref)
+    drop(ref)
 
-  return (
-    <Container ref={ref}>
-      <Header>
-        <Title>{columnTitle}</Title>
-        <CardCount>{cards.length} 张卡片</CardCount>
-      </Header>
-      <CardList>
-        {cards.map((card, index) => (
-          <KanbanCard
-            key={index}
-            index={index}
-            columnId={id}
-            content={card}
-            moveCard={(dragIndex, hoverIndex, sourceColumnId) =>
-              moveCard
-                ? moveCard(dragIndex, hoverIndex, sourceColumnId, id)
-                : console.log("moveCard is undefined")
+    return (
+      <Container ref={ref}>
+        <Header>
+          <Title>{columnTitle}</Title>
+          <CardCount>{cards.length} 张卡片</CardCount>
+        </Header>
+        <CardList>
+          {cards.map((card, index) => (
+            <KanbanCard
+              key={index}
+              index={index}
+              columnId={id}
+              content={card}
+              moveCard={(dragIndex, hoverIndex, sourceColumnId) =>
+                moveCard
+                  ? moveCard(dragIndex, hoverIndex, sourceColumnId, id)
+                  : console.log("moveCard is undefined")
+              }
+              renderCard={renderCard}
+            />
+          ))}
+        </CardList>
+        {addCard ? (
+          <AddCard
+            onClick={() =>
+              openDrawer
+                ? openDrawer(id)
+                : console.log("openDrawer is undefined")
             }
-            renderCard={renderCard}
-          />
-        ))}
-      </CardList>
-      {addCard ? (
-        <AddCard
-          onClick={() =>
-            openDrawer ? openDrawer(id) : console.log("openDrawer is undefined")
-          }
-        >
-          <svgIcons.Plus width={24} height={24} />
-          添加卡片
-        </AddCard>
-      ) : null}
-    </Container>
-  )
-}
+          >
+            <svgIcons.Plus width={24} height={24} />
+            添加卡片
+          </AddCard>
+        ) : null}
+      </Container>
+    )
+  }
+)
 
 const Container = styled.div`
   background-color: #f6f8f9;

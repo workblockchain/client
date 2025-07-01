@@ -17,11 +17,9 @@
 
 import {Props as StoryCardProps} from "@/components/StoryCard"
 import {BoardProps} from "@/interfaces/kanban"
-import {useReducer} from "react"
-import styled from "styled-components"
-import {Input} from "../Input"
-import {Textarea} from "../Input/Textarea"
+import {useCallback, useReducer} from "react"
 import {KanbanBoard} from "../Kanban/KanbanBoard"
+import {KanbanForm} from "../Kanban/KanbanForm"
 
 export function KanbanContainer() {
   let initialArg: BoardProps = {
@@ -58,101 +56,122 @@ export function KanbanContainer() {
     ],
   }
 
-  const reducer = (
-    state: BoardProps,
-    action: {
-      type: string
-      payload: {
-        columnId?: string
-        content?: StoryCardProps
-        dragIndex?: number
-        hoverIndex?: number
-        targetIndex?: number
-        sourceColumnId?: string
-        targetColumnId?: string
+  type KanbanAction =
+    | {
+        type: "MOVE_CARD"
+        payload: {
+          dragIndex: number
+          hoverIndex: number
+          sourceColumnId: string
+          targetColumnId: string
+        }
       }
-    }
-  ) => {
-    const props = action.payload
+    | {
+        type: "ADD_CARD"
+        payload: {
+          columnId: string
+          content: StoryCardProps
+          targetIndex: number
+        }
+      }
+    | {
+        type: "REMOVE_CARD"
+        payload: {
+          columnId: string
+          targetIndex: number
+        }
+      }
+    | {
+        type: "CHANGE_CARD"
+        payload: {
+          columnId: string
+          targetIndex: number
+          content: Partial<StoryCardProps>
+        }
+      }
+
+  const reducer = (state: BoardProps, action: KanbanAction) => {
     switch (action.type) {
       case "MOVE_CARD": {
+        const {sourceColumnId, targetColumnId, dragIndex, hoverIndex} =
+          action.payload
         console.log("Moving card", action.payload)
         const stateCopy = structuredClone(state)
         // 找到源列和目标列
         const fromList = stateCopy.column.find(
-          (list) => list.id === props.sourceColumnId
+          (list) => list.id === sourceColumnId
         )
         const toList = stateCopy.column.find(
-          (list) => list.id === props.targetColumnId
+          (list) => list.id === targetColumnId
         )
 
         // 边界检查
         if (
           !fromList ||
           !toList ||
-          props.dragIndex === undefined ||
-          props.hoverIndex === undefined ||
-          props.dragIndex < 0 ||
-          props.dragIndex >= fromList.cards.length ||
-          props.hoverIndex < 0
+          dragIndex === undefined ||
+          hoverIndex === undefined ||
+          dragIndex < 0 ||
+          dragIndex >= fromList.cards.length ||
+          hoverIndex < 0
         ) {
           console.warn("Invalid move operation", action.payload)
           return stateCopy
         }
 
         // 从源列移除卡片
-        const [movedCard] = fromList.cards.splice(props.dragIndex, 1)
+        const [movedCard] = fromList.cards.splice(dragIndex, 1)
 
-        // 调整 hoverIndex（仅在同一列内移动时需要）
-        let adjustedHoverIndex = props.hoverIndex
+        let adjustedHoverIndex = hoverIndex
         // 是否在同一列内移动
 
-        console.log(props.dragIndex, props.hoverIndex, adjustedHoverIndex)
+        console.log(dragIndex, hoverIndex, adjustedHoverIndex)
 
         // 确保 adjustedHoverIndex 在目标列的有效范围内
-        adjustedHoverIndex = Math.min(props.hoverIndex, toList.cards.length)
+        adjustedHoverIndex = Math.min(hoverIndex, toList.cards.length)
 
         // 将卡片插入目标列的 adjustedHoverIndex 位置
-        toList.cards.splice(props.hoverIndex, 0, movedCard)
+        toList.cards.splice(hoverIndex, 0, movedCard)
 
         return stateCopy
       }
       case "ADD_CARD": {
+        const {columnId, content, targetIndex} = action.payload
         console.log("Adding card", action.payload)
         const stateCopy = structuredClone(state)
 
-        const targetList = stateCopy.column.find(
-          (l) => l.id === props.targetColumnId
-        )
+        const targetList = stateCopy.column.find((l) => l.id === columnId)
 
-        if (!targetList || !props.targetIndex || !props.content)
+        if (!targetList || targetIndex === undefined || !content)
           return stateCopy
 
-        targetList.cards.splice(props.targetIndex, 0, props.content)
+        targetList.cards.splice(targetIndex, 0, content)
         return stateCopy
       }
       case "REMOVE_CARD": {
+        const {columnId, targetIndex} = action.payload
         console.log("Removing card", action.payload)
         const stateCopy = structuredClone(state)
 
-        const sourceList = stateCopy.column.find((l) => l.id === props.columnId)
+        const sourceList = stateCopy.column.find((l) => l.id === columnId)
 
-        if (!sourceList || !props.targetIndex) return stateCopy
+        if (!sourceList || targetIndex === undefined) return stateCopy
 
-        sourceList.cards.splice(props.targetIndex, 1)
+        sourceList.cards.splice(targetIndex, 1)
         return stateCopy
       }
       case "CHANGE_CARD": {
+        const {columnId, targetIndex, content} = action.payload
         console.log("Changing card", action.payload)
         const stateCopy = structuredClone(state)
 
-        const sourceList = stateCopy.column.find((l) => l.id === props.columnId)
+        const sourceList = stateCopy.column.find((l) => l.id === columnId)
 
-        if (!sourceList || !props.targetIndex) return stateCopy
+        if (!sourceList || targetIndex === undefined) return stateCopy
 
-        sourceList.cards[props.targetIndex] = {
-          ...sourceList.cards[props.targetIndex],
-          ...props.content,
+        sourceList.cards[targetIndex] = {
+          ...sourceList.cards[targetIndex],
+          ...content,
         }
         return stateCopy
       }
@@ -163,127 +182,63 @@ export function KanbanContainer() {
 
   const [kanbanState, dispatch] = useReducer(reducer, initialArg)
 
-  const handleAddCard = (columnId: string, content: StoryCardProps) => {
-    dispatch({
-      type: "ADD_CARD",
-      payload: {
-        columnId,
-        content,
-      },
-    })
-  }
+  const handleAddCard = useCallback(
+    (columnId: string, content: StoryCardProps) => {
+      dispatch({
+        type: "ADD_CARD",
+        payload: {
+          columnId,
+          content,
+          targetIndex: 0,
+        },
+      })
+    },
+    []
+  )
 
-  const handleMoveCard = (
-    dragIndex: number,
-    hoverIndex: number,
-    sourceColumnId: string,
-    targetColumnId: string
-  ) => {
-    dispatch({
-      type: "MOVE_CARD",
-      payload: {dragIndex, hoverIndex, sourceColumnId, targetColumnId},
-    })
-  }
+  const handleMoveCard = useCallback(
+    (
+      dragIndex: number,
+      hoverIndex: number,
+      sourceColumnId: string,
+      targetColumnId: string
+    ) => {
+      dispatch({
+        type: "MOVE_CARD",
+        payload: {dragIndex, hoverIndex, sourceColumnId, targetColumnId},
+      })
+    },
+    []
+  )
 
-  const handleRemoveCard = (columnId: string, targetIndex: number) => {
-    dispatch({type: "REMOVE_CARD", payload: {columnId, targetIndex}})
-  }
+  const handleRemoveCard = useCallback(
+    (columnId: string, targetIndex: number) => {
+      dispatch({type: "REMOVE_CARD", payload: {columnId, targetIndex}})
+    },
+    []
+  )
 
-  const handleUpdateCard = (
-    columnId: string,
-    targetIndex: number,
-    content: StoryCardProps
-  ) => {
-    dispatch({
-      type: "CHANGE_CARD",
-      payload: {
-        columnId,
-        targetIndex,
-        content,
-      },
-    })
-  }
+  const handleUpdateCard = useCallback(
+    (
+      columnId: string,
+      targetIndex: number,
+      content: Partial<StoryCardProps>
+    ) => {
+      dispatch({
+        type: "CHANGE_CARD",
+        payload: {
+          columnId,
+          targetIndex,
+          content,
+        },
+      })
+    },
+    []
+  )
 
-  const renderFrom = (submit: (data: StoryCardProps) => void) => {
-    const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault()
-      const formData = new FormData(e.target as HTMLFormElement)
-
-      const tagsInput = formData.get("tags") as string
-      const subTasksInput = formData.get("subTasks") as string
-
-      const data: StoryCardProps = {
-        id: `card_${Date.now()}`,
-        children: formData.get("children") as string,
-        tags: tagsInput
-          ? tagsInput
-              .split(",")
-              .map((tag) => tag.trim())
-              .filter(Boolean)
-          : [],
-        subTasks: subTasksInput
-          ? subTasksInput
-              .split(",")
-              .map((task) => ({label: task.trim()}))
-              .filter((task) => task.label)
-          : [],
-        cid: (formData.get("cid") as string) || undefined,
-        assignee: (formData.get("assignee") as string) || undefined,
-      }
-
-      submit(data)
-    }
-
-    return (
-      <Form onSubmit={handleSubmit}>
-        <FormGroup>
-          <Label htmlFor="content">内容 *</Label>
-          <Textarea id="content" name="children" rows={3} required />
-        </FormGroup>
-
-        <FormGroup>
-          <Label htmlFor="tags">标签</Label>
-          <Input
-            id="tags"
-            name="tags"
-            placeholder="请用逗号分隔多个标签，如：紧急,重要,前端"
-          />
-          <HelperText>多个标签请用英文逗号分隔</HelperText>
-        </FormGroup>
-
-        <FormGroup>
-          <Label htmlFor="subTasks">子任务</Label>
-          <Textarea
-            id="subTasks"
-            name="subTasks"
-            rows={2}
-            placeholder="请用逗号分隔多个子任务"
-          />
-          <HelperText>多个子任务请用英文逗号分隔</HelperText>
-        </FormGroup>
-
-        <FormRow>
-          <FormGroup>
-            <Label htmlFor="cid">卡片ID</Label>
-            <Input id="cid" name="cid" placeholder="可选，留空自动生成" />
-          </FormGroup>
-
-          <FormGroup>
-            <Label htmlFor="assignee">指派人</Label>
-            <Input
-              id="assignee"
-              name="assignee"
-              placeholder="请输入指派人姓名"
-            />
-          </FormGroup>
-        </FormRow>
-
-        <ButtonGroup>
-          <SubmitButton type="submit">创建卡片</SubmitButton>
-        </ButtonGroup>
-      </Form>
-    )
-  }
+  const renderFrom = useCallback((submit: (data: StoryCardProps) => void) => {
+    return <KanbanForm onSubmit={submit} />
+  }, [])
 
   return (
     <KanbanBoard
@@ -300,75 +255,3 @@ export function KanbanContainer() {
 }
 
 export default KanbanContainer
-
-const Form = styled.form`
-  width: 100%;
-  max-width: 500px;
-  padding: 24px;
-  box-sizing: border-box;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-`
-
-const FormGroup = styled.div`
-  margin-bottom: 20px;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-`
-
-const SubmitButton = styled.button`
-  padding: 12px 24px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: #0056b3;
-  }
-
-  &:active {
-    transform: translateY(1px);
-  }
-`
-const Label = styled.label`
-  display: block;
-  margin-bottom: 4px;
-  font-weight: 500;
-  color: #333;
-  font-size: 14px;
-`
-
-const HelperText = styled.span`
-  display: block;
-  margin-top: 4px;
-  font-size: 12px;
-  color: #666;
-  line-height: 1.4;
-`
-
-const FormRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-`
-
-const ButtonGroup = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 24px;
-  padding-top: 16px;
-  border-top: 1px solid #eee;
-`
