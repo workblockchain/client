@@ -79,8 +79,8 @@ const sampleData = [
   },
   {
     id: 7,
-    name: "Grace",
-    age: 29,
+    name: null,
+    age: null,
     department: "Marketing",
     status: "Active",
     joinDate: "2023-04-15",

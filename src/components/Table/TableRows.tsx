@@ -34,11 +34,6 @@ interface TableRowProps<T> {
   columns: TableColumn<T>[]
 
   /**
-   * 行的Key
-   */
-  key: string
-
-  /**
    * 行数据
    */
   rowData: T
@@ -51,7 +46,7 @@ interface TableRowProps<T> {
   /**
    * 布局配置
    */
-  gridTemplateColumns: string
+  $gridTemplateColumns: string
 
   /**
    * 行下标
@@ -62,21 +57,19 @@ interface TableRowProps<T> {
 export const TableRow = memo(
   <T extends Record<string, any>>({
     columns,
-    key,
     onRowClick,
-    gridTemplateColumns,
+    $gridTemplateColumns,
     rowData,
     rowIndex,
   }: TableRowProps<T>) => {
     return (
       <TableRowContainer
-        key={key}
         onClick={() => onRowClick?.(rowData)}
-        hasClickHandler={!!onRowClick}
-        gridTemplateColumns={gridTemplateColumns}
+        $hasClickHandler={onRowClick ? true : false}
+        $gridTemplateColumns={$gridTemplateColumns}
       >
-        {columns.map((column) => (
-          <TableCell key={column.key}>
+        {columns.map((column, index) => (
+          <TableCell key={index}>
             {column.render
               ? column.render(rowData[column.key], rowData, rowIndex)
               : rowData[column.key]}
@@ -87,17 +80,17 @@ export const TableRow = memo(
   }
 )
 
-const BaseGrid = styled.div<{gridTemplateColumns: string}>`
+const BaseGrid = styled.div<{$gridTemplateColumns: string}>`
   display: grid;
   align-items: center;
-  grid-template-columns: ${({gridTemplateColumns}) => gridTemplateColumns};
+  grid-template-columns: ${({$gridTemplateColumns}) => $gridTemplateColumns};
 `
 
-const TableRowContainer = styled(BaseGrid)<{hasClickHandler?: boolean}>`
+const TableRowContainer = styled(BaseGrid)<{$hasClickHandler?: boolean}>`
   transition: background-color 0.1s ease-in-out;
 
-  ${({hasClickHandler}) =>
-    hasClickHandler &&
+  ${({$hasClickHandler}) =>
+    $hasClickHandler &&
     `
     cursor: pointer;
   `}

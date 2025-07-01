@@ -124,7 +124,7 @@ export const Table = <T extends Record<string, any>>({
 
   return (
     <TableContainer>
-      <TableHeader gridTemplateColumns={gridTemplateColumns}>
+      <TableHeader $gridTemplateColumns={gridTemplateColumns}>
         {columns.map((column) => (
           <TableHeaderCell key={column.key}>{column.title}</TableHeaderCell>
         ))}
@@ -136,9 +136,9 @@ export const Table = <T extends Record<string, any>>({
         ) : data.length === 0 ? (
           <EmptyState colSpan={columns.length}>暂无数据</EmptyState>
         ) : (
-          Object.entries(groups).map(([groupKey, groupData]) => (
+          Object.entries(groups).map(([groupKey, groupData], index) => (
             <TableGroup
-              key={groupKey}
+              key={index}
               groupHeader={
                 renderGroupHeader
                   ? renderGroupHeader(groupKey, groupData)
@@ -146,7 +146,7 @@ export const Table = <T extends Record<string, any>>({
               }
               groupData={groupData}
               columns={columns as TableColumn<Record<string, any>>[]}
-              gridTemplateColumns={gridTemplateColumns}
+              $gridTemplateColumns={gridTemplateColumns}
               onRowClick={
                 onRowClick as
                   | ((record: Record<string, any>) => void)
@@ -178,10 +178,11 @@ const TableContainer = styled.div`
   background-color: #f6f8f9;
 `
 
-const BaseGrid = styled.div<{gridTemplateColumns: string}>`
+const BaseGrid = styled.div<{$gridTemplateColumns: string}>`
   display: grid;
   align-items: center;
-  grid-template-columns: ${({gridTemplateColumns}) => gridTemplateColumns};
+  grid-template-columns: ${({$gridTemplateColumns}) => $gridTemplateColumns};
+  grid-auto-rows: max-content;
 `
 
 const TableHeader = styled(BaseGrid)`
