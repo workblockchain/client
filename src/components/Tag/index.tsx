@@ -24,11 +24,29 @@ type TagSize = "small" | "medium" | "large"
 interface TagProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: TagVariant
   size?: TagSize
+  canClose?: boolean
+  onClose?: () => void
   children: React.ReactNode
 }
 
-const Tag = ({variant = "primary", size = "medium", ...props}: TagProps) => {
-  return <TagContainer {...props} $variant={variant} $size={size} />
+const Tag = ({
+  variant = "primary",
+  size = "medium",
+  children,
+  canClose,
+  onClose,
+  ...props
+}: TagProps) => {
+  return (
+    <TagContainer {...props} $variant={variant} $size={size}>
+      {children}
+      {canClose && (
+        <CloseButton onClick={onClose} $variant={variant}>
+          ⨉
+        </CloseButton>
+      )}
+    </TagContainer>
+  )
 }
 
 export default Tag
@@ -36,6 +54,7 @@ export default Tag
 const TagContainer = styled.span<{$variant: TagVariant; $size?: TagSize}>`
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   border-radius: 8px;
   font-weight: 500;
   line-height: 1.5;
@@ -91,4 +110,53 @@ const TagContainer = styled.span<{$variant: TagVariant; $size?: TagSize}>`
         `
     }
   }}
+`
+
+const CloseButton = styled.button<{$variant: TagVariant; $size?: TagSize}>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+
+  ${({$variant}) => {
+    switch ($variant) {
+      case "primary":
+        return css`
+          background-color: ${colors.Blue100};
+          color: ${colors.Blue700};
+        `
+      case "success":
+        return css`
+          background-color: ${colors.Yellow300};
+          color: ${colors.Yellow800};
+        `
+      case "warning":
+        return css`
+          background-color: ${colors.Red100};
+          color: ${colors.Red700};
+        `
+      case "error":
+        return css`
+          background-color: ${colors.Red200};
+          color: ${colors.Red800};
+        `
+      case "text":
+        return css`
+          background-color: transparent;
+          color: ${colors.Neutral500};
+          font-weight: 400;
+        `
+    }
+  }}
+
+  &:hover {
+    background-color: ${colors.Neutral200};
+  }
 `
