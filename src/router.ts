@@ -96,8 +96,9 @@ export const routers: RouteObject[] = [
           {
             index: true,
             lazy: async () => ({
-              Component: (await import("./components/Containers/WorkContainer"))
-                .default,
+              Component: (
+                await import("./components/Containers/KanbanContainer")
+              ).default,
             }),
           },
           {
@@ -109,8 +110,6 @@ export const routers: RouteObject[] = [
             handle: {
               label: "劳动记录",
               icon: svgIcons.Navigation,
-              showInMenu: true,
-              showInBreadcrumb: true,
             },
           },
           {

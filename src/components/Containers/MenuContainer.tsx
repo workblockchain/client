@@ -55,7 +55,7 @@ function getMenuFromRouter(routers: RouteObject[], basePath = ""): MenuItem[] {
         url: currentPath,
         label: handle.label || currentPath,
         icon: handle.icon
-          ? createElement(handle.icon, {width: 24, height: 24})
+          ? createElement(handle.icon, {width: 24, height: 24, color: "black"})
           : undefined,
         children: processChildren(router.children || [], currentPath),
       }
@@ -73,10 +73,15 @@ export function MenuContainer() {
   const menuData: MenuItem[] = getMenuFromRouter(routers)
   const matches = useMatches()
 
+  console.log(matches[matches.length - 1])
   return (
     <Menu
       items={menuData}
-      initialSelectedId={matches[matches.length - 1].pathname}
+      initialSelectedId={
+        matches[matches.length - 1].pathname === "/dashboard/"
+          ? "/dashboard/kanban"
+          : matches[matches.length - 1].pathname
+      }
     ></Menu>
   )
 }
