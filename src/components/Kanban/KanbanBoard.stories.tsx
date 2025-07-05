@@ -32,7 +32,7 @@ const kanbanData: BoardProps = {
   id: "board1",
   column: [
     {
-      id: "card 1",
+      id: "todo",
       columnTitle: "To do",
       cards: [
         {
@@ -52,12 +52,12 @@ const kanbanData: BoardProps = {
       ],
     },
     {
-      id: "card 2",
+      id: "doing",
       columnTitle: "进行中",
       cards: [{id: "card4643"}],
     },
     {
-      id: "card 3",
+      id: "done",
       columnTitle: "完成",
       cards: [{id: "car45645664d3"}],
     },
@@ -70,6 +70,6 @@ export const Primary: Story = {
 
 export const EmptyList: Story = {
   args: {
-    column: [{id: "empty", columnTitle: "空列表", cards: []}],
+    column: [{id: "todo", columnTitle: "空列表", cards: []}],
   },
 }

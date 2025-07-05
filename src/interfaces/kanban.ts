@@ -15,44 +15,32 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {ReactNode, Ref} from "react"
+import {Props as StoryCard} from "../components/StoryCard"
+import {RequirementStatusType} from "./records"
 
+export interface StoryCard2 extends StoryCard {
+  cid: string
+}
 export interface CardProps extends DropItem {
-  moveCard?: (
-    dragIndex: number,
-    hoverIndex: number,
-    sourceColumnId: string
-  ) => void
-  renderCard?: (
-    ref: Ref<HTMLDivElement>,
-    props: Record<string, any>
-  ) => ReactNode
+  moveCard?: (cardId: string) => void
+  clickCard?: (data: DropItem) => void
 }
 
 export interface DropItem {
   index: number
-  content: Record<string, any>
-  columnId: string
+  content: StoryCard2
+  state: RequirementStatusType
 }
 
 export interface ColumnProps {
-  id: string
+  id: RequirementStatusType
   columnTitle: string
-  cards: Record<string, any>[]
-  addCard?: (columnId: string, content: any) => void
-  moveCard?: (
-    dragIndex: number,
-    hoverIndex: number,
-    sourceColumnId: string,
-    targetColumnId: string
-  ) => void
-  deleteCard?: (columnId: string, targetIndex: number) => void
-  upDateCard?: (columnId: string, targetIndex: number, content: any) => void
-  renderCard?: (
-    ref: Ref<HTMLDivElement>,
-    props: Record<string, any>
-  ) => ReactNode
-  openDrawer?: (id: string) => void
+  cards: StoryCard2[]
+  addCard?: (state: RequirementStatusType, cardData: StoryCard2) => void
+  moveCard?: (cardId: string, state: RequirementStatusType) => void
+  deleteCard?: (id: string) => void
+  openDrawer?: (state: RequirementStatusType) => void
+  clickCard?: (data: DropItem) => void
 }
 
 export interface BoardProps {
@@ -60,18 +48,12 @@ export interface BoardProps {
   title?: string
   column: ColumnProps[]
   isLoading?: boolean
-  addCard?: (columnId: string, content: any) => void
-  moveCard?: (
-    dragIndex: number,
-    hoverIndex: number,
-    sourceColumnId: string,
-    targetColumnId: string
+  addCard?: (state: RequirementStatusType, cardData: StoryCard2) => void
+  moveCard?: (cardId: string, state: RequirementStatusType) => void
+  deleteCard?: (id: string) => void
+  upDateCard?: (
+    cardId: string,
+    state: RequirementStatusType,
+    cardData: StoryCard2
   ) => void
-  deleteCard?: (columnId: string, targetIndex: number) => void
-  upDateCard?: (columnId: string, targetIndex: number, content: any) => void
-  renderCard?: (
-    ref: Ref<HTMLDivElement>,
-    props: Record<string, any>
-  ) => ReactNode
-  renderFrom?: (callBack: (data: any) => void) => ReactNode
 }

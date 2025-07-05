@@ -15,89 +15,122 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {Props as StoryCardProps} from "@/components/StoryCard"
+import {StoryCard2} from "@/interfaces"
 import React from "react"
+import {
+  Controller,
+  SubmitHandler,
+  useFieldArray,
+  useForm,
+} from "react-hook-form"
 import styled from "styled-components"
-import {Input} from "../Input"
+import {Button} from "../Button"
 import {Textarea} from "../Input/Textarea"
-import {AvatarRow} from "../Layout/AvatarRow"
-
-interface KanbanFormProps {
-  onSubmit: (data: StoryCardProps) => void
+import Tag from "../Tag"
+export interface KanbanFormProps {
+  callback: (type: "create" | "edit", data: StoryCard2) => void
+  initData?: StoryCard2
+  onCancel: () => void
+  mode?: "create" | "edit"
+  deleteCard?: () => void
 }
 
-export const KanbanForm = React.memo(({onSubmit}: KanbanFormProps) => {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const formData = new FormData(e.target as HTMLFormElement)
+export const KanbanForm = React.memo(
+  ({
+    onCancel,
+    mode = "create",
+    initData,
+    callback,
+    deleteCard,
+  }: KanbanFormProps) => {
+    const {register, control, handleSubmit, reset} = useForm<StoryCard2>({
+      defaultValues: mode === "create" ? {} : initData,
+    })
+    const {fields, append} = useFieldArray({
+      control,
+      name: "tags",
+    })
 
-    const tagsInput = formData.get("tags") as string
-    const subTasksInput = formData.get("subTasks") as string
-
-    const data: StoryCardProps = {
-      id: `card_${Date.now()}`,
-      children: formData.get("children") as string,
-      tags: tagsInput
-        ? tagsInput
-            .split(",")
-            .map((tag) => tag.trim())
-            .filter(Boolean)
-        : [],
-      subTasks: subTasksInput
-        ? subTasksInput
-            .split(",")
-            .map((task) => ({label: task.trim()}))
-            .filter((task) => task.label)
-        : [],
-      cid: (formData.get("cid") as string) || undefined,
-      assignee: (formData.get("assignee") as string) || undefined,
+    const onSubmit: SubmitHandler<StoryCard2> = (data) => {
+      callback(mode, data)
+      reset()
     }
+    return (
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <FormGroup>
+          <Label htmlFor="content">卡片内容 *</Label>
+          <Textarea
+            style={{width: "100%"}}
+            required
+            {...register("children", {required: true})}
+          />
+        </FormGroup>
 
-    onSubmit(data)
+        <FormGroup>
+          <Label htmlFor="tags">标签</Label>
+          <TagGroup>
+            {fields.map((item, index) => {
+              return (
+                <div key={item.id}>
+                  <Controller
+                    render={({field}) => <Tag {...field}>{field.value}</Tag>}
+                    name={`tags.${index}`}
+                    control={control}
+                  />
+                </div>
+              )
+            })}
+            <EditableTag
+              contentEditable
+              suppressContentEditableWarning
+              onBlur={(e) => {
+                const value = e.currentTarget.textContent?.trim()
+                if (value) {
+                  append(value)
+                }
+                e.currentTarget.textContent = "+"
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault()
+                  e.currentTarget.blur()
+                }
+              }}
+              onFocus={(e) => {
+                if (e.currentTarget.textContent === "+") {
+                  e.currentTarget.textContent = ""
+                }
+              }}
+            >
+              +
+            </EditableTag>
+          </TagGroup>
+        </FormGroup>
+
+        <ButtonGroup>
+          <Button
+            type="button"
+            onClick={() => {
+              onCancel()
+              deleteCard ? deleteCard() : null
+            }}
+          >
+            删除
+          </Button>
+          {mode === "create" ? (
+            <Button type="submit" color="primary">
+              创建卡片
+            </Button>
+          ) : (
+            <Button type="submit" color="primary">
+              保存卡片
+            </Button>
+          )}
+        </ButtonGroup>
+      </Form>
+    )
   }
-
-  return (
-    <Form onSubmit={handleSubmit}>
-      <FormGroup>
-        <Label htmlFor="content">内容 *</Label>
-        <Textarea id="content" name="children" rows={3} required />
-      </FormGroup>
-
-      <FormGroup>
-        <Label htmlFor="tags">标签</Label>
-        <Input
-          id="tags"
-          name="tags"
-          placeholder="请用逗号分隔多个标签，如：紧急,重要,前端"
-        />
-        <HelperText>多个标签请用英文逗号分隔</HelperText>
-      </FormGroup>
-
-      <FormGroup>
-        <Label htmlFor="subTasks">子任务</Label>
-        <Textarea
-          id="subTasks"
-          name="subTasks"
-          rows={2}
-          placeholder="请用逗号分隔多个子任务"
-        />
-        <HelperText>多个子任务请用英文逗号分隔</HelperText>
-      </FormGroup>
-      <FormGroup>
-        <AvatarRow
-          value={""}
-          onChange={function (value: string): void {
-            throw new Error("Function not implemented.")
-          }}
-        />
-      </FormGroup>
-
-      <ButtonGroup>
-        <SubmitButton type="submit">创建卡片</SubmitButton>
-      </ButtonGroup>
-    </Form>
-  )
-})
+)
 
 KanbanForm.displayName = "KanbanForm"
 
@@ -117,39 +150,12 @@ const FormGroup = styled.div`
   }
 `
 
-const SubmitButton = styled.button`
-  padding: 12px 24px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: #0056b3;
-  }
-
-  &:active {
-    transform: translateY(1px);
-  }
-`
 const Label = styled.label`
   display: block;
   margin-bottom: 4px;
   font-weight: 500;
   color: #333;
   font-size: 14px;
-`
-
-const HelperText = styled.span`
-  display: block;
-  margin-top: 4px;
-  font-size: 12px;
-  color: #666;
-  line-height: 1.4;
 `
 
 const ButtonGroup = styled.div`
@@ -159,4 +165,42 @@ const ButtonGroup = styled.div`
   margin-top: 24px;
   padding-top: 16px;
   border-top: 1px solid #eee;
+`
+
+const TagGroup = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+`
+const EditableTag = styled.div`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  padding: 4px 8px;
+  box-sizing: border-box;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #666;
+
+  &:hover {
+    background-color: #e0e0e0;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+    background-color: #fff;
+    cursor: text;
+  }
+
+  /* 只有在非聚焦状态且为空时才显示+ */
+  &:empty:not(:focus):before {
+    content: "+";
+    color: #999;
+  }
 `

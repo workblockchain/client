@@ -39,11 +39,11 @@ export const KanbanCard = memo((props: CardProps) => {
     drop: (item: DropItem) => {
       if (
         !ref.current ||
-        (item.index === props.index && item.columnId === props.columnId)
+        (item.index === props.index && item.state === props.state)
       )
         return
       props.moveCard
-        ? props.moveCard(item.index, props.index, item.columnId)
+        ? props.moveCard(item.content.cid)
         : console.log("moveCard is not defined")
     },
   })
@@ -52,18 +52,19 @@ export const KanbanCard = memo((props: CardProps) => {
 
   return (
     <>
-      {props.renderCard ? (
-        props.renderCard(ref, {...props.content})
-      ) : (
-        <StoryCard
-          draggable
-          isDragging={isDragging}
-          ref={ref}
-          {...props.content}
-        >
-          {props.content.children}
-        </StoryCard>
-      )}
+      <StoryCard
+        draggable
+        isDragging={isDragging}
+        ref={ref}
+        onClick={() =>
+          props.clickCard
+            ? props.clickCard(props)
+            : console.log("openCard is not defined")
+        }
+        {...props.content}
+      >
+        {props.content.children}
+      </StoryCard>
     </>
   )
 })

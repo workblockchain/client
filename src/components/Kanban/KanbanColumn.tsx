@@ -32,7 +32,7 @@ export const KanbanColumn = memo(
     addCard,
     moveCard,
     openDrawer,
-    renderCard,
+    clickCard,
   }: ColumnProps) => {
     const ref = useRef<HTMLDivElement>(null)
 
@@ -42,13 +42,13 @@ export const KanbanColumn = memo(
 
       drop: (item: DropItem, monitor) => {
         // 如果是当前列表
-        if (item.columnId === id) return
+        if (item.state === id) return
 
         // 如果被其他可拖拽的元素覆盖
         if (!monitor.isOver({shallow: true})) return
 
         moveCard
-          ? moveCard!(item.index, cards.length, item.columnId, id)
+          ? moveCard(item.content.cid!, id)
           : console.log("moveCard is undefined")
       },
     })
@@ -66,14 +66,14 @@ export const KanbanColumn = memo(
             <KanbanCard
               key={index}
               index={index}
-              columnId={id}
+              state={id}
               content={card}
-              moveCard={(dragIndex, hoverIndex, sourceColumnId) =>
+              moveCard={(cardId) =>
                 moveCard
-                  ? moveCard(dragIndex, hoverIndex, sourceColumnId, id)
+                  ? moveCard(cardId, id)
                   : console.log("moveCard is undefined")
               }
-              renderCard={renderCard}
+              clickCard={clickCard}
             />
           ))}
         </CardList>

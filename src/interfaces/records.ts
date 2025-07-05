@@ -70,7 +70,7 @@ export function compressWorkData(work: WorkData): CompressedWorkData {
   }
 }
 
-const requirementStatusList = ["todo", "doing", "done"] as const
+export const requirementStatusList = ["todo", "doing", "done"] as const
 export type RequirementStatusType = (typeof requirementStatusList)[number]
 
 export interface RequirementData {
