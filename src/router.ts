@@ -15,7 +15,8 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {createBrowserRouter} from "react-router"
+import {createBrowserRouter, RouteObject} from "react-router"
+import {svgIcons} from "./components/Icons/svgIcons"
 import {Main} from "./components/Layout/Main"
 
 export const paths = {
@@ -26,9 +27,16 @@ export const paths = {
   dashboard: "dashboard",
 }
 
-export const router = createBrowserRouter([
+export interface RouteMeta {
+  label?: string
+  icon?: string
+  showInMenu?: boolean
+  showInBreadcrumb?: boolean
+}
+
+export const routers: RouteObject[] = [
   {
-    path: "/",
+    path: paths.home,
     Component: Main,
     children: [
       {
@@ -44,6 +52,10 @@ export const router = createBrowserRouter([
         lazy: async () => ({
           Component: (await import("./components/Layout/Config")).default,
         }),
+        handle: {
+          label: "设置",
+          icon: svgIcons.Gear,
+        },
       },
       {
         path: paths.profile,
@@ -52,6 +64,10 @@ export const router = createBrowserRouter([
             await import("./components/Layout/UserProfile/UserProfile")
           ).default,
         }),
+        handle: {
+          label: "个人信息",
+          icon: svgIcons.People,
+        },
       },
       {
         path: paths.records,
@@ -59,6 +75,10 @@ export const router = createBrowserRouter([
           Component: (await import("./components/Layout/RecordsLayout"))
             .default,
         }),
+        handle: {
+          label: "劳动记录",
+          icon: svgIcons.List,
+        },
       },
       {
         path: paths.dashboard,
@@ -66,13 +86,32 @@ export const router = createBrowserRouter([
           Component: (await import("./components/Layout/Dashboard/Dashboard"))
             .default,
         }),
+        handle: {
+          label: "工作台",
+          icon: svgIcons.Kanban,
+          showInMenu: true,
+          showInBreadcrumb: true,
+        },
         children: [
+          {
+            index: true,
+            lazy: async () => ({
+              Component: (await import("./components/Containers/WorkContainer"))
+                .default,
+            }),
+          },
           {
             path: "work",
             lazy: async () => ({
               Component: (await import("./components/Containers/WorkContainer"))
                 .default,
             }),
+            handle: {
+              label: "劳动记录",
+              icon: svgIcons.Navigation,
+              showInMenu: true,
+              showInBreadcrumb: true,
+            },
           },
           {
             path: "kanban",
@@ -81,9 +120,17 @@ export const router = createBrowserRouter([
                 await import("./components/Containers/KanbanContainer")
               ).default,
             }),
+            handle: {
+              label: "需求列表",
+              icon: svgIcons.Workbench,
+              showInMenu: true,
+              showInBreadcrumb: true,
+            },
           },
         ],
       },
     ],
   },
-])
+]
+
+export const router = createBrowserRouter(routers)

@@ -57,6 +57,7 @@ const ReqCard = ({req}: {req: RequirementData}) => {
   const isOpen = usePomodoroStore((state) => state.isReqCardOpen)
   const setIsOpen = usePomodoroStore((state) => state.setIsReqCardOpen)
   const props: ComponentPropsWithoutRef<typeof StoryCard> = {
+    id: req.rid,
     tags: req.tags,
     cid: req.rid,
     assignee: req.assignedTo,
@@ -88,6 +89,7 @@ const ReqList = () => {
     <ReqListContainer $open={isOpen} onClick={() => setIsOpen(false)}>
       {wip.map((r) => (
         <StoryCard
+          id={r.rid}
           key={r.rid}
           tags={r.tags}
           cid={r.rid}

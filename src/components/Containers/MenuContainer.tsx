@@ -15,32 +15,70 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {svgIcons} from "../Icons/svgIcons"
+import {RouteMeta, routers} from "@/router"
+import {createElement} from "react"
+import {RouteObject, useMatches} from "react-router"
 import Menu, {MenuItem} from "../Menu/Menu"
 
+function getMenuFromRouter(routers: RouteObject[], basePath = ""): MenuItem[] {
+  const menuItems: MenuItem[] = []
+
+  const normalizePath = (base: string, path: string): string => {
+    if (!path) return base || "/"
+    const normalizedBase = base.endsWith("/") ? base.slice(0, -1) : base
+    const normalizedPath = path.startsWith("/") ? path : `/${path}`
+    return normalizedBase + normalizedPath
+  }
+
+  const hasValidChildren = (children?: RouteObject[]): boolean => {
+    return Array.isArray(children) && children.length > 0
+  }
+
+  const processChildren = (
+    children: RouteObject[],
+    currentPath: string
+  ): MenuItem[] => {
+    return hasValidChildren(children)
+      ? getMenuFromRouter(children, currentPath)
+      : []
+  }
+
+  routers.forEach((router) => {
+    if (!router.path) return
+
+    const currentPath = normalizePath(basePath, router.path)
+    const handle = router.handle as RouteMeta | undefined
+
+    if (handle?.showInMenu) {
+      const menuItem: MenuItem = {
+        id: currentPath,
+        url: currentPath,
+        label: handle.label || currentPath,
+        icon: handle.icon
+          ? createElement(handle.icon, {width: 24, height: 24})
+          : undefined,
+        children: processChildren(router.children || [], currentPath),
+      }
+      menuItems.push(menuItem)
+    } else {
+      const childItems = processChildren(router.children || [], basePath)
+      menuItems.push(...childItems)
+    }
+  })
+
+  return menuItems
+}
+
 export function MenuContainer() {
-  const menuData: MenuItem[] = [
-    {
-      id: "work",
-      label: "劳动管理",
-      icon: <svgIcons.List width={24} height={24} />,
-      children: [
-        {
-          id: "work-recode",
-          label: "劳动记录",
-          icon: <svgIcons.Navigation width={24} height={24} />,
-          url: "/dashboard/work",
-        },
-        {
-          id: "work-kanban",
-          label: "需求列表",
-          icon: <svgIcons.Workbench width={24} height={24} />,
-          url: "/dashboard/kanban",
-        },
-      ],
-    },
-  ]
-  return <Menu items={menuData}></Menu>
+  const menuData: MenuItem[] = getMenuFromRouter(routers)
+  const matches = useMatches()
+
+  return (
+    <Menu
+      items={menuData}
+      initialSelectedId={matches[matches.length - 1].pathname}
+    ></Menu>
+  )
 }
 
 export default MenuContainer
