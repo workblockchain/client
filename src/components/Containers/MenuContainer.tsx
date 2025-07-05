@@ -15,8 +15,8 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {RouteMeta, routers} from "@/router"
-import {createElement} from "react"
+import {routers} from "@/router"
+import routerData from "@/router/routerData"
 import {RouteObject, useMatches} from "react-router"
 import Menu, {MenuItem} from "../Menu/Menu"
 
@@ -47,16 +47,14 @@ function getMenuFromRouter(routers: RouteObject[], basePath = ""): MenuItem[] {
     if (!router.path) return
 
     const currentPath = normalizePath(basePath, router.path)
-    const handle = router.handle as RouteMeta | undefined
+    const meta = routerData[currentPath]
 
-    if (handle?.showInMenu) {
+    if (meta?.showInMenu) {
       const menuItem: MenuItem = {
         id: currentPath,
         url: currentPath,
-        label: handle.label || currentPath,
-        icon: handle.icon
-          ? createElement(handle.icon, {width: 24, height: 24, color: "black"})
-          : undefined,
+        label: meta.label || currentPath,
+        icon: meta.icon ? meta.icon : undefined,
         children: processChildren(router.children || [], currentPath),
       }
       menuItems.push(menuItem)
@@ -73,7 +71,6 @@ export function MenuContainer() {
   const menuData: MenuItem[] = getMenuFromRouter(routers)
   const matches = useMatches()
 
-  console.log(matches[matches.length - 1])
   return (
     <Menu
       items={menuData}

@@ -49,6 +49,7 @@ const findParentPath = (
         ...currentPath,
         item.id,
       ])
+
       if (
         foundPath.length > 0 ||
         item.children.some((child) => child.id === targetId)
