@@ -20,12 +20,11 @@ import {memo} from "react"
 import styled from "styled-components"
 
 interface TableCellProps {
-  key: string
   children: string
 }
 
-export const TableCell = memo(({key, children}: TableCellProps) => {
-  return <TableCellContainer key={key}>{children ?? "空"}</TableCellContainer>
+export const TableCell = memo(({children}: TableCellProps) => {
+  return <TableCellContainer>{children ?? "空"}</TableCellContainer>
 })
 
 const TableCellContainer = styled.div`
@@ -37,6 +36,8 @@ const TableCellContainer = styled.div`
   color: ${colors.Neutral800};
   border-bottom: 1px solid ${colors.Neutral100};
   border-right: 1px solid ${colors.Neutral100};
+  box-sizing: border-box;
+  height: 100%;
 
   &:last-child {
     border-right: none;

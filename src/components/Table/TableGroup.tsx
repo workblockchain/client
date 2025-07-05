@@ -21,8 +21,6 @@ import {styled} from "styled-components"
 import {TableColumn, TableRow} from "./TableRows"
 
 interface TableGroupProps<T> {
-  key: string
-
   /**
    * 表格列的配置
    */
@@ -50,23 +48,21 @@ interface TableGroupProps<T> {
   /**
    * 布局配置
    */
-  gridTemplateColumns: string
+  $gridTemplateColumns: string
 
   getRowKey: (rowData: T) => string
 }
 
 export const TableGroup = memo(
   <T extends Record<string, any>>({
-    key,
     columns,
     groupData,
     groupHeader,
-    getRowKey,
-    gridTemplateColumns,
+    $gridTemplateColumns,
     onRowClick,
   }: TableGroupProps<T>) => {
     return (
-      <TableGroupContainer key={key}>
+      <TableGroupContainer>
         {groupHeader == "" ? null : (
           <TableGroupHeader colSpan={columns.length}>
             {groupHeader ?? "没有分组"}
@@ -75,9 +71,9 @@ export const TableGroup = memo(
 
         {groupData.map((rowData, index) => (
           <TableRow
-            key={getRowKey(rowData)}
+            key={index}
             onRowClick={() => onRowClick?.(rowData)}
-            gridTemplateColumns={gridTemplateColumns}
+            $gridTemplateColumns={$gridTemplateColumns}
             columns={columns as TableColumn<Record<string, any>>[]}
             rowData={rowData}
             rowIndex={index}
@@ -102,6 +98,7 @@ const TableGroupContainer = styled.div`
 const TableGroupHeader = styled.div<{colSpan: number}>`
   grid-column: 1 / span ${({colSpan}) => colSpan};
   padding: 10px 16px;
+  height: 100vh;
   font-weight: 600;
   font-size: 15px;
   color: ${colors.Neutral800};
