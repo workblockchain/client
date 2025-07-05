@@ -18,6 +18,7 @@
 import {HTMLAttributes} from "react"
 import styled, {css} from "styled-components"
 import {colors} from "../../styles/colors"
+import {svgIcons} from "../Icons"
 
 type TagVariant = "primary" | "success" | "warning" | "error" | "text"
 type TagSize = "small" | "medium" | "large"
@@ -40,9 +41,9 @@ const Tag = ({
   return (
     <TagContainer {...props} $variant={variant} $size={size}>
       {children}
-      {canClose && (
-        <CloseButton onClick={onClose} $variant={variant}>
-          ⨉
+      {canClose && onClose && (
+        <CloseButton onClick={onClose}>
+          <svgIcons.Cross width={12} height={12} />
         </CloseButton>
       )}
     </TagContainer>
@@ -112,49 +113,18 @@ const TagContainer = styled.span<{$variant: TagVariant; $size?: TagSize}>`
   }}
 `
 
-const CloseButton = styled.button<{$variant: TagVariant; $size?: TagSize}>`
+const CloseButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 4px;
-  width: 12px;
-  height: 12px;
+  margin-left: 6px;
   border-radius: 2px;
   border: none;
+  width: 12px;
+  height: 12px;
   background-color: transparent;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
-
-  ${({$variant}) => {
-    switch ($variant) {
-      case "primary":
-        return css`
-          background-color: ${colors.Blue100};
-          color: ${colors.Blue700};
-        `
-      case "success":
-        return css`
-          background-color: ${colors.Yellow300};
-          color: ${colors.Yellow800};
-        `
-      case "warning":
-        return css`
-          background-color: ${colors.Red100};
-          color: ${colors.Red700};
-        `
-      case "error":
-        return css`
-          background-color: ${colors.Red200};
-          color: ${colors.Red800};
-        `
-      case "text":
-        return css`
-          background-color: transparent;
-          color: ${colors.Neutral500};
-          font-weight: 400;
-        `
-    }
-  }}
 
   &:hover {
     background-color: ${colors.Neutral200};
