@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {StoryCard2} from "@/interfaces"
+import {StoryCardWithCid} from "@/interfaces"
 import React from "react"
 import {
   Controller,
@@ -28,8 +28,8 @@ import {Button} from "../Button"
 import {Textarea} from "../Input/Textarea"
 import Tag from "../Tag"
 export interface KanbanFormProps {
-  callback: (type: "create" | "edit", data: StoryCard2) => void
-  initData?: StoryCard2
+  callback: (type: "create" | "edit", data: StoryCardWithCid) => void
+  initData?: StoryCardWithCid
   onCancel: () => void
   mode?: "create" | "edit"
   deleteCard?: () => void
@@ -43,7 +43,7 @@ export const KanbanForm = React.memo(
     callback,
     deleteCard,
   }: KanbanFormProps) => {
-    const {register, control, handleSubmit, reset} = useForm<StoryCard2>({
+    const {register, control, handleSubmit, reset} = useForm<StoryCardWithCid>({
       defaultValues: mode === "create" ? {} : initData,
     })
     const {fields, append} = useFieldArray({
@@ -51,7 +51,7 @@ export const KanbanForm = React.memo(
       name: "tags",
     })
 
-    const onSubmit: SubmitHandler<StoryCard2> = (data) => {
+    const onSubmit: SubmitHandler<StoryCardWithCid> = (data) => {
       callback(mode, data)
       reset()
     }

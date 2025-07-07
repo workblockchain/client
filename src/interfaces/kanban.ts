@@ -18,7 +18,7 @@
 import {Props as StoryCard} from "../components/StoryCard"
 import {RequirementStatusType} from "./records"
 
-export interface StoryCard2 extends StoryCard {
+export interface StoryCardWithCid extends StoryCard {
   cid: string
 }
 export interface CardProps extends DropItem {
@@ -28,15 +28,15 @@ export interface CardProps extends DropItem {
 
 export interface DropItem {
   index: number
-  content: StoryCard2
+  content: StoryCardWithCid
   state: RequirementStatusType
 }
 
 export interface ColumnProps {
   id: RequirementStatusType
   columnTitle: string
-  cards: StoryCard2[]
-  addCard?: (state: RequirementStatusType, cardData: StoryCard2) => void
+  cards: StoryCardWithCid[]
+  addCard?: (state: RequirementStatusType, cardData: StoryCardWithCid) => void
   moveCard?: (cardId: string, state: RequirementStatusType) => void
   deleteCard?: (id: string) => void
   openDrawer?: (state: RequirementStatusType) => void
@@ -48,12 +48,12 @@ export interface BoardProps {
   title?: string
   column: ColumnProps[]
   isLoading?: boolean
-  addCard?: (state: RequirementStatusType, cardData: StoryCard2) => void
+  addCard?: (state: RequirementStatusType, cardData: StoryCardWithCid) => void
   moveCard?: (cardId: string, state: RequirementStatusType) => void
   deleteCard?: (id: string) => void
   upDateCard?: (
     cardId: string,
     state: RequirementStatusType,
-    cardData: StoryCard2
+    cardData: StoryCardWithCid
   ) => void
 }

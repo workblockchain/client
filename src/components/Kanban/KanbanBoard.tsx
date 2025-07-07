@@ -19,7 +19,7 @@ import {
   DropItem,
   BoardProps as Props,
   RequirementStatusType,
-  StoryCard2,
+  StoryCardWithCid,
 } from "@/interfaces"
 import {useCallback, useState} from "react"
 import {DndProvider} from "react-dnd"
@@ -43,7 +43,7 @@ export const KanbanBoard = ({
   const [mode, setMode] = useState<"create" | "edit">("create")
 
   const callback = useCallback(
-    (type: "create" | "edit", data: StoryCard2) => {
+    (type: "create" | "edit", data: StoryCardWithCid) => {
       if (type === "create") {
         addCard ? addCard(state, data) : null
       } else {
