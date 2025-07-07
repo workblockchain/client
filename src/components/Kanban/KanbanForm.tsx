@@ -137,14 +137,18 @@ KanbanForm.displayName = "KanbanForm"
 const Form = styled.form`
   width: 100%;
   max-width: 500px;
+  display: flex;
+  flex-direction: column;
   padding: 24px;
   box-sizing: border-box;
   background-color: #fff;
+  gap: 16px;
 `
 
 const FormGroup = styled.div`
-  margin-bottom: 20px;
-
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   &:last-child {
     margin-bottom: 0;
   }
@@ -152,7 +156,6 @@ const FormGroup = styled.div`
 
 const Label = styled.label`
   display: block;
-  margin-bottom: 4px;
   font-weight: 500;
   color: #333;
   font-size: 14px;
@@ -162,16 +165,12 @@ const ButtonGroup = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  margin-top: 24px;
-  padding-top: 16px;
-  border-top: 1px solid #eee;
 `
 
 const TagGroup = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 8px;
 `
 const EditableTag = styled.div`
   display: inline-flex;

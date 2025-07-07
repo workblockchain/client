@@ -21,7 +21,7 @@ import {
   RequirementStatusType,
   StoryCard2,
 } from "@/interfaces"
-import {useState} from "react"
+import {useCallback, useState} from "react"
 import {DndProvider} from "react-dnd"
 import {HTML5Backend} from "react-dnd-html5-backend"
 import styled from "styled-components"
@@ -42,19 +42,22 @@ export const KanbanBoard = ({
   const [cardData, setCardData] = useState<DropItem>()
   const [mode, setMode] = useState<"create" | "edit">("create")
 
-  const callback = (type: "create" | "edit", data: StoryCard2) => {
-    if (type === "create") {
-      addCard ? addCard(state, data) : null
-    } else {
-      if (!cardData) {
-        console.log("cardData is null", cardData)
-        return
+  const callback = useCallback(
+    (type: "create" | "edit", data: StoryCard2) => {
+      if (type === "create") {
+        addCard ? addCard(state, data) : null
+      } else {
+        if (!cardData) {
+          console.log("cardData is null", cardData)
+          return
+        }
+        upDateCard ? upDateCard(data.cid!, cardData.state, data) : null
       }
-      upDateCard ? upDateCard(data.cid!, cardData.state, data) : null
-    }
-    setIsOpen(false)
-    setCardData(undefined)
-  }
+      setIsOpen(false)
+      setCardData(undefined)
+    },
+    [state, cardData, addCard, upDateCard]
+  )
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -74,13 +77,11 @@ export const KanbanBoard = ({
                 moveCard={moveCard}
                 deleteCard={deleteCard}
                 openDrawer={(state) => {
-                  console.log("创建卡片,状态：", state)
                   setState(state)
                   setMode("create")
                   setIsOpen(!isOpen)
                 }}
                 clickCard={(data) => {
-                  console.log("点击卡片", data)
                   setCardData(data)
                   setMode("edit")
                   setIsOpen(!isOpen)

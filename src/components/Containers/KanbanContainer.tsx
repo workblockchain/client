@@ -31,36 +31,19 @@ interface CardProps extends StoryCard {
 }
 
 export function KanbanContainer() {
-  const {
-    requirementRecords,
-    addRequirementRecord,
-    updateRequirementRecord,
-    deleteRequirementRecord,
-    save,
-  } = useSignedRecord()
-
-  const convertToCardProps = (req: RequirementData): CardProps => ({
-    children: req.description || "",
-    tags: req.tags,
-    cid: req.rid,
-  })
-
-  const convertToRequirementData = (
-    status: RequirementStatusType,
-    card: StoryCard
-  ): RequirementData => ({
-    rid: card.cid || Date.now().toString(),
-    priority: "medium",
-    status: status,
-    assignedTo: "",
-    estimated: 0,
-    tags: card.tags || [],
-    requirementType: "requirement",
-    description: card.children?.toString() || "",
-    projectIds: [],
-    workRecordIds: [],
-    relationship: {},
-  })
+  const requirementRecords = useSignedRecord(
+    (state) => state.requirementRecords
+  )
+  const updateRequirementRecord = useSignedRecord(
+    (state) => state.updateRequirementRecord
+  )
+  const addRequirementRecord = useSignedRecord(
+    (state) => state.addRequirementRecord
+  )
+  const deleteRequirementRecord = useSignedRecord(
+    (state) => state.deleteRequirementRecord
+  )
+  const save = useSignedRecord((state) => state.save)
 
   // 处理添加卡片
   const handleAddCard = (state: RequirementStatusType, cardData: StoryCard) => {
@@ -111,5 +94,28 @@ export function KanbanContainer() {
     />
   )
 }
+
+const convertToCardProps = (req: RequirementData): CardProps => ({
+  children: req.description || "",
+  tags: req.tags,
+  cid: req.rid,
+})
+
+const convertToRequirementData = (
+  status: RequirementStatusType,
+  card: StoryCard
+): RequirementData => ({
+  rid: card.cid || Date.now().toString(),
+  priority: "medium",
+  status: status,
+  assignedTo: "",
+  estimated: 0,
+  tags: card.tags || [],
+  requirementType: "requirement",
+  description: card.children?.toString() || "",
+  projectIds: [],
+  workRecordIds: [],
+  relationship: {},
+})
 
 export default KanbanContainer
