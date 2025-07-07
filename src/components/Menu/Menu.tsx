@@ -20,7 +20,7 @@ import {colors} from "@/styles/colors"
 import {Fragment, ReactNode, useCallback, useState} from "react"
 import {useTranslation} from "react-i18next"
 import {useNavigate} from "react-router"
-import styled from "styled-components"
+import styled, {css} from "styled-components"
 
 export interface MenuItem {
   id: string
@@ -190,71 +190,33 @@ export const Menu = ({items, initialSelectedId}: MenuProps) => {
   )
 }
 
+export default Menu
+
 const MenuContainer = styled.div<{$drawerMode?: boolean}>`
   width: 100%;
   display: flex;
   flex-direction: column;
   ${({$drawerMode}) =>
     $drawerMode &&
-    `
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    background: white;
-    z-index: 1000;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
-    padding: 16px;
-    box-sizing: border-box;
-  `}
-`
-
-const MenuItem = styled.div<{
-  $hasChildren?: boolean
-  $disabled?: boolean
-  $isSelected?: boolean
-  $isParentOfExpanded?: boolean
-  $drawerMode?: boolean
-}>`
-  display: flex;
-  border-radius: 8px;
-  overflow: hidden;
-  flex-direction: row;
-  width: 100%;
-  box-sizing: border-box;
-  align-items: center;
-  padding: 8px;
-  margin: 4px 0px;
-  cursor: ${({$disabled}) => ($disabled ? "not-allowed" : "pointer")};
-  background-color: ${({$disabled, $isSelected}) =>
-    $disabled
-      ? colors.Neutral200
-      : $isSelected
-        ? colors.Red100
-        : "transparent"};
-  color: ${({$isSelected, $isParentOfExpanded}) =>
-    $isSelected || $isParentOfExpanded ? colors.Red400 : colors.Neutral900};
-  opacity: ${({$disabled}) => ($disabled ? 0.6 : 1)};
-  transition:
-    background-color 0.3s ease,
-    opacity 0.3s ease,
-    color 0.3s ease;
-
-  &:hover {
-    background-color: ${({$disabled, $isSelected}) =>
-      $disabled
-        ? colors.Neutral200
-        : $isSelected
-          ? colors.Red100
-          : colors.Red100};
-  }
+    css`
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      background: white;
+      z-index: 1000;
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+      padding: 16px;
+      box-sizing: border-box;
+    `}
 `
 
 const MenuItemIcon = styled.span`
-  display: inline-flex;
-  align-items: center;
-  margin-right: 8px;
-  font-size: 16px;
+  display: flex;
+  svg {
+    width: 20px;
+    height: 20px;
+  }
 `
 
 const MenuItemTitle = styled.span`
@@ -291,4 +253,43 @@ const MenuEmpty = styled.div`
   font-size: 14px;
 `
 
-export default Menu
+const MenuItem = styled.div<{
+  $hasChildren?: boolean
+  $disabled?: boolean
+  $isSelected?: boolean
+  $isParentOfExpanded?: boolean
+  $drawerMode?: boolean
+}>`
+  display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  margin: 4px 0px;
+  background-color: ${({$disabled, $isSelected}) =>
+    $disabled
+      ? colors.Neutral200
+      : $isSelected
+        ? colors.Red100
+        : "transparent"};
+  color: ${({$isSelected, $isParentOfExpanded}) =>
+    $isSelected || $isParentOfExpanded ? colors.Red400 : colors.Neutral900};
+  opacity: ${({$disabled}) => ($disabled ? 0.6 : 1)};
+  transition:
+    background-color 0.3s ease,
+    opacity 0.3s ease,
+    color 0.3s ease;
+
+  &:hover {
+    background-color: ${({$disabled, $isSelected}) =>
+      $disabled
+        ? colors.Neutral200
+        : $isSelected
+          ? colors.Red100
+          : colors.Red100};
+  }
+  cursor: ${({$disabled}) => ($disabled ? "not-allowed" : "pointer")};
+`

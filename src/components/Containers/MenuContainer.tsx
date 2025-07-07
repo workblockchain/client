@@ -79,7 +79,7 @@ export function MenuContainer() {
           ? "/dashboard/kanban"
           : matches[matches.length - 1].pathname
       }
-    ></Menu>
+    />
   )
 }
 
