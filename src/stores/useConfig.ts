@@ -16,13 +16,18 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {create} from "zustand"
+import {usePomodoroTimer} from "./usePomodoroTimer"
 
 interface Options {
   autoSign: boolean // 是否自动签名
+  workDuration: number
+  breakDuration: number
 }
 
 interface ConfigStore extends Options {
   setAutoSign: (autoSign: boolean) => void
+  setWorkDuration: (minutes: number) => void
+  setBreakDuration: (minutes: number) => void
   exportConfig: () => Options
   save: () => void
   load: () => void
@@ -33,14 +38,31 @@ const CONFIG_KEY = "USER_CONFIG" as const
 
 export const useConfig = create<ConfigStore>((set, get) => ({
   autoSign: false,
-
   setAutoSign: (autoSign) => {
     set({autoSign})
     get().save()
   },
 
+  // 设置工作时长(分钟)
+  workDuration: 25, // 默认工作时长 25 分钟
+  setWorkDuration: (minutes) => {
+    set({workDuration: minutes})
+    usePomodoroTimer.getState().onConfigChange()
+    get().save()
+  },
+
+  // 设置休息时长(分钟)
+  breakDuration: 5, // 默认休息时长 5 分钟
+  setBreakDuration: (minutes) => {
+    set({breakDuration: minutes})
+    usePomodoroTimer.getState().onConfigChange()
+    get().save()
+  },
+
   exportConfig: () => ({
     autoSign: get().autoSign,
+    workDuration: get().workDuration,
+    breakDuration: get().breakDuration,
   }),
 
   save: () => {
@@ -54,6 +76,9 @@ export const useConfig = create<ConfigStore>((set, get) => ({
       const config = JSON.parse(configStr)
       set(config)
     }
+
+    // refresh pomodoro timer state
+    usePomodoroTimer.getState().onConfigChange()
   },
 
   clear: () => {

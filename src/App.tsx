@@ -15,11 +15,35 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {Suspense} from "react"
 import {RouterProvider} from "react-router"
+import Initializer from "./init"
 import {router} from "./router"
 
 function App() {
-  return <RouterProvider router={router} />
+  return (
+    <Suspense fallback={<Loading />}>
+      <Initializer>
+        <RouterProvider router={router} />
+      </Initializer>
+    </Suspense>
+  )
+}
+
+function Loading() {
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      Loading...
+    </div>
+  )
 }
 
 export default App

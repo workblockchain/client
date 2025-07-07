@@ -15,12 +15,15 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {usePomodoroTimer} from "../../stores/usePomodoroTimer"
+import {useConfig} from "@/stores/useConfig"
 import {ConfigLayout} from "./ConfigLayout"
 
 function Config() {
-  const {workDuration, setWorkDuration, breakDuration, setBreakDuration} =
-    usePomodoroTimer()
+  const workDuration = useConfig((state) => state.workDuration)
+  const setWorkDuration = useConfig((state) => state.setWorkDuration)
+  const breakDuration = useConfig((state) => state.breakDuration)
+  const setBreakDuration = useConfig((state) => state.setBreakDuration)
+
   const configProps = {
     workDuration,
     breakDuration,
