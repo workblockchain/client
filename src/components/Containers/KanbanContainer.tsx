@@ -15,46 +15,107 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {ColumnProps} from "@/interfaces"
+import {
+  RequirementData,
+  requirementStatusList,
+  RequirementStatusType,
+} from "@/interfaces/records"
+import {useSignedRecord} from "@/stores/useSignedRecord"
+import {t} from "i18next"
 import {KanbanBoard} from "../Kanban/KanbanBoard"
+import {Props as StoryCard} from "../StoryCard"
+
+interface CardProps extends StoryCard {
+  cid: string
+}
 
 export function KanbanContainer() {
+  const requirementRecords = useSignedRecord(
+    (state) => state.requirementRecords
+  )
+  const updateRequirementRecord = useSignedRecord(
+    (state) => state.updateRequirementRecord
+  )
+  const addRequirementRecord = useSignedRecord(
+    (state) => state.addRequirementRecord
+  )
+  const deleteRequirementRecord = useSignedRecord(
+    (state) => state.deleteRequirementRecord
+  )
+  const save = useSignedRecord((state) => state.save)
+
+  // 处理添加卡片
+  const handleAddCard = (state: RequirementStatusType, cardData: StoryCard) => {
+    const newReq = convertToRequirementData(state, cardData)
+    addRequirementRecord(newReq)
+    save()
+  }
+
+  // 处理更新卡片
+  const handleUpdateCard = (
+    cardId: string,
+    state: RequirementStatusType,
+    cardData: StoryCard
+  ) => {
+    updateRequirementRecord(cardId, convertToRequirementData(state, cardData))
+    save()
+  }
+
+  const handleDelete = (id: string) => {
+    deleteRequirementRecord(id)
+    save()
+  }
+
+  const handleMoveCard = (cardId: string, state: RequirementStatusType) => {
+    updateRequirementRecord(cardId, {status: state})
+    save()
+  }
+
+  // 构建看板列数据
+  const kanbanColumns: ColumnProps[] = requirementStatusList.map((status) => ({
+    id: status,
+    title: status,
+    columnTitle: t(status),
+    cards: requirementRecords
+      .filter((req) => req.status === status)
+      .map((req) => convertToCardProps(req)),
+  }))
+
   return (
     <KanbanBoard
-      id={""}
-      title={""}
-      list={[
-        {
-          id: "card 1",
-          title: "To do",
-          cards: [
-            {
-              id: "eat",
-              title: "吃",
-              description:
-                "有个嘲笑心理学的老笑话，也可以套用在精神分析或哲学上面：​“所谓心理学，就是用艰深晦涩的说法，来解释生活中简单的道理",
-            },
-            {id: "sleep 1", title: "睡"},
-            {id: "eat11", title: "吃", description: "222"},
-            {id: "sleep111", title: "睡"},
-            {id: "eat1111", title: "吃", description: "222"},
-            {id: "sleep111111", title: "睡"},
-            {id: "eat11111", title: "吃", description: "222"},
-            {id: "sleep11111", title: "睡"},
-          ],
-        },
-        {
-          id: "card 2",
-          title: "进行中",
-          cards: [{id: "card4643", title: "Task 3"}],
-        },
-        {
-          id: "card 3",
-          title: "完成",
-          cards: [{id: "car45645664d3", title: "Task 3"}],
-        },
-      ]}
-    ></KanbanBoard>
+      id="kanban-container"
+      title="需求看板"
+      column={kanbanColumns}
+      addCard={handleAddCard}
+      deleteCard={handleDelete}
+      moveCard={handleMoveCard}
+      upDateCard={handleUpdateCard}
+    />
   )
 }
+
+const convertToCardProps = (req: RequirementData): CardProps => ({
+  children: req.description || "",
+  tags: req.tags,
+  cid: req.rid,
+})
+
+const convertToRequirementData = (
+  status: RequirementStatusType,
+  card: StoryCard
+): RequirementData => ({
+  rid: card.cid || Date.now().toString(),
+  priority: "medium",
+  status: status,
+  assignedTo: "",
+  estimated: 0,
+  tags: card.tags || [],
+  requirementType: "requirement",
+  description: card.children?.toString() || "",
+  projectIds: [],
+  workRecordIds: [],
+  relationship: {},
+})
 
 export default KanbanContainer

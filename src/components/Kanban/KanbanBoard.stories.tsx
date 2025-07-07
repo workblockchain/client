@@ -15,6 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {BoardProps} from "@/interfaces/kanban"
 import {Meta, StoryObj} from "@storybook/react"
 import {KanbanBoard} from "./KanbanBoard"
 const meta: Meta<typeof KanbanBoard> = {
@@ -25,52 +26,50 @@ const meta: Meta<typeof KanbanBoard> = {
 
 export default meta
 
-type Story = StoryObj<typeof KanbanBoard>
+type Story = StoryObj<BoardProps>
+
+const kanbanData: BoardProps = {
+  id: "board1",
+  column: [
+    {
+      id: "todo",
+      columnTitle: "To do",
+      cards: [
+        {
+          cid: "eat",
+          children:
+            "有个嘲笑心理学的老笑话，也可以套用在精神分析或哲学上面：​“所谓心理学，就是用艰深晦涩的说法，来解释生活中简单的道理",
+          subTasks: [{label: "任务1"}, {label: "任务2"}],
+          tags: ["this is tag1", "this is tag2"],
+        },
+        {cid: "sleep 1"},
+        {cid: "eat11", children: "222"},
+        {cid: "sleep111"},
+        {cid: "eat1111", children: "222"},
+        {cid: "sleep111111"},
+        {cid: "eat11111", children: "222"},
+        {cid: "sleep11111"},
+      ],
+    },
+    {
+      id: "doing",
+      columnTitle: "进行中",
+      cards: [{cid: "card4643"}],
+    },
+    {
+      id: "done",
+      columnTitle: "完成",
+      cards: [{cid: "car45645664d3"}],
+    },
+  ],
+}
 
 export const Primary: Story = {
-  args: {
-    id: "board1",
-    list: [
-      {
-        id: "card 1",
-        title: "To do",
-        cards: [
-          {
-            id: "eat",
-            title: "吃",
-            description:
-              "有个嘲笑心理学的老笑话，也可以套用在精神分析或哲学上面：​“所谓心理学，就是用艰深晦涩的说法，来解释生活中简单的道理",
-            subTasks: [
-              {label: "任务1", state: "finished"},
-              {label: "任务2", state: "unfinished"},
-            ],
-            tags: ["this is tag1", "this is tag2"],
-          },
-          {id: "sleep 1", title: "睡"},
-          {id: "eat11", title: "吃", description: "222"},
-          {id: "sleep111", title: "睡"},
-          {id: "eat1111", title: "吃", description: "222"},
-          {id: "sleep111111", title: "睡"},
-          {id: "eat11111", title: "吃", description: "222"},
-          {id: "sleep11111", title: "睡"},
-        ],
-      },
-      {
-        id: "card 2",
-        title: "进行中",
-        cards: [{id: "card4643", title: "Task 3"}],
-      },
-      {
-        id: "card 3",
-        title: "完成",
-        cards: [{id: "car45645664d3", title: "Task 3"}],
-      },
-    ],
-  },
+  args: {...kanbanData},
 }
 
 export const EmptyList: Story = {
   args: {
-    list: [{id: "empty", title: "空列表", cards: []}],
+    column: [{id: "todo", columnTitle: "空列表", cards: []}],
   },
 }

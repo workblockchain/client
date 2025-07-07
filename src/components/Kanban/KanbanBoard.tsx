@@ -15,118 +15,112 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {BaseCard, BaseList} from "@/interfaces"
+import {
+  DropItem,
+  BoardProps as Props,
+  RequirementStatusType,
+  StoryCardWithCid,
+} from "@/interfaces"
 import {useCallback, useState} from "react"
 import {DndProvider} from "react-dnd"
 import {HTML5Backend} from "react-dnd-html5-backend"
 import styled from "styled-components"
-import {KanbanList} from "./KanbanList"
+import {Drawer} from "../Drawer"
+import {KanbanColumn} from "./KanbanColumn"
+import {KanbanForm} from "./KanbanForm"
+export const KanbanBoard = ({
+  title,
+  column,
+  isLoading,
+  addCard,
+  moveCard,
+  deleteCard,
+  upDateCard,
+}: Props) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const [state, setState] = useState<RequirementStatusType>("todo")
+  const [cardData, setCardData] = useState<DropItem>()
+  const [mode, setMode] = useState<"create" | "edit">("create")
 
-export interface Props {
-  id: string
-  title: string // 看板标题
-  list: BaseList[]
-}
-
-export const KanbanBoard = ({title, list}: Props) => {
-  const [boardData, setBoardData] = useState<BaseList[]>(list)
-
-  // 处理卡片移动的逻辑
-  const onDrop = useCallback(
-    (dragID: string, dropId: string) => {
-      setBoardData((prevBoards) => {
-        // 1. 创建新数组避免直接修改状态
-        const newBoards = [...prevBoards]
-
-        // 2. 相同卡片不处理
-        if (dragID === dropId) return newBoards
-
-        // 3. 优化查找逻辑 - 使用对象缓存提高性能
-        let dragCard: BaseCard | undefined
-        let dragListIndex = -1
-        let dropListIndex = -1
-        let dropIndex = -1
-
-        // 4. 单次遍历查找源卡片和目标位置
-        for (let i = 0; i < newBoards.length; i++) {
-          const list = newBoards[i]
-
-          // 查找拖拽卡片
-          const cardIndex = list.cards.findIndex((card) => card.id === dragID)
-          if (cardIndex !== -1) {
-            dragCard = list.cards[cardIndex]
-            dragListIndex = i
-          }
-
-          // 查找放置位置
-          const dropCardIndex = list.cards.findIndex(
-            (card) => card.id === dropId
-          )
-          if (dropCardIndex !== -1) {
-            dropListIndex = i
-            dropIndex = dropCardIndex
-          }
-
-          // 如果都找到则提前退出循环
-          if (dragCard && dropListIndex !== -1) break
+  const callback = useCallback(
+    (type: "create" | "edit", data: StoryCardWithCid) => {
+      if (type === "create") {
+        addCard ? addCard(state, data) : null
+      } else {
+        if (!cardData) {
+          console.log("cardData is null", cardData)
+          return
         }
-
-        // 5. 边界条件检查
-        if (!dragCard || dragListIndex === -1 || dropListIndex === -1) {
-          console.warn("Invalid drag/drop operation - card not found")
-          return prevBoards
-        }
-
-        // 6. 执行卡片移动
-        try {
-          // 从源列表移除卡片
-          newBoards[dragListIndex].cards = newBoards[
-            dragListIndex
-          ].cards.filter((card) => card.id !== dragID)
-
-          // 添加到目标列表
-          // 如果拖拽到同一列表，需要调整插入位置
-          const insertIndex =
-            dragListIndex === dropListIndex && dropIndex > -1
-              ? dropIndex
-              : dropIndex + 1
-
-          newBoards[dropListIndex].cards.splice(insertIndex, 0, dragCard)
-
-          return newBoards
-        } catch (error) {
-          console.error("Card move failed:", error)
-          return prevBoards
-        }
-      })
+        upDateCard ? upDateCard(data.cid!, cardData.state, data) : null
+      }
+      setIsOpen(false)
+      setCardData(undefined)
     },
-    [] // 移除 list 依赖，避免不必要的重渲染
+    [state, cardData, addCard, upDateCard]
   )
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <Title>{title}</Title>
-      <Container>
-        {boardData.map((kanbanList) => (
-          <KanbanList
-            key={kanbanList.id}
-            id={kanbanList.id}
-            title={kanbanList.title}
-            cards={kanbanList.cards}
-            onDrop={onDrop}
-          />
-        ))}
-      </Container>
+      {title ? <Title>{title}</Title> : null}
+      {isLoading ? (
+        "正在加载"
+      ) : (
+        <>
+          <Container>
+            {column.map(({id, columnTitle, cards}, index) => (
+              <KanbanColumn
+                key={index}
+                id={id}
+                columnTitle={columnTitle}
+                cards={cards}
+                addCard={addCard}
+                moveCard={moveCard}
+                deleteCard={deleteCard}
+                openDrawer={(state) => {
+                  setState(state)
+                  setMode("create")
+                  setIsOpen(!isOpen)
+                }}
+                clickCard={(data) => {
+                  setCardData(data)
+                  setMode("edit")
+                  setIsOpen(!isOpen)
+                }}
+              />
+            ))}
+          </Container>
+          <Drawer isOpen={isOpen} onClose={() => setIsOpen(!isOpen)}>
+            <KanbanForm
+              mode={mode}
+              onCancel={() => {
+                setIsOpen(!isOpen)
+              }}
+              initData={cardData?.content}
+              callback={callback}
+              deleteCard={() =>
+                deleteCard
+                  ? deleteCard(cardData?.content.cid!)
+                  : console.log("deleteCard is null")
+              }
+            ></KanbanForm>
+          </Drawer>
+        </>
+      )}
     </DndProvider>
   )
 }
 
+KanbanBoard.displayName = "KanbanBoard"
+
 const Container = styled.div`
   display: flex;
   gap: 10px;
+  position: relative;
+  transition: opacity 0.2s ease;
 `
 
 const Title = styled.h2`
   font-size: 18px;
   padding: 0 16px;
+  margin-bottom: 16px;
 `

@@ -16,12 +16,12 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {colors} from "@/styles"
-import {forwardRef} from "react"
+import {forwardRef, HTMLAttributes} from "react"
 import styled, {css} from "styled-components"
 import Avatar from "../Avatar/AvatarPreview"
 import Tag from "../Tag"
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
+export interface Props extends HTMLAttributes<HTMLDivElement> {
   tags?: string[]
   subTasks?: {label: string}[]
   children?: React.ReactNode
@@ -29,15 +29,16 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
   draggable?: boolean
   size?: "full" | "small"
   cid?: string
-  assignee?: string // refactor to a user icon
+  assignee?: string
 }
+
 const StoryCard = forwardRef<HTMLDivElement, Props>(
   (
     {
       tags,
       subTasks,
-      isDragging,
       draggable,
+      isDragging,
       children,
       cid,
       assignee,
@@ -54,7 +55,7 @@ const StoryCard = forwardRef<HTMLDivElement, Props>(
         {...props}
       >
         <Content $size={size}>{children}</Content>
-        {size !== "small" && (
+        {size !== "small" && !!subTasks?.length && (
           <SubTasks>
             <h5 style={{margin: "5px 0", color: colors.Neutral400}}>子任务</h5>
             {subTasks?.map((task, index) => (
@@ -66,11 +67,13 @@ const StoryCard = forwardRef<HTMLDivElement, Props>(
         )}
         {size !== "small" && (
           <>
-            <TagGroup>
-              {tags?.map((tag, index) => (
-                <Tag key={index}>{tag}</Tag>
-              ))}
-            </TagGroup>
+            {!!tags?.length && (
+              <TagGroup>
+                {tags?.map((tag, index) => (
+                  <Tag key={index}>{tag}</Tag>
+                ))}
+              </TagGroup>
+            )}
             {(!!cid || !!assignee) && (
               <InfoGroup>
                 {!!cid && <Tag variant="text">{cid}</Tag>}
@@ -81,11 +84,13 @@ const StoryCard = forwardRef<HTMLDivElement, Props>(
         )}
         {size === "small" && (
           <SmallLine>
-            <TagGroup>
-              {tags?.map((tag, index) => (
-                <Tag key={index}>{tag}</Tag>
-              ))}
-            </TagGroup>
+            {!!tags?.length && (
+              <TagGroup>
+                {tags?.map((tag, index) => (
+                  <Tag key={index}>{tag}</Tag>
+                ))}
+              </TagGroup>
+            )}
             {(!!cid || !!assignee) && (
               <InfoGroup>
                 {!!cid && <Tag variant="text">{cid}</Tag>}
@@ -103,36 +108,15 @@ export default StoryCard
 
 StoryCard.displayName = "StoryCard"
 
-const Container = styled.div<{$isDragging: boolean; $draggable?: boolean}>`
-  background-color: white;
+export const CardContainer = styled.div`
   display: flex;
   gap: 12px;
+  flex-direction: column;
+  background-color: white;
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   border-radius: 4px;
   padding: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-  ${({$draggable, $isDragging}) => {
-    if ($draggable) {
-      return css`
-        cursor: ${$isDragging ? "move" : "grab"};
-        opacity: ${$isDragging ? 0.4 : 1};
-        &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        &:active {
-          transform: translateY(0);
-        }
-      `
-    }
-    return css`
-      cursor: pointer;
-    `
-  }}
-  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
-  position: relative;
-  color: ${colors.Neutral800};
-  font-size: 14px;
-  flex-direction: column;
 `
 
 const Content = styled.div<{$size?: "full" | "small"}>`
@@ -152,7 +136,6 @@ const SubTasks = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-
   div {
     display: flex;
     align-items: center;
@@ -175,7 +158,8 @@ const TagGroup = styled.div`
 const InfoGroup = styled.div`
   display: flex;
   gap: 8px;
-  width: fit-content;
+  justify-content: center;
+  align-items: center;
 `
 
 const SmallLine = styled.div`
@@ -195,4 +179,31 @@ const SmallLine = styled.div`
   ${InfoGroup} {
     flex-shrink: 0;
   }
+`
+
+const Container = styled(CardContainer)<{
+  $isDragging: boolean
+  $draggable?: boolean
+}>`
+  ${({$draggable, $isDragging}) => {
+    if ($draggable) {
+      return css`
+        cursor: ${$isDragging ? "move" : "grab"};
+        opacity: ${$isDragging ? 0.4 : 1};
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        &:active {
+          transform: translateY(0);
+        }
+      `
+    }
+    return css`
+      cursor: pointer;
+    `
+  }}
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+  position: relative;
+  color: ${colors.Neutral800};
 `

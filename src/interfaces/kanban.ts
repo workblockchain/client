@@ -15,21 +15,45 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-export interface Task {
-  label: string
-  state: "finished" | "unfinished"
+import {Props as StoryCard} from "../components/StoryCard"
+import {RequirementStatusType} from "./records"
+
+export interface StoryCardWithCid extends StoryCard {
+  cid: string
+}
+export interface CardProps extends DropItem {
+  moveCard?: (cardId: string) => void
+  clickCard?: (data: DropItem) => void
 }
 
-export interface BaseCard {
+export interface DropItem {
+  index: number
+  content: StoryCardWithCid
+  state: RequirementStatusType
+}
+
+export interface ColumnProps {
+  id: RequirementStatusType
+  columnTitle: string
+  cards: StoryCardWithCid[]
+  addCard?: (state: RequirementStatusType, cardData: StoryCardWithCid) => void
+  moveCard?: (cardId: string, state: RequirementStatusType) => void
+  deleteCard?: (id: string) => void
+  openDrawer?: (state: RequirementStatusType) => void
+  clickCard?: (data: DropItem) => void
+}
+
+export interface BoardProps {
   id: string
-  title: string // 卡片标题
-  description?: string // 卡片内容描述
-  subTasks?: Task[]
-  tags?: string[]
-}
-
-export interface BaseList {
-  id: string // 列表标题
-  title: string
-  cards: BaseCard[]
+  title?: string
+  column: ColumnProps[]
+  isLoading?: boolean
+  addCard?: (state: RequirementStatusType, cardData: StoryCardWithCid) => void
+  moveCard?: (cardId: string, state: RequirementStatusType) => void
+  deleteCard?: (id: string) => void
+  upDateCard?: (
+    cardId: string,
+    state: RequirementStatusType,
+    cardData: StoryCardWithCid
+  ) => void
 }

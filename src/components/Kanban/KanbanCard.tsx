@@ -15,66 +15,56 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {BaseCard} from "@/interfaces"
-import {useRef} from "react"
+import {CardProps, DropItem} from "@/interfaces/kanban"
+import {memo, useRef} from "react"
 import {useDrag, useDrop} from "react-dnd"
 import StoryCard from "../StoryCard"
 import {ItemTypes} from "./types"
 
-export interface Props extends BaseCard {
-  onDrop: (dragId: string, dropId: string) => void
-  children?: React.ReactNode
-}
-
-export const KanbanCard = ({
-  id,
-  tags,
-  subTasks,
-  description,
-  onDrop,
-  ...props
-}: Props) => {
+export const KanbanCard = memo((props: CardProps) => {
   const ref = useRef<HTMLDivElement>(null)
-  const [{isDragging}, drag] = useDrag(
-    () => ({
-      type: ItemTypes.CARD,
-      item: {id},
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-      }),
-      end: (item, monitor) => {
-        const didDrop = monitor.didDrop()
-        if (!didDrop) {
-          onDrop(item.id, id)
-        }
-      },
+  // 拖拽源配置
+  const [{isDragging}, drag] = useDrag({
+    type: ItemTypes.CARD,
+    item: props as DropItem,
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
     }),
-    [id, onDrop]
-  )
+  })
 
-  const [_, drop] = useDrop(
-    () => ({
-      accept: ItemTypes.CARD,
-      hover: (item: {id: string}) => {
-        if (!ref.current) return
-        onDrop(item.id, id)
-      },
-    }),
-    [onDrop, id]
-  )
+  // 放置目标配置
+  const [_, drop] = useDrop({
+    accept: ItemTypes.CARD,
+
+    drop: (item: DropItem) => {
+      if (
+        !ref.current ||
+        (item.index === props.index && item.state === props.state)
+      )
+        return
+      props.moveCard
+        ? props.moveCard(item.content.cid)
+        : console.log("moveCard is not defined")
+    },
+  })
 
   drag(drop(ref))
 
   return (
-    <StoryCard
-      draggable
-      isDragging={isDragging}
-      tags={tags}
-      subTasks={subTasks}
-      ref={ref}
-    >
-      {description}
-      {props.children}
-    </StoryCard>
+    <>
+      <StoryCard
+        draggable
+        isDragging={isDragging}
+        ref={ref}
+        onClick={() =>
+          props.clickCard
+            ? props.clickCard(props)
+            : console.log("openCard is not defined")
+        }
+        {...props.content}
+      >
+        {props.content.children}
+      </StoryCard>
+    </>
   )
-}
+})

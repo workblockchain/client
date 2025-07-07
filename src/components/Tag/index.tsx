@@ -18,17 +18,36 @@
 import {HTMLAttributes} from "react"
 import styled, {css} from "styled-components"
 import {colors} from "../../styles/colors"
+import {svgIcons} from "../Icons"
 
 type TagVariant = "primary" | "success" | "warning" | "error" | "text"
 type TagSize = "small" | "medium" | "large"
 interface TagProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: TagVariant
   size?: TagSize
+  canClose?: boolean
+  onClose?: () => void
   children: React.ReactNode
 }
 
-const Tag = ({variant = "primary", size = "medium", ...props}: TagProps) => {
-  return <TagContainer {...props} $variant={variant} $size={size} />
+const Tag = ({
+  variant = "primary",
+  size = "medium",
+  children,
+  canClose,
+  onClose,
+  ...props
+}: TagProps) => {
+  return (
+    <TagContainer {...props} $variant={variant} $size={size}>
+      {children}
+      {canClose && onClose && (
+        <CloseButton onClick={onClose}>
+          <svgIcons.Cross width={12} height={12} />
+        </CloseButton>
+      )}
+    </TagContainer>
+  )
 }
 
 export default Tag
@@ -36,6 +55,7 @@ export default Tag
 const TagContainer = styled.span<{$variant: TagVariant; $size?: TagSize}>`
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   border-radius: 8px;
   font-weight: 500;
   line-height: 1.5;
@@ -91,4 +111,22 @@ const TagContainer = styled.span<{$variant: TagVariant; $size?: TagSize}>`
         `
     }
   }}
+`
+
+const CloseButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px;
+  border-radius: 2px;
+  border: none;
+  width: 12px;
+  height: 12px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: ${colors.Neutral200};
+  }
 `

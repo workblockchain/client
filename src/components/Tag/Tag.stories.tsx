@@ -56,3 +56,17 @@ export const AllSizes = () => (
     <Tag size="large">Large</Tag>
   </div>
 )
+
+export const canClose = () => (
+  <div style={{display: "flex", gap: "8px", alignItems: "center"}}>
+    <Tag size="small" canClose onClose={() => console.log("onClose")}>
+      Small
+    </Tag>
+    <Tag size="medium" canClose onClose={() => console.log("onClose")}>
+      Medium
+    </Tag>
+    <Tag size="large" canClose onClose={() => console.log("onClose")}>
+      Large
+    </Tag>
+  </div>
+)
