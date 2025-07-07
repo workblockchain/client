@@ -16,6 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {StoryCardWithCid} from "@/interfaces"
+import {colors} from "@/styles"
 import React from "react"
 import {
   Controller,
@@ -25,6 +26,7 @@ import {
 } from "react-hook-form"
 import styled from "styled-components"
 import {Button} from "../Button"
+import {svgIcons} from "../Icons"
 import {Textarea} from "../Input/Textarea"
 import Tag from "../Tag"
 export interface KanbanFormProps {
@@ -102,7 +104,9 @@ export const KanbanForm = React.memo(
                 }
               }}
             >
-              +
+              <svgIcons.Plus
+                style={{width: 16, height: 16, color: colors.Neutral500}}
+              />
             </EditableTag>
           </TagGroup>
         </FormGroup>
@@ -177,7 +181,7 @@ const EditableTag = styled.div`
   align-items: center;
   justify-content: center;
   min-width: 20px;
-  padding: 4px 8px;
+  padding: 4px;
   box-sizing: border-box;
   background-color: #f0f0f0;
   border: 1px solid #ddd;
