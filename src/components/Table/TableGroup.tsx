@@ -98,7 +98,7 @@ const TableGroupContainer = styled.div`
 const TableGroupHeader = styled.div<{colSpan: number}>`
   grid-column: 1 / span ${({colSpan}) => colSpan};
   padding: 10px 16px;
-  height: 100vh;
+  height: 100%;
   font-weight: 600;
   font-size: 15px;
   color: ${colors.Neutral800};
