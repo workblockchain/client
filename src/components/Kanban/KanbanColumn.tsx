@@ -85,8 +85,8 @@ export const KanbanColumn = memo(
                 : console.log("openDrawer is undefined")
             }
           >
-            <svgIcons.Plus width={24} height={24} />
-            添加卡片
+            <svgIcons.Plus width={20} height={20} />
+            <span>添加卡片</span>
           </AddCard>
         ) : null}
       </Container>
@@ -143,11 +143,13 @@ const CardList = styled.div`
 const AddCard = styled.div`
   margin-top: 6px;
   display: flex;
+  gap: 4px;
   align-items: center;
   justify-content: center;
   user-select: none;
   color: #6b778c;
   font-size: 14px;
+  line-height: 1;
   font-weight: 500;
 
   &:hover {
