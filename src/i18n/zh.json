@@ -19,6 +19,7 @@
   "date.yesterday": "昨天",
   "description.placeholder": "劳动成果描述",
   "general.back": "返回",
+  "menu.empty": "没有菜单项",
   "record.invalidSignature": "签名无效",
   "time.hour": "小时",
   "time.justNow": "现在",
@@ -27,10 +28,12 @@
   "timer.pause": "暂停",
   "timer.skip": "跳过",
   "timer.start": "开始",
-  "menu.empty": "没有菜单项",
+  "work.description": "描述",
+  "work.endTime": "结束时间",
   "work.id": "工作ID",
-  "work.user": "用户",
-  "kanban.todo": "待办",
-  "kanban.doing": "进行中",
-  "kanban.done": "完成"
+  "work.signed": "已签名",
+  "work.startTime": "开始时间",
+  "work.status": "状态",
+  "work.unsigned": "未签名",
+  "work.user": "用户"
 }
