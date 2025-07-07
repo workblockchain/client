@@ -145,7 +145,7 @@ const PomodoroLayout = () => {
         outcome: "",
         userId: uid,
         workTags: isWork ? [POMODORO_WORK] : [POMODORO_BREAK],
-        requirementIds: [curRid],
+        requirementIds: curRid ? [curRid] : [],
         projectIds: [],
         description: message,
       }

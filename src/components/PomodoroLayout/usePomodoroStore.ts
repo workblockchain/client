@@ -26,7 +26,7 @@ interface PomodoroStore {
   setIsReqListOpen: (open: boolean) => void
 }
 const usePomodoroStore = create<PomodoroStore>((set) => ({
-  currentRequirementId: "REQ-001",
+  currentRequirementId: "",
   setCurrentRequirementId: (id) => set({currentRequirementId: id}),
   isReqCardOpen: false,
   setIsReqCardOpen: (open) => set({isReqCardOpen: open}),
