@@ -48,7 +48,7 @@ export const KanbanColumn = memo(
         if (!monitor.isOver({shallow: true})) return
 
         moveCard
-          ? moveCard(item.content.cid!, id)
+          ? moveCard(item.content.cid, id)
           : console.log("moveCard is undefined")
       },
     })

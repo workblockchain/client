@@ -35,7 +35,7 @@ export const KanbanBoard = ({
   addCard,
   moveCard,
   deleteCard,
-  upDateCard,
+  updateCard,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false)
   const [state, setState] = useState<RequirementStatusType>("todo")
@@ -51,12 +51,12 @@ export const KanbanBoard = ({
           console.log("cardData is null", cardData)
           return
         }
-        upDateCard ? upDateCard(data.cid!, cardData.state, data) : null
+        updateCard ? updateCard(data.cid, cardData.state, data) : null
       }
       setIsOpen(false)
       setCardData(undefined)
     },
-    [state, cardData, addCard, upDateCard]
+    [state, cardData, addCard, updateCard]
   )
 
   return (
