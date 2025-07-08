@@ -20,6 +20,9 @@
     "tsconfig.json": "tsconfig.*.json"
   },
 
+  // oxc config
+  "oxc.configPath": ".oxlintrc.json",
+
   // Special file names.
   "files.associations": {
     ".env.development": "dotenv"

@@ -176,7 +176,7 @@ export const Menu = ({items, initialSelectedId}: MenuProps) => {
         </Fragment>
       )
     },
-    [expandedItems, selectedId, handleItemClick, hasSelectedChild]
+    [expandedItems, selectedId, handleItemClick]
   )
 
   return (
