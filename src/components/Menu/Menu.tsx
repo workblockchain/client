@@ -22,6 +22,58 @@ import {useTranslation} from "react-i18next"
 import {useNavigate} from "react-router"
 import styled, {css} from "styled-components"
 
+interface MenuListItemProps {
+  item: MenuItem
+  expandedItems: Set<string>
+  selectedId?: string
+  onItemClick: (item: MenuItem) => void
+}
+
+const MenuListItem = ({
+  item,
+  expandedItems,
+  selectedId,
+  onItemClick,
+}: MenuListItemProps) => {
+  if (!item?.id || item.show === false) return null
+
+  const hasChildren = Array.isArray(item.children) && item.children.length > 0
+  const isExpanded = expandedItems.has(item.id)
+
+  return (
+    <Fragment key={item.id}>
+      <MenuItem
+        $hasChildren={hasChildren}
+        $disabled={item.disabled}
+        $isSelected={item.id === selectedId}
+        $isParentOfExpanded={hasSelectedChild(item, selectedId)}
+        onClick={() => !item.disabled && onItemClick(item)}
+      >
+        {item.icon && <MenuItemIcon>{item.icon}</MenuItemIcon>}
+        <MenuItemTitle>{item.label}</MenuItemTitle>
+        {hasChildren && (
+          <MenuItemArrow $isExpanded={isExpanded}>
+            <Vector />
+          </MenuItemArrow>
+        )}
+      </MenuItem>
+      {hasChildren && isExpanded && item.children && (
+        <MenuSubItems $isExpanded={isExpanded}>
+          {item.children.map((child) => (
+            <MenuListItem
+              key={child.id}
+              item={child}
+              expandedItems={expandedItems}
+              selectedId={selectedId}
+              onItemClick={onItemClick}
+            />
+          ))}
+        </MenuSubItems>
+      )}
+    </Fragment>
+  )
+}
+
 export interface MenuItem {
   id: string
   label: string
@@ -143,46 +195,18 @@ export const Menu = ({items, initialSelectedId}: MenuProps) => {
     [navigate, toggleExpand]
   )
 
-  const renderMenuItem = useCallback(
-    (item: MenuItem): React.ReactNode => {
-      if (!item?.id || item.show === false) return null
-
-      const hasChildren =
-        Array.isArray(item.children) && item.children.length > 0
-
-      const isExpanded = expandedItems.has(item.id)
-      return (
-        <Fragment key={item.id}>
-          <MenuItem
-            $hasChildren={hasChildren}
-            $disabled={item.disabled}
-            $isSelected={item.id === selectedId}
-            $isParentOfExpanded={hasSelectedChild(item, selectedId)}
-            onClick={() => !item.disabled && handleItemClick(item)}
-          >
-            {item.icon && <MenuItemIcon>{item.icon}</MenuItemIcon>}
-            <MenuItemTitle>{item.label}</MenuItemTitle>
-            {hasChildren && (
-              <MenuItemArrow $isExpanded={isExpanded}>
-                <Vector />
-              </MenuItemArrow>
-            )}
-          </MenuItem>
-          {hasChildren && isExpanded && item.children && (
-            <MenuSubItems $isExpanded={isExpanded}>
-              {item.children.map(renderMenuItem)}
-            </MenuSubItems>
-          )}
-        </Fragment>
-      )
-    },
-    [expandedItems, selectedId, handleItemClick]
-  )
-
   return (
     <MenuContainer>
       {items.length > 0 ? (
-        items.map(renderMenuItem)
+        items.map((item) => (
+          <MenuListItem
+            key={item.id}
+            item={item}
+            expandedItems={expandedItems}
+            selectedId={selectedId}
+            onItemClick={handleItemClick}
+          />
+        ))
       ) : (
         <MenuEmpty>{t("menu.empty")}</MenuEmpty>
       )}
