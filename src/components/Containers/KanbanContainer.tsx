@@ -90,7 +90,7 @@ export function KanbanContainer() {
       addCard={handleAddCard}
       deleteCard={handleDelete}
       moveCard={handleMoveCard}
-      upDateCard={handleUpdateCard}
+      updateCard={handleUpdateCard}
     />
   )
 }
@@ -105,7 +105,7 @@ const convertToRequirementData = (
   status: RequirementStatusType,
   card: StoryCard
 ): RequirementData => ({
-  rid: card.cid || Date.now().toString(),
+  rid: card.cid || useSignedRecord.getState().drawRequirementId(),
   priority: "medium",
   status: status,
   assignedTo: "",

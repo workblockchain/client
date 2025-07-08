@@ -47,6 +47,7 @@ interface SignedRecordStore {
 
   // RequirementRecord operations
   addRequirementRecord: (requirementRecord: RequirementData) => void
+  drawRequirementId: (prefix?: string) => string
   getRequirementRecord: (id: string) => RequirementData | undefined
   updateRequirementRecord: (
     id: string,
@@ -146,6 +147,25 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
     set((state) => ({
       requirementRecords: [...state.requirementRecords, requirementRecord],
     })),
+
+  drawRequirementId: (prefix = "Req-") => {
+    const existingIds = get().requirementRecords.map((r) => r.rid)
+    // 找到当前相同前缀的最大id
+    // 过滤出相同前缀的ID并提取数字部分
+    const prefixRegex = new RegExp(`^${prefix}(\\d+)$`)
+    const numbers = existingIds
+      .map((id) => {
+        const match = id.match(prefixRegex)
+        return match ? parseInt(match[1], 10) : 0
+      })
+      .filter((n) => !isNaN(n))
+
+    // 计算下一个ID，如果没有匹配项则从0开始
+    const maxNumber = numbers.length > 0 ? Math.max(...numbers) : -1
+    const next = maxNumber + 1
+    const newId = `${prefix}${String(next).padStart(3, "0")}`
+    return newId
+  },
 
   getRequirementRecord: (rid) =>
     get().requirementRecords.find((r) => r.rid === rid),

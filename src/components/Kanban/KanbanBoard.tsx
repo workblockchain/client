@@ -102,7 +102,7 @@ export const KanbanBoard = ({
                   ? deleteCard(cardData?.content.cid!)
                   : console.log("deleteCard is null")
               }
-            ></KanbanForm>
+            />
           </Drawer>
         </>
       )}
