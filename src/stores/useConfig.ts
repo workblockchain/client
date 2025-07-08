@@ -37,7 +37,7 @@ interface ConfigStore extends Options {
 const CONFIG_KEY = "USER_CONFIG" as const
 
 export const useConfig = create<ConfigStore>((set, get) => ({
-  autoSign: false,
+  autoSign: true, // 默认自动签名
   setAutoSign: (autoSign) => {
     set({autoSign})
     get().save()

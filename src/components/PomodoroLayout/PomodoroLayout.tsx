@@ -125,12 +125,15 @@ const PomodoroLayout = () => {
 
   const {status, remainingTime, timePassed, timerPhase} = usePomodoroTimer()
   const {startTimer, pauseTimer, togglePhase} = usePomodoroTimer()
-  const {uid} = useUserProfile()
-  const curRid = usePomodoroStore((state) => state.currentRequirementId)
 
-  const {addWorkRecord, createRecord, setWorkSigned} = useSignedRecord()
-  const {autoSign: autoSignConfig} = useConfig()
-  const [autoSign, setAutoSign] = useState(autoSignConfig)
+  const uid = useUserProfile((state) => state.uid)
+  const curRid = usePomodoroStore((state) => state.currentRequirementId)
+  const addWorkRecord = useSignedRecord((state) => state.addWorkRecord)
+  const createRecord = useSignedRecord((state) => state.createRecord)
+  const setWorkSigned = useSignedRecord((state) => state.setWorkSigned)
+  const autoSign = useConfig((state) => state.autoSign)
+  const setAutoSign = useConfig((state) => state.setAutoSign)
+
   const handleRecord = async (isWork: boolean) => {
     try {
       const message = `${
@@ -222,12 +225,25 @@ const PomodoroLayout = () => {
           setAutoSign={setAutoSign}
         />
       )}
+      {!uid && <Overlay>请先在右上角个人信息中生成密钥对</Overlay>}
       <NavigationButton />
     </Container>
   )
 }
 
 export default PomodoroLayout
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffffffa0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
 const Container = styled.div<{$phase: TimerPhaseType}>`
   border: 1px solid #e0e0e0;
