@@ -20,6 +20,7 @@
   "description.placeholder": "Work description...",
   "general.back": "Back",
   "menu.empty": "Empty",
+  "pomodoro.wipBar.noReq": "Please select a requirement",
   "record.invalidSignature": "Invalid signature",
   "time.hour": "hour",
   "time.justNow": "just now",

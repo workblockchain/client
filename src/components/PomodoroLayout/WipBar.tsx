@@ -18,6 +18,7 @@
 import {RequirementData} from "@/interfaces"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {colors} from "@/styles"
+import {t} from "i18next"
 import {useMemo, type ComponentPropsWithoutRef} from "react"
 import styled from "styled-components"
 import {svgIcons} from "../Icons"
@@ -37,11 +38,11 @@ function WipBar() {
   return (
     <>
       <Container>
-        {requirement && (
-          <Title onClick={() => setCardOpen(true)}>
-            {requirement?.description}
-          </Title>
-        )}
+        <Title
+          onClick={() => (requirement ? setCardOpen(true) : setListOpen(true))}
+        >
+          {requirement?.description ?? t`pomodoro.wipBar.noReq`}
+        </Title>
         <Action onClick={() => setListOpen(true)} />
       </Container>
       {requirement && <ReqCard req={requirement} />}

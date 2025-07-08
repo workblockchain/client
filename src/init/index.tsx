@@ -15,6 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import usePomodoroStore from "@/components/PomodoroLayout/usePomodoroStore"
 import {useConfig} from "@/stores/useConfig"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {useEffect, useState} from "react"
@@ -44,8 +45,21 @@ async function loadConfig() {
   })
 }
 
+async function initPomodoroStore() {
+  // 初始化番茄钟状态
+  return new Promise<void>((resolve) => {
+    usePomodoroStore.getState().load()
+    resolve()
+  })
+}
+
 async function init() {
-  await Promise.all([initUserProfile(), initRecords(), loadConfig()])
+  await Promise.all([
+    initUserProfile(),
+    initRecords(),
+    loadConfig(),
+    initPomodoroStore(),
+  ])
 }
 
 function Initializer({children}: {children: React.ReactNode}) {

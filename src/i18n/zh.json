@@ -20,6 +20,7 @@
   "description.placeholder": "劳动成果描述",
   "general.back": "返回",
   "menu.empty": "没有菜单项",
+  "pomodoro.wipBar.noReq": "请选择一个需求",
   "record.invalidSignature": "签名无效",
   "time.hour": "小时",
   "time.justNow": "现在",
