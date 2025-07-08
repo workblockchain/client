@@ -34,18 +34,17 @@ function WipBar() {
     [rid]
   )
 
-  if (!requirement) {
-    return null
-  }
   return (
     <>
       <Container>
-        <Title onClick={() => setCardOpen(true)}>
-          {requirement?.description}
-        </Title>
+        {requirement && (
+          <Title onClick={() => setCardOpen(true)}>
+            {requirement?.description}
+          </Title>
+        )}
         <Action onClick={() => setListOpen(true)} />
       </Container>
-      <ReqCard req={requirement} />
+      {requirement && <ReqCard req={requirement} />}
       <ReqList />
     </>
   )
@@ -81,7 +80,7 @@ const ReqList = () => {
     (state) => state.setCurrentRequirementId
   )
   const reqs = useSignedRecord((state) => state.requirementRecords)
-  const wip = useMemo(() => reqs.filter((r) => r.status === "WIP"), [reqs])
+  const wip = useMemo(() => reqs.filter((r) => r.status === "doing"), [reqs])
 
   // const wip = [] as RequirementData[]
 
