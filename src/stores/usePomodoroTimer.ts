@@ -15,31 +15,18 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {MINUTE} from "@/constants"
 import {create} from "zustand"
-
-const MINUTE = 60 as const
+import {useConfig} from "./useConfig"
 
 export type TimerPhaseType = "break" | "work"
-
-interface TimerConfig {
-  workDuration: number
-  breakDuration: number
-}
 
 interface TimerState {
   // 计时器状态
   status: "idle" | "running" | "paused"
   remainingTime: number // 剩余时间(秒)
   intervalId?: NodeJS.Timeout // 定时器引用
-
-  // 计时器配置
-  workDuration: number // 工作时长(分钟)
-  breakDuration: number // 休息时长(分钟)
   timerPhase: TimerPhaseType // 当前阶段状态
-
-  // 保存配置
-  export: () => TimerConfig
-  import: (data: TimerConfig) => void
 
   // 方法
   startTimer: () => void
@@ -48,16 +35,13 @@ interface TimerState {
   tick: () => void
   timePassed: () => number
   togglePhase: (nextPhase?: TimerPhaseType) => void
-  setWorkDuration: (minutes: number) => void
-  setBreakDuration: (minutes: number) => void
+  onConfigChange: () => void
 }
 
 export const usePomodoroTimer = create<TimerState>((set, get) => ({
   // 初始状态
   status: "idle",
-  remainingTime: 25 * MINUTE, // 默认25分钟工作
-  workDuration: 25, // 25分钟工作
-  breakDuration: 5, // 5分钟休息
+  remainingTime: 25 * MINUTE,
   timerPhase: "work",
 
   // 开始计时
@@ -99,10 +83,10 @@ export const usePomodoroTimer = create<TimerState>((set, get) => ({
     let remainingTime = 0
     switch (timerPhase) {
       case "work":
-        remainingTime = get().workDuration * MINUTE
+        remainingTime = useConfig.getState().workDuration * MINUTE
         break
       case "break":
-        remainingTime = get().breakDuration * MINUTE
+        remainingTime = useConfig.getState().breakDuration * MINUTE
         break
     }
     set({
@@ -110,6 +94,15 @@ export const usePomodoroTimer = create<TimerState>((set, get) => ({
       status: "idle",
       remainingTime,
     })
+  },
+
+  onConfigChange: () => {
+    const {status, resetTimer} = get()
+
+    // [UX] 如果当前未处于工作状态，则立即重置计时器
+    if (status === "idle") {
+      resetTimer()
+    }
   },
 
   // 计时器滴答
@@ -142,7 +135,8 @@ export const usePomodoroTimer = create<TimerState>((set, get) => ({
   },
 
   timePassed: () => {
-    const {remainingTime, timerPhase, workDuration, breakDuration} = get()
+    const {remainingTime, timerPhase} = get()
+    const {workDuration, breakDuration} = useConfig.getState()
     switch (timerPhase) {
       case "work":
         return workDuration * MINUTE - remainingTime
@@ -159,34 +153,6 @@ export const usePomodoroTimer = create<TimerState>((set, get) => ({
     }
     const phase = timerPhase === "work" ? "break" : "work"
     resetTimer(phase)
-  },
-
-  // 设置工作时长(分钟)
-  setWorkDuration: (minutes) => {
-    set({workDuration: minutes})
-    if (get().timerPhase === "work") {
-      get().resetTimer()
-    }
-  },
-
-  // 设置休息时长(分钟)
-  setBreakDuration: (minutes) => {
-    set({breakDuration: minutes})
-    if (get().timerPhase === "break") {
-      get().resetTimer()
-    }
-  },
-
-  export: () => ({
-    workDuration: get().workDuration,
-    breakDuration: get().breakDuration,
-  }),
-
-  import: (data) => {
-    set({
-      workDuration: data.workDuration,
-      breakDuration: data.breakDuration,
-    })
   },
 }))
 

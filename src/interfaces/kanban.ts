@@ -51,7 +51,7 @@ export interface BoardProps {
   addCard?: (state: RequirementStatusType, cardData: StoryCardWithCid) => void
   moveCard?: (cardId: string, state: RequirementStatusType) => void
   deleteCard?: (id: string) => void
-  upDateCard?: (
+  updateCard?: (
     cardId: string,
     state: RequirementStatusType,
     cardData: StoryCardWithCid

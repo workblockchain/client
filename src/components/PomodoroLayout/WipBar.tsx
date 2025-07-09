@@ -18,6 +18,7 @@
 import {RequirementData} from "@/interfaces"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {colors} from "@/styles"
+import {t} from "i18next"
 import {useMemo, type ComponentPropsWithoutRef} from "react"
 import styled from "styled-components"
 import {svgIcons} from "../Icons"
@@ -34,18 +35,17 @@ function WipBar() {
     [rid]
   )
 
-  if (!requirement) {
-    return null
-  }
   return (
     <>
       <Container>
-        <Title onClick={() => setCardOpen(true)}>
-          {requirement?.description}
+        <Title
+          onClick={() => (requirement ? setCardOpen(true) : setListOpen(true))}
+        >
+          {requirement?.description ?? t`pomodoro.wipBar.noReq`}
         </Title>
         <Action onClick={() => setListOpen(true)} />
       </Container>
-      <ReqCard req={requirement} />
+      {requirement && <ReqCard req={requirement} />}
       <ReqList />
     </>
   )
@@ -81,7 +81,7 @@ const ReqList = () => {
     (state) => state.setCurrentRequirementId
   )
   const reqs = useSignedRecord((state) => state.requirementRecords)
-  const wip = useMemo(() => reqs.filter((r) => r.status === "WIP"), [reqs])
+  const wip = useMemo(() => reqs.filter((r) => r.status === "doing"), [reqs])
 
   // const wip = [] as RequirementData[]
 

@@ -19,6 +19,8 @@
   "date.yesterday": "Yesterday",
   "description.placeholder": "Work description...",
   "general.back": "Back",
+  "menu.empty": "Empty",
+  "pomodoro.wipBar.noReq": "Please select a requirement",
   "record.invalidSignature": "Invalid signature",
   "time.hour": "hour",
   "time.justNow": "just now",
@@ -26,5 +28,13 @@
   "time.second": "sec",
   "timer.pause": "Pause",
   "timer.skip": "Skip",
-  "timer.start": "Start"
+  "timer.start": "Start",
+  "work.description": "Description",
+  "work.endTime": "End Time",
+  "work.id": "ID",
+  "work.signed": "Signed",
+  "work.startTime": "Start Time",
+  "work.status": "Status",
+  "work.unsigned": "Unsigned",
+  "work.user": "User"
 }

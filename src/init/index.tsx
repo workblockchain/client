@@ -15,8 +15,10 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import usePomodoroStore from "@/components/PomodoroLayout/usePomodoroStore"
 import {useConfig} from "@/stores/useConfig"
 import {useSignedRecord} from "@/stores/useSignedRecord"
+import {useEffect, useState} from "react"
 import {useUserProfile} from "../stores/useUserProfile"
 
 // TODO: refactor to async progress
@@ -43,6 +45,39 @@ async function loadConfig() {
   })
 }
 
-export async function init() {
-  await Promise.all([initUserProfile(), initRecords(), loadConfig()])
+async function initPomodoroStore() {
+  // 初始化番茄钟状态
+  return new Promise<void>((resolve) => {
+    usePomodoroStore.getState().load()
+    resolve()
+  })
 }
+
+async function init() {
+  await Promise.all([
+    initUserProfile(),
+    initRecords(),
+    loadConfig(),
+    initPomodoroStore(),
+  ])
+}
+
+function Initializer({children}: {children: React.ReactNode}) {
+  const [isInit, setIsInit] = useState(false)
+  useEffect(() => {
+    init()
+      .then(() => {
+        console.log("Initialization complete")
+        setIsInit(true)
+      })
+      .catch((error) => {
+        console.error("Initialization failed:", error)
+      })
+  }, [])
+  if (!isInit) {
+    return null
+  }
+  return <>{children}</>
+}
+
+export default Initializer

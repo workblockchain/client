@@ -102,6 +102,9 @@ export const KanbanForm = React.memo(
                 }
               }}
             >
+              {/* TODO: refactor Editable tag to a component, using <svgIcons.Plus
+                style={{width: 16, height: 16, color: colors.Neutral500}}
+              /> to replace + char*/}
               +
             </EditableTag>
           </TagGroup>
