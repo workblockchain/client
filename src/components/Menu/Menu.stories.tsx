@@ -20,7 +20,7 @@ import {BrowserRouter} from "react-router"
 import {Menu} from "./Menu"
 
 const meta: Meta<typeof Menu> = {
-  title: "Components/Menu",
+  title: "Components/Menu/Index",
   component: Menu,
   decorators: [
     (Story) => (

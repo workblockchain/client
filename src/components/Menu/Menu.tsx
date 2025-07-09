@@ -15,12 +15,12 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import AngleDown from "@/assets/AngleDown.svg?react"
 import {colors} from "@/styles/colors"
 import {Fragment, ReactNode, useCallback, useState} from "react"
 import {useTranslation} from "react-i18next"
 import {useNavigate} from "react-router"
 import styled, {css} from "styled-components"
+import {MenuItem} from "./MenuItem"
 
 interface MenuListItemProps {
   item: MenuItem
@@ -43,20 +43,14 @@ const MenuListItem = ({
   return (
     <Fragment key={item.id}>
       <MenuItem
-        $hasChildren={hasChildren}
-        $disabled={item.disabled}
-        $isSelected={item.id === selectedId}
-        $isParentOfExpanded={hasSelectedChild(item, selectedId)}
+        label={item.label}
+        icon={item.icon}
+        hasChildren={hasChildren}
+        disabled={item.disabled}
+        isSelected={hasSelectedChild(item, selectedId)}
+        isExpanded={isExpanded}
         onClick={() => !item.disabled && onItemClick(item)}
-      >
-        {item.icon && <MenuItemIcon>{item.icon}</MenuItemIcon>}
-        <MenuItemTitle>{item.label}</MenuItemTitle>
-        {hasChildren && (
-          <MenuItemArrow $isExpanded={isExpanded}>
-            <AngleDown />
-          </MenuItemArrow>
-        )}
-      </MenuItem>
+      ></MenuItem>
       {hasChildren && isExpanded && item.children && (
         <MenuSubItems $isExpanded={isExpanded}>
           {item.children.map((child) => (
@@ -121,6 +115,8 @@ const hasSelectedChild = (
   selectedId: string | undefined
 ): boolean => {
   if (!selectedId || !item.children?.length) return false
+
+  if (item.id === selectedId) return true
 
   const checkChildren = (children: MenuItem[]): boolean => {
     return children.some(
@@ -220,6 +216,7 @@ const MenuContainer = styled.div<{$drawerMode?: boolean}>`
   width: 100%;
   display: flex;
   flex-direction: column;
+  gap: 4px;
   ${({$drawerMode}) =>
     $drawerMode &&
     css`
@@ -235,30 +232,9 @@ const MenuContainer = styled.div<{$drawerMode?: boolean}>`
     `}
 `
 
-const MenuItemIcon = styled.span`
-  display: flex;
-  svg {
-    width: 20px;
-    height: 20px;
-  }
-`
-
-const MenuItemTitle = styled.span`
-  flex: 1;
-  font-size: 0.9rem;
-`
-
-const MenuItemArrow = styled.span<{$isExpanded: boolean}>`
-  display: inline-flex;
-  align-items: center;
-  font-size: 12px;
-  transform: ${({$isExpanded}) =>
-    $isExpanded ? "rotate(0deg)" : "rotate(180deg)"};
-  transition: transform 0.3s ease;
-`
-
 const MenuSubItems = styled.div<{$isExpanded: boolean}>`
   display: flex;
+  gap: 4px;
   flex-direction: column;
   max-height: ${({$isExpanded}) => ($isExpanded ? "1000px" : "0")};
   opacity: ${({$isExpanded}) => ($isExpanded ? 1 : 0)};
@@ -275,45 +251,4 @@ const MenuEmpty = styled.div`
   text-align: center;
   color: ${colors.Neutral300};
   font-size: 14px;
-`
-
-const MenuItem = styled.div<{
-  $hasChildren?: boolean
-  $disabled?: boolean
-  $isSelected?: boolean
-  $isParentOfExpanded?: boolean
-  $drawerMode?: boolean
-}>`
-  display: flex;
-  border-radius: 8px;
-  overflow: hidden;
-  width: 100%;
-  box-sizing: border-box;
-  align-items: center;
-  gap: 8px;
-  padding: 8px;
-  margin: 4px 0px;
-  background-color: ${({$disabled, $isSelected}) =>
-    $disabled
-      ? colors.Neutral200
-      : $isSelected
-        ? colors.Red100
-        : "transparent"};
-  color: ${({$isSelected, $isParentOfExpanded}) =>
-    $isSelected || $isParentOfExpanded ? colors.Red400 : colors.Neutral900};
-  opacity: ${({$disabled}) => ($disabled ? 0.6 : 1)};
-  transition:
-    background-color 0.3s ease,
-    opacity 0.3s ease,
-    color 0.3s ease;
-
-  &:hover {
-    background-color: ${({$disabled, $isSelected}) =>
-      $disabled
-        ? colors.Neutral200
-        : $isSelected
-          ? colors.Red100
-          : colors.Red100};
-  }
-  cursor: ${({$disabled}) => ($disabled ? "not-allowed" : "pointer")};
 `
