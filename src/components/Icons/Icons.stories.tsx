@@ -35,7 +35,7 @@ const IconWrapper = styled.div`
 export const Pomodoro = () => (
   <IconWrapper>
     {Object.values(svgIcons).map((Component, i) => (
-      <Component key={i} />
+      <Component key={i} width={24} height={24} />
     ))}
   </IconWrapper>
 )

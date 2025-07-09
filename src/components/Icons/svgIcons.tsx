@@ -14,6 +14,8 @@
 // See the Mulan PubL v2 for more details.
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
+import AngleDown from "@/assets/AngleDown.svg?react"
+import AngleRight from "@/assets/AngleRight.svg?react"
 import Arrow from "@/assets/arrow.svg?react"
 import ArrowRound from "@/assets/arrow-round.svg?react"
 import Check from "@/assets/check.svg?react"
@@ -31,12 +33,10 @@ import Pomodoro from "@/assets/pomodoro.svg?react"
 import ReactIcon from "@/assets/react.svg?react"
 import Right from "@/assets/right.svg?react"
 import Unchecked from "@/assets/unchecked.svg?react"
-import Vector from "@/assets/vector.svg?react"
 import Workbench from "@/assets/workbench.svg?react"
 
 export const svgIcons = {
   Workbench,
-  Vector,
   Unchecked,
   Right,
   ReactIcon,
@@ -54,4 +54,6 @@ export const svgIcons = {
   Check,
   Arrow,
   ArrowRound,
+  AngleRight,
+  AngleDown,
 }

@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import Vector from "@/assets/vector.svg?react"
+import AngleDown from "@/assets/AngleDown.svg?react"
 import {colors} from "@/styles/colors"
 import {Fragment, ReactNode, useCallback, useState} from "react"
 import {useTranslation} from "react-i18next"
@@ -53,7 +53,7 @@ const MenuListItem = ({
         <MenuItemTitle>{item.label}</MenuItemTitle>
         {hasChildren && (
           <MenuItemArrow $isExpanded={isExpanded}>
-            <Vector />
+            <AngleDown />
           </MenuItemArrow>
         )}
       </MenuItem>

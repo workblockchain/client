@@ -30,11 +30,6 @@ const meta: Meta<typeof Checkbox> = {
       options: ["small", "medium"],
       description: "尺寸",
     },
-    labelPosition: {
-      control: "select",
-      options: ["left", "right"],
-      description: "文本方位",
-    },
   },
 }
 
@@ -74,10 +69,3 @@ export const Disabled: Story = {
     onChange: (checked) => console.log("Switch toggled:", checked),
   },
 }
-
-// export const FilledPrimary: Story = {
-//   play: async ({canvas, userEvent}) => {
-//     await canvas.findByRole("span")
-//     userEvent
-//   },
-// }

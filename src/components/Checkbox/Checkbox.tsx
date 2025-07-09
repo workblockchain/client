@@ -16,14 +16,20 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import styled from "styled-components"
-import {colors} from "../../styles"
 import {svgIcons} from "../Icons/svgIcons"
 
+/**
+ * Checkbox component props
+ * @prop {boolean} checked - 是否选中
+ * @prop {function} onChange - 选中状态改变时的回调函数
+ * @prop {string} label - 复选框的标签
+ * @prop {"small" | "medium"} size - 复选框大小
+ * @prop {boolean} disabled - 是否禁用
+ */
 export interface CheckboxProps {
   checked: boolean
   onChange: (checked: boolean) => void
   label?: string
-  labelPosition?: "left" | "right"
   size?: "small" | "medium"
   disabled?: boolean
 }
@@ -32,13 +38,12 @@ export const Checkbox = ({
   checked,
   onChange,
   label,
-  labelPosition = "right",
   size = "medium",
   disabled = false,
 }: CheckboxProps) => {
   return (
     <CheckboxContainer>
-      <CheckboxInput
+      <input
         type="checkbox"
         checked={checked}
         readOnly
@@ -49,55 +54,32 @@ export const Checkbox = ({
         onClick={() => !disabled && onChange(!checked)}
         disabled={disabled}
       >
-        {checked ? (
-          <svgIcons.Unchecked
-            width={size === "small" ? 16 : 20}
-            height={size === "small" ? 16 : 20}
-          />
-        ) : (
-          <svgIcons.Right
-            width={size === "small" ? 16 : 20}
-            height={size === "small" ? 16 : 20}
-          />
-        )}
+        {checked ? <svgIcons.Right /> : <svgIcons.Unchecked />}
+        <Label size={size}>{label}</Label>
       </CheckboxVisual>
-      {label && (
-        <Label size={size} $position={labelPosition}>
-          {label}
-        </Label>
-      )}
     </CheckboxContainer>
   )
 }
 
-const CheckboxContainer = styled.div<{}>`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-`
-
-const CheckboxInput = styled.input`
-  opacity: 0;
-  width: 0;
-  height: 0;
-`
+const CheckboxContainer = styled.div``
 
 const CheckboxVisual = styled.span<{
   disabled?: boolean
 }>`
   cursor: ${({disabled}) => (disabled ? "not-allowed" : "pointer")};
   filter: ${({disabled}) => (disabled ? "grayscale(100%)" : "none")};
-  display: inline-flex;
+  color: ${({disabled}) => (disabled ? "#999" : "#000")};
+  display: flex;
   align-items: center;
-  user-select: none;
+  gap: 6px;
+  & > svg:hover {
+    transform: scale(1.05);
+  }
 `
 
 const Label = styled.span<{
   size: "small" | "medium"
-  $position: "left" | "right"
 }>`
   font-size: ${({size}) => (size === "small" ? "12px" : "16px")};
-  color: ${colors.Neutral800};
-  user-select: none;
-  order: ${({$position}) => ($position === "left" ? "-1" : "1")};
+  line-height: 1;
 `

@@ -15,23 +15,13 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-// Copyright (c) 2025-present WorkBlockChain Team.
-//
-// WorkBlockChain Client is licensed under Mulan PubL v2.
-// You can use this software according to
-// the terms and conditions of the Mulan PubL v2.
-// You may obtain a copy of Mulan PubL v2 at:
-//
-//   http://license.coscl.org.cn/MulanPubL-2.0
-//
-// THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS,
-// WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
-// INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-// MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-// See the Mulan PubL v2 for more details.
-
 import styled from "styled-components"
 
+/**
+ * @prop {string} avatar - 头像的 URL 或文本
+ * @prop {boolean} isText - 决定显示方式，true 为文本，false 为图片
+ * @prop {number} size - 图片的尺寸
+ */
 interface AvatarPreviewProps {
   avatar?: string
   isText?: boolean
@@ -57,6 +47,7 @@ function AvatarPreview({avatar, size = 40, isText}: AvatarPreviewProps) {
       {!isText &&
         (avatar ? (
           <img
+            loading="lazy"
             src={avatar}
             alt="头像预览"
             style={{width: size, height: size, borderRadius: "50%"}}
