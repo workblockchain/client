@@ -50,7 +50,7 @@ const MenuListItem = ({
         isSelected={hasSelectedChild(item, selectedId)}
         isExpanded={isExpanded}
         onClick={() => !item.disabled && onItemClick(item)}
-      ></MenuItem>
+      />
       {hasChildren && isExpanded && item.children && (
         <MenuSubItems $isExpanded={isExpanded}>
           {item.children.map((child) => (
