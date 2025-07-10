@@ -15,9 +15,9 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import KanBan from "@/assets/Kanban.svg?react"
 import type {Meta, StoryObj} from "@storybook/react"
 import {BrowserRouter} from "react-router"
+import {svgIcons} from "../Icons"
 import {MenuItem} from "./MenuItem"
 
 const meta: Meta<typeof MenuItem> = {
@@ -39,7 +39,7 @@ type Story = StoryObj<typeof MenuItem>
 export const Default: Story = {
   args: {
     label: "仪表盘",
-    icon: <KanBan />,
+    icon: <svgIcons.Kanban />,
     hasChildren: true,
     children: <span style={{display: "inline-flex"}}>123</span>,
     onClick: () => {

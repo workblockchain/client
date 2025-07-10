@@ -80,6 +80,7 @@ export interface MenuItem {
   expand?: boolean
 }
 
+// 查找从根节点到目标节点的父级路径（用于展开菜单）
 const findParentPath = (
   targetId: string,
   menuItems: MenuItem[],
@@ -136,8 +137,6 @@ export interface MenuProps {
 export const Menu = ({items, initialSelectedId}: MenuProps) => {
   const navigate = useNavigate()
   const {t} = useTranslation()
-
-  // 查找从根节点到目标节点的父级路径（用于展开菜单）
 
   // 展开项
   const [expandedItems, setExpandedItems] = useState<Set<string>>(() => {
