@@ -43,11 +43,17 @@ export interface ColumnProps {
   clickCard?: (data: DropItem) => void
 }
 
-export interface BoardProps {
+export interface BoardProps extends BoardData, BoardActions {
+  isLoading?: boolean
+}
+
+export interface BoardData {
   id: string
   title?: string
   column: ColumnProps[]
-  isLoading?: boolean
+}
+
+export interface BoardActions {
   addCard?: (state: RequirementStatusType, cardData: StoryCardWithCid) => void
   moveCard?: (cardId: string, state: RequirementStatusType) => void
   deleteCard?: (id: string) => void
