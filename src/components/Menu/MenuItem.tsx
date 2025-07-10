@@ -15,9 +15,9 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import AngleRight from "@/assets/AngleRight.svg?react"
 import {colors} from "@/styles"
 import styled from "styled-components"
+import {svgIcons} from "../Icons"
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   label: string
@@ -48,11 +48,11 @@ export const MenuItem = ({
         $disabled={disabled}
         {...props}
       >
-        {icon ? icon : null}
+        {icon && null}
         <MenuItemTitle>{label}</MenuItemTitle>
         {hasChildren && (
           <MenuItemArrow $isExpanded={isExpanded}>
-            <AngleRight width={20} height={20} />
+            <svgIcons.AngleRight width={20} height={20} />
           </MenuItemArrow>
         )}
       </MenuItemParent>

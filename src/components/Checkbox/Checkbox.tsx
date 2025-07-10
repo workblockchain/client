@@ -15,6 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {colors} from "@/styles"
 import styled from "styled-components"
 import {svgIcons} from "../Icons/svgIcons"
 
@@ -51,6 +52,7 @@ export const Checkbox = ({
         hidden
       />
       <CheckboxVisual
+        size={size}
         onClick={() => !disabled && onChange(!checked)}
         disabled={disabled}
       >
@@ -65,13 +67,21 @@ const CheckboxContainer = styled.div``
 
 const CheckboxVisual = styled.span<{
   disabled?: boolean
+  size?: "small" | "medium"
 }>`
   cursor: ${({disabled}) => (disabled ? "not-allowed" : "pointer")};
   filter: ${({disabled}) => (disabled ? "grayscale(100%)" : "none")};
-  color: ${({disabled}) => (disabled ? "#999" : "#000")};
+  color: ${({disabled}) => (disabled ? colors.Neutral500 : colors.Neutral900)};
   display: flex;
   align-items: center;
   gap: 6px;
+
+  & > svg {
+    width: ${({size}) => (size === "small" ? "12px" : "16px")};
+    height: ${({size}) => (size === "small" ? "12px" : "16px")};
+    transition: transform 0.2s ease;
+  }
+
   & > svg:hover {
     transform: scale(1.05);
   }

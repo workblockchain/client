@@ -15,9 +15,8 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import AngleRight from "@/assets/AngleRight.svg?react"
 import styled from "styled-components"
-
+import {svgIcons} from "../Icons"
 export interface BreadcrumbProps {
   title: string
   path?: string
@@ -35,9 +34,7 @@ export function Breadcrumb({items}: props) {
         return (
           <BreadcrumbItem key={index}>
             {<a href={item.path}>{item.title}</a>}
-            {!isLastItem && (
-              <AngleRight width={14} height={14} fill="#D0D0D0" />
-            )}
+            {!isLastItem && <svgIcons.AngleRight width={14} height={14} />}
           </BreadcrumbItem>
         )
       })}
