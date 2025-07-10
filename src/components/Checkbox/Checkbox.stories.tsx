@@ -27,7 +27,7 @@ const meta: Meta<typeof Checkbox> = {
     disabled: {control: "boolean", description: "是否禁用"},
     size: {
       control: "select",
-      options: ["small", "medium"],
+      options: ["small", "medium", "large"],
       description: "尺寸",
     },
   },
@@ -54,14 +54,30 @@ export const WithLabel: Story = {
   },
 }
 
-export const SmallSize: Story = {
-  args: {
-    size: "small",
-    label: "Small Checkbox",
-    onChange: (checked) => console.log("Switch toggled:", checked),
-  },
+export const WithSize: Story = {
+  render: () => (
+    <div style={{display: "flex", flexDirection: "column", gap: "16px"}}>
+      <Checkbox
+        size="small"
+        label="Small Checkbox"
+        checked={false}
+        onChange={(checked) => console.log("Small checkbox toggled:", checked)}
+      />
+      <Checkbox
+        size="medium"
+        label="Medium Checkbox"
+        checked={false}
+        onChange={(checked) => console.log("Medium checkbox toggled:", checked)}
+      />
+      <Checkbox
+        size="large"
+        label="Large Checkbox"
+        checked={false}
+        onChange={(checked) => console.log("Large checkbox toggled:", checked)}
+      />
+    </div>
+  ),
 }
-
 export const Disabled: Story = {
   args: {
     disabled: true,

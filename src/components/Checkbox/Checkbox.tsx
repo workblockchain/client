@@ -31,7 +31,7 @@ export interface CheckboxProps {
   checked: boolean
   onChange: (checked: boolean) => void
   label?: string
-  size?: "small" | "medium"
+  size?: "small" | "medium" | "large"
   disabled?: boolean
 }
 
@@ -57,7 +57,7 @@ export const Checkbox = ({
         disabled={disabled}
       >
         {checked ? <svgIcons.Right /> : <svgIcons.Unchecked />}
-        <Label size={size}>{label}</Label>
+        {label && <Label size={size}>{label}</Label>}
       </CheckboxVisual>
     </CheckboxContainer>
   )
@@ -65,20 +65,23 @@ export const Checkbox = ({
 
 const CheckboxContainer = styled.div``
 
-const CheckboxVisual = styled.span<{
+const CheckboxVisual = styled.label<{
   disabled?: boolean
-  size?: "small" | "medium"
+  size?: "small" | "medium" | "large"
 }>`
   cursor: ${({disabled}) => (disabled ? "not-allowed" : "pointer")};
   filter: ${({disabled}) => (disabled ? "grayscale(100%)" : "none")};
   color: ${({disabled}) => (disabled ? colors.Neutral500 : colors.Neutral900)};
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: ${({size}) =>
+    size === "small" ? "4px" : size === "large" ? "8px" : "6px"};
 
   & > svg {
-    width: ${({size}) => (size === "small" ? "12px" : "16px")};
-    height: ${({size}) => (size === "small" ? "12px" : "16px")};
+    width: ${({size}) =>
+      size === "small" ? "12px" : size === "large" ? "20px" : "16px"};
+    height: ${({size}) =>
+      size === "small" ? "12px" : size === "large" ? "20px" : "16px"};
     transition: transform 0.2s ease;
   }
 
@@ -88,8 +91,9 @@ const CheckboxVisual = styled.span<{
 `
 
 const Label = styled.span<{
-  size: "small" | "medium"
+  size: "small" | "medium" | "large"
 }>`
-  font-size: ${({size}) => (size === "small" ? "12px" : "16px")};
+  font-size: ${({size}) =>
+    size === "small" ? "12px" : size === "large" ? "18px" : "16px"};
   line-height: 1;
 `
