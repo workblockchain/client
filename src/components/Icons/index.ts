@@ -16,3 +16,4 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 export * from "./svgIcons"
+export * from "./svgVariant"

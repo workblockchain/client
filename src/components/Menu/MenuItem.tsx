@@ -17,7 +17,7 @@
 
 import {colors} from "@/styles"
 import styled from "styled-components"
-import {svgIcons} from "../Icons"
+import {ArrowVariant} from "../Icons"
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   label: string
@@ -52,7 +52,7 @@ export const MenuItem = ({
         <MenuItemTitle>{label}</MenuItemTitle>
         {hasChildren && (
           <MenuItemArrow $isExpanded={isExpanded}>
-            <svgIcons.AngleRight width={20} height={20} />
+            <ArrowVariant.Right width={20} height={20} />
           </MenuItemArrow>
         )}
       </MenuItemParent>

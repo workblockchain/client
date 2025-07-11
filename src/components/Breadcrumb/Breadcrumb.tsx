@@ -16,7 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import styled from "styled-components"
-import {svgIcons} from "../Icons"
+import {ArrowVariant} from "../Icons"
 export interface BreadcrumbProps {
   title: string
   path?: string
@@ -34,7 +34,7 @@ export function Breadcrumb({items}: props) {
         return (
           <BreadcrumbItem key={index}>
             {<a href={item.path}>{item.title}</a>}
-            {!isLastItem && <svgIcons.AngleRight width={14} height={14} />}
+            {!isLastItem && <ArrowVariant.Right width={14} height={14} />}
           </BreadcrumbItem>
         )
       })}
