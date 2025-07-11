@@ -47,7 +47,9 @@ const MenuListItem = ({
         icon={item.icon}
         hasChildren={hasChildren}
         disabled={item.disabled}
-        isSelected={hasSelectedChild(item, selectedId)}
+        isSelected={
+          hasSelectedChild(item, selectedId) || item.id === selectedId
+        }
         isExpanded={isExpanded}
         onClick={() => !item.disabled && onItemClick(item)}
       />
@@ -175,10 +177,11 @@ export const Menu = ({items, initialSelectedId}: MenuProps) => {
 
       if (hasChildren) {
         toggleExpand(item.id)
-      } else if (item.url) {
+      } else {
+        setSelectedId(item.id)
+        if (!item.url) return
         try {
           navigate(item.url)
-          setSelectedId(item.id)
           if (typeof item.onUpdate === "function") {
             item.onUpdate()
           }
