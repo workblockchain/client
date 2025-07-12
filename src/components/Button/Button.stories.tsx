@@ -17,6 +17,7 @@
 
 import GearIcon from "@/assets/gear.svg?react"
 import type {Meta, StoryObj} from "@storybook/react"
+import {expect, within} from "@storybook/test"
 import {Button} from "./Button"
 
 const meta = {
@@ -59,12 +60,25 @@ export const Primary: Story = {
     children: "Primary Button",
     $variant: "solid",
   },
+  play: async ({canvasElement}) => {
+    const canvas = within(canvasElement)
+    const e = canvas.getByRole("button")
+
+    expect(e).toHaveStyle("cursor: pointer")
+    expect(e).toHaveTextContent("Primary Button")
+  },
 }
 
 export const Outline: Story = {
   args: {
     ...Primary.args,
     $variant: "outline",
+  },
+  play: async ({canvasElement}) => {
+    const canvas = within(canvasElement)
+    const e = canvas.getByRole("button")
+
+    expect(e).toHaveStyle("background-color: rgba(0, 0, 0, 0)")
   },
 }
 
@@ -73,12 +87,24 @@ export const Text: Story = {
     ...Primary.args,
     $variant: "text",
   },
+  play: async ({canvasElement}) => {
+    const canvas = within(canvasElement)
+    const e = canvas.getByRole("button")
+
+    expect(e).toHaveStyle("background-color: rgba(0, 0, 0, 0)")
+  },
 }
 
 export const Disabled: Story = {
   args: {
     ...Primary.args,
     disabled: true,
+  },
+  play: async ({canvasElement}) => {
+    const canvas = within(canvasElement)
+    const e = canvas.getByRole("button")
+
+    expect(e).toHaveStyle("cursor: not-allowed")
   },
 }
 

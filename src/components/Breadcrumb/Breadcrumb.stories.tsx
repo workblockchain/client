@@ -33,6 +33,14 @@ export const Basic: Story = {
   args: {
     items: [{title: "首页"}, {title: "用户中心"}, {title: "个人资料"}],
   },
+  play: async ({canvasElement}) => {
+    // 检查面包屑是否渲染了三个元素
+    const canvas = within(canvasElement)
+    const items = canvas.getAllByText(/首页|用户中心|个人资料/)
+    expect(items).toHaveLength(3)
+
+    // 还应该检查是不是有2个svg间隔符，但是除了设置role =  img 以外，没有别的可以拿来查询
+  },
 }
 
 const items = [

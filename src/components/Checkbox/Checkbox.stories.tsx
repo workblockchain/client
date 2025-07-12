@@ -39,16 +39,8 @@ type Story = StoryObj<typeof Checkbox>
 
 export const Primary: Story = {
   args: {
+    label: "Checkbox",
     checked: false,
-    size: "medium",
-    onChange: (checked) => console.log("Switch toggled:", checked),
-  },
-}
-
-export const WithLabel: Story = {
-  args: {
-    label: "Checkbox Label",
-    checked: true,
     size: "medium",
     onChange: (checked) => console.log("Switch toggled:", checked),
   },
