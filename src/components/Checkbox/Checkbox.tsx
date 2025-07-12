@@ -15,16 +15,23 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {colors} from "@/styles"
 import styled from "styled-components"
-import {colors} from "../../styles"
 import {svgIcons} from "../Icons/svgIcons"
 
+/**
+ * Checkbox component props
+ * @prop {boolean} checked - 是否选中
+ * @prop {function} onChange - 选中状态改变时的回调函数
+ * @prop {string} label - 复选框的标签
+ * @prop {"small" | "medium"} size - 复选框大小
+ * @prop {boolean} disabled - 是否禁用
+ */
 export interface CheckboxProps {
   checked: boolean
   onChange: (checked: boolean) => void
   label?: string
-  labelPosition?: "left" | "right"
-  size?: "small" | "medium"
+  size?: "small" | "medium" | "large"
   disabled?: boolean
 }
 
@@ -32,13 +39,12 @@ export const Checkbox = ({
   checked,
   onChange,
   label,
-  labelPosition = "right",
   size = "medium",
   disabled = false,
 }: CheckboxProps) => {
   return (
     <CheckboxContainer>
-      <CheckboxInput
+      <input
         type="checkbox"
         checked={checked}
         readOnly
@@ -46,58 +52,48 @@ export const Checkbox = ({
         hidden
       />
       <CheckboxVisual
+        size={size}
         onClick={() => !disabled && onChange(!checked)}
         disabled={disabled}
       >
-        {checked ? (
-          <svgIcons.Unchecked
-            width={size === "small" ? 16 : 20}
-            height={size === "small" ? 16 : 20}
-          />
-        ) : (
-          <svgIcons.Right
-            width={size === "small" ? 16 : 20}
-            height={size === "small" ? 16 : 20}
-          />
-        )}
+        {checked ? <svgIcons.Right /> : <svgIcons.Unchecked />}
+        {label && <Label size={size}>{label}</Label>}
       </CheckboxVisual>
-      {label && (
-        <Label size={size} $position={labelPosition}>
-          {label}
-        </Label>
-      )}
     </CheckboxContainer>
   )
 }
 
-const CheckboxContainer = styled.div<{}>`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-`
+const CheckboxContainer = styled.div``
 
-const CheckboxInput = styled.input`
-  opacity: 0;
-  width: 0;
-  height: 0;
-`
-
-const CheckboxVisual = styled.span<{
+const CheckboxVisual = styled.label<{
   disabled?: boolean
+  size?: "small" | "medium" | "large"
 }>`
   cursor: ${({disabled}) => (disabled ? "not-allowed" : "pointer")};
   filter: ${({disabled}) => (disabled ? "grayscale(100%)" : "none")};
+  color: ${({disabled}) => (disabled ? colors.Neutral500 : colors.Neutral900)};
   display: inline-flex;
   align-items: center;
-  user-select: none;
+  gap: ${({size}) =>
+    size === "small" ? "4px" : size === "large" ? "8px" : "6px"};
+
+  & > svg {
+    width: ${({size}) =>
+      size === "small" ? "12px" : size === "large" ? "20px" : "16px"};
+    height: ${({size}) =>
+      size === "small" ? "12px" : size === "large" ? "20px" : "16px"};
+    transition: transform 0.2s ease;
+  }
+
+  & > svg:hover {
+    transform: scale(1.05);
+  }
 `
 
 const Label = styled.span<{
-  size: "small" | "medium"
-  $position: "left" | "right"
+  size: "small" | "medium" | "large"
 }>`
-  font-size: ${({size}) => (size === "small" ? "12px" : "16px")};
-  color: ${colors.Neutral800};
-  user-select: none;
-  order: ${({$position}) => ($position === "left" ? "-1" : "1")};
+  font-size: ${({size}) =>
+    size === "small" ? "12px" : size === "large" ? "18px" : "16px"};
+  line-height: 1;
 `

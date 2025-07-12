@@ -15,9 +15,8 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import Vector from "@/assets/vector.svg?react"
 import styled from "styled-components"
-
+import {ArrowVariant} from "../Icons"
 export interface BreadcrumbProps {
   title: string
   path?: string
@@ -33,14 +32,10 @@ export function Breadcrumb({items}: props) {
       {items.map((item, index) => {
         const isLastItem = index === items.length - 1
         return (
-          <span key={index}>
+          <BreadcrumbItem key={index}>
             {<a href={item.path}>{item.title}</a>}
-            {!isLastItem && (
-              <Separator>
-                <Vector />
-              </Separator>
-            )}
-          </span>
+            {!isLastItem && <ArrowVariant.Right width={14} height={14} />}
+          </BreadcrumbItem>
         )
       })}
     </BreadcrumbContainer>
@@ -49,19 +44,18 @@ export function Breadcrumb({items}: props) {
 
 const BreadcrumbContainer = styled.div`
   display: flex;
-  align-items: center;
   font-size: 14px;
-  padding-left: 8px;
+  align-items: center;
+  gap: 4px;
 
   span a {
     color: currentColor;
     text-decoration: none;
+    line-height: 1;
   }
 `
 
-const Separator = styled.div`
-  color: #999;
-  margin: 0px 8px;
-  display: inline-block;
-  transform: rotate(-90deg);
+const BreadcrumbItem = styled.span`
+  display: contents;
+  align-items: center;
 `

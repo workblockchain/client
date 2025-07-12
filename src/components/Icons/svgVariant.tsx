@@ -15,27 +15,21 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import type {Meta} from "@storybook/react"
-import styled from "styled-components"
-import {colors} from "../../styles"
-import {svgIcons} from "./svgIcons"
+// === Auto generated, DO NOT EDIT ABOVE ===
+import Arrow from "@/assets/arrow.svg?react"
 
-const meta: Meta = {
-  title: "assets/Icons",
+type SvgProps = React.SVGProps<SVGSVGElement>
+
+const ArrowVariant = {
+  Left: (props: SvgProps) => (
+    <Arrow style={{transform: "rotate(90deg)", ...props.style}} {...props} />
+  ),
+  Right: (props: SvgProps) => (
+    <Arrow style={{transform: "rotate(-90deg)", ...props.style}} {...props} />
+  ),
+  Down: (props: SvgProps) => <Arrow {...props} />,
+  Up: (props: SvgProps) => (
+    <Arrow style={{transform: "rotate(180deg)", ...props.style}} {...props} />
+  ),
 }
-
-export default meta
-
-const IconWrapper = styled.div`
-  display: flex;
-  gap: 1rem;
-  color: ${colors.Red300};
-`
-
-export const Pomodoro = () => (
-  <IconWrapper>
-    {Object.values(svgIcons).map((Component, i) => (
-      <Component key={i} width={24} height={24} />
-    ))}
-  </IconWrapper>
-)
+export {ArrowVariant}

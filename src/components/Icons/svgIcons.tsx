@@ -31,12 +31,10 @@ import Pomodoro from "@/assets/pomodoro.svg?react"
 import ReactIcon from "@/assets/react.svg?react"
 import Right from "@/assets/right.svg?react"
 import Unchecked from "@/assets/unchecked.svg?react"
-import Vector from "@/assets/vector.svg?react"
 import Workbench from "@/assets/workbench.svg?react"
 
 export const svgIcons = {
   Workbench,
-  Vector,
   Unchecked,
   Right,
   ReactIcon,
