@@ -15,14 +15,14 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {BoardProps} from "@/interfaces/kanban"
+import {BoardData} from "@/interfaces/kanban"
 import {create} from "zustand"
 
 const KANBAN_STORAGE_KEY = "KANBAN_DATA" as const
 
 interface KanbanStore {
-  board: BoardProps
-  setBoard: (board: BoardProps) => void
+  board: BoardData
+  setBoard: (board: BoardData) => void
   moveCard: (payload: {
     dragIndex: number
     hoverIndex: number
