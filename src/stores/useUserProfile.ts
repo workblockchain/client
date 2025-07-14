@@ -19,6 +19,7 @@ import * as ed from "@noble/ed25519"
 import {create} from "zustand"
 import {UserInfoProps} from "../interfaces/userInfo"
 import {fromBase64, toBase64} from "../utils"
+import {handleAccountUpdatedSync} from "./useTauriSignals"
 
 interface UserProfile {
   userInfo: UserInfoProps
@@ -61,7 +62,10 @@ export const useUserProfile = create<UserProfileStore>((set, get) => ({
     return [toBase64(publicKey), toBase64(privateKey)]
   },
 
-  setSignature: (publicKey, secretKey, uid) => set({publicKey, secretKey, uid}),
+  setSignature: (publicKey, secretKey, uid) => {
+    set({publicKey, secretKey, uid})
+    get().save()
+  },
 
   exportUserProfile: () => ({
     userInfo: get().userInfo,
@@ -86,28 +90,42 @@ export const useUserProfile = create<UserProfileStore>((set, get) => ({
   },
 
   save: () => {
+    console.log("save user profile")
     const userProfile = get().exportUserProfile()
     localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(userProfile))
+    // FIXME: circular dependency issue
+    // This is a workaround to avoid circular dependency issues
+    handleAccountUpdatedSync.accountUpdatedSync()
   },
 
   load: () => {
     const userProfileStr = localStorage.getItem(USER_PROFILE_KEY)
+    console.log("load userProfileStr", userProfileStr)
     if (userProfileStr) {
       const userProfile = JSON.parse(userProfileStr)
+      console.log("userProfile", userProfile)
       set(userProfile)
+    } else {
+      set(emptyState)
     }
   },
   clear: () => {
+    console.log("clear user profile")
     localStorage.removeItem(USER_PROFILE_KEY)
-    set({
-      userInfo: {
-        username: "",
-        email: "",
-        avatar: "",
-      },
-      uid: "",
-      publicKey: "",
-      secretKey: "",
-    })
+    set(emptyState)
+    // FIXME: circular dependency issue
+    // This is a workaround to avoid circular dependency issues
+    handleAccountUpdatedSync.accountUpdatedSync()
   },
 }))
+
+const emptyState = {
+  userInfo: {
+    username: "",
+    email: "",
+    avatar: "",
+  },
+  uid: "",
+  publicKey: "",
+  secretKey: "",
+} as const
