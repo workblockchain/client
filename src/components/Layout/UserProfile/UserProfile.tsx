@@ -39,6 +39,7 @@ export function UserProfile() {
     generateSignature,
     setSignature,
     save,
+    clear,
     uid,
   } = useUserProfile()
   const [isGenerating, setIsGenerating] = useState(false)
@@ -65,7 +66,6 @@ export function UserProfile() {
   }
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
-  const {clear} = useUserProfile()
 
   const onClickGenerateKeys = () => {
     if (isGenerating) return
@@ -76,13 +76,13 @@ export function UserProfile() {
     }
   }
 
-  const onConfirmGenerate = () => {
+  const onConfirmDelete = () => {
     setIsConfirmOpen(false)
     setDraftUid("")
     clear()
   }
 
-  const onCancelGenerate = () => {
+  const onCancelDelete = () => {
     setIsConfirmOpen(false)
   }
 
@@ -96,7 +96,6 @@ export function UserProfile() {
     const [pubKey, secKey] = await generateSignature()
     const uid = `${draftUid.slice(0, 16)}#${pubKey.slice(0, 8)}`
     setSignature(pubKey, secKey, uid)
-    save()
     toast("密钥对生成成功")
     setIsGenerating(false)
   }
@@ -186,13 +185,14 @@ export function UserProfile() {
           保存个人信息
         </Button>
       </ActionSection>
-      <Modal isOpen={isConfirmOpen} onClose={onCancelGenerate} title="确认操作">
+      {/* TODO: 危险操作，需要在后续的用户设计中让用户不那么容易做到 */}
+      <Modal isOpen={isConfirmOpen} onClose={onCancelDelete} title="确认操作">
         确定要删除当前账户信息吗？此操作将清除所有本地存储的身份数据。
         <ActionSection style={{marginTop: "1rem"}}>
-          <Button $variant="outline" onClick={onCancelGenerate}>
+          <Button $variant="outline" onClick={onCancelDelete}>
             取消
           </Button>
-          <Button $variant="solid" onClick={onConfirmGenerate}>
+          <Button $variant="solid" onClick={onConfirmDelete}>
             确定
           </Button>
         </ActionSection>
