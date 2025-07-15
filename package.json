@@ -2,7 +2,7 @@
   "name": "workchain-web",
   "description": "Decentralized labor record and reactive settlement platform.",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "prepare": "npx playwright install",
