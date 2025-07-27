@@ -15,10 +15,11 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {Table} from "@/components/Table/Table"
+import {Table, type TableColumn} from "@/components/Table/Table"
 import {WorkData} from "@/interfaces/records"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {t} from "i18next"
+import {useMemo} from "react"
 
 interface WorkRecord extends Partial<WorkData> {
   wid: string
@@ -30,84 +31,66 @@ interface WorkRecord extends Partial<WorkData> {
   data?: string
 }
 
+const getDate = (value?: number) =>
+  value ? new Date(value).toLocaleString() : "-"
+const isSigned = (value?: boolean) =>
+  value ? t`work.signed` : t`work.unsigned`
+
+const columns: TableColumn<WorkRecord>[] = [
+  {key: "wid", title: t`work.id`},
+  {key: "userId", title: t`work.user`},
+  {key: "startTime", title: t`work.startTime`, render: getDate},
+  {key: "endTime", title: t`work.endTime`, render: getDate},
+  {key: "isSigned", title: t`work.status`, render: isSigned},
+  {
+    key: "description",
+    title: t`work.description`,
+    render: (value?: string) => value || "-",
+  },
+] as const
+
 export function WorkContainer() {
-  const {workRecords, signedRecords} = useSignedRecord()
+  const workRecords = useSignedRecord((state) => state.workRecords)
+  const signedRecords = useSignedRecord((state) => state.signedRecords)
 
-  const columns = [
-    {
-      key: "wid",
-      title: t`work.id`,
-    },
-    {
-      key: "userId",
-      title: t`work.user`,
-    },
-    {
-      key: "startTime",
-      title: t`work.startTime`,
-      render: (value?: number) =>
-        value ? new Date(value).toLocaleString() : "-",
-    },
-    {
-      key: "endTime",
-      title: t`work.endTime`,
-      render: (value?: number) =>
-        value ? new Date(value).toLocaleString() : "-",
-    },
-    {
-      key: "isSigned",
-      title: t`work.status`,
-      render: (value?: boolean) => (value ? t`work.signed` : t`work.unsigned`),
-    },
-    {
-      key: "description",
-      title: t`work.description`,
-      render: (value?: string) => value || "-",
-    },
-  ]
-
-  const combinedRecords: WorkRecord[] = [
-    ...workRecords.map((w) => ({
-      ...w,
-      wid: w.wid,
-      isSigned: w.isSigned || false,
-    })),
-    ...signedRecords.map((r) => {
-      try {
-        const data = JSON.parse(r.data) as Partial<WorkData>
-        return {
-          wid: r.id,
-          userId: r.createdBy,
+  const combinedRecords = useMemo(() => {
+    const ids = new Set<string>()
+    const uniqueRecords: WorkRecord[] = []
+    workRecords.forEach((r) => {
+      if (!ids.has(r.wid)) {
+        uniqueRecords.push(r)
+        ids.add(r.wid)
+      }
+    })
+    signedRecords.forEach((r) => {
+      const data = JSON.parse(r.data) as Partial<WorkData>
+      if (data.wid && !ids.has(data.wid)) {
+        uniqueRecords.push({
+          wid: data.wid,
+          userId: data.userId ?? r.createdBy,
           startTime: data.startTime,
           endTime: data.endTime,
           description: data.description,
           isSigned: true,
           ...data,
-        }
-      } catch {
-        return {
-          wid: r.id,
-          userId: r.createdBy,
-          isSigned: true,
-          description: r.data,
-        }
+        })
+        ids.add(data.wid)
       }
-    }),
-  ].filter(Boolean)
+    })
+    return uniqueRecords
+  }, [workRecords, signedRecords])
 
   const handleRowClick = (record: WorkRecord) => {
     console.log("Record clicked:", record)
   }
 
   return (
-    <div>
-      <Table
-        data={combinedRecords}
-        columns={columns}
-        rowKey="wid"
-        onRowClick={handleRowClick}
-      />
-    </div>
+    <Table
+      data={combinedRecords}
+      columns={columns}
+      rowKey="wid"
+      onRowClick={handleRowClick}
+    />
   )
 }
 

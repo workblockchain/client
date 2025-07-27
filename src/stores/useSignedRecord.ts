@@ -240,7 +240,7 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
   },
 
   clear: () => {
-    localStorage.removeItem(STASHED_RECORD_KEY)
+    // localStorage.removeItem(STASHED_RECORD_KEY)
     set({
       workRecords: [],
       requirementRecords: [],
