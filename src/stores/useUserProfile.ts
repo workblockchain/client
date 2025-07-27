@@ -90,7 +90,6 @@ export const useUserProfile = create<UserProfileStore>((set, get) => ({
   },
 
   save: () => {
-    console.log("save user profile")
     const userProfile = get().exportUserProfile()
     localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(userProfile))
     // FIXME: circular dependency issue
@@ -100,17 +99,14 @@ export const useUserProfile = create<UserProfileStore>((set, get) => ({
 
   load: () => {
     const userProfileStr = localStorage.getItem(USER_PROFILE_KEY)
-    console.log("load userProfileStr", userProfileStr)
     if (userProfileStr) {
       const userProfile = JSON.parse(userProfileStr)
-      console.log("userProfile", userProfile)
       set(userProfile)
     } else {
       set(emptyState)
     }
   },
   clear: () => {
-    console.log("clear user profile")
     localStorage.removeItem(USER_PROFILE_KEY)
     set(emptyState)
     // FIXME: circular dependency issue

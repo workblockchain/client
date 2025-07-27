@@ -169,7 +169,7 @@ Table.getRowKey = <T extends Record<string, any>>(
 }
 
 const TableContainer = styled.div`
-  gap: 20px;
+  gap: 12px;
   width: 100%;
   display: flex;
   padding: 8px;
@@ -190,7 +190,7 @@ const TableHeader = styled(BaseGrid)`
   z-index: 10;
   position: sticky;
   border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid ${colors.Neutral200};
   background-color: #ffffff;
 `
 
