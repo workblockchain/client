@@ -15,11 +15,12 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {Table, type TableColumn} from "@/components/Table/Table"
+import {Table} from "@/components/Table/Table"
 import {WorkData} from "@/interfaces/records"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {t} from "i18next"
 import {useMemo} from "react"
+import {ColumnProps} from "../Table/interfaces"
 
 interface WorkRecord extends Partial<WorkData> {
   wid: string
@@ -29,6 +30,7 @@ interface WorkRecord extends Partial<WorkData> {
   endTime?: number
   isSigned?: boolean
   data?: string
+  [key: string]: any
 }
 
 const getDate = (value?: number) =>
@@ -36,17 +38,38 @@ const getDate = (value?: number) =>
 const isSigned = (value?: boolean) =>
   value ? t`work.signed` : t`work.unsigned`
 
-const columns: TableColumn<WorkRecord>[] = [
-  {key: "wid", title: t`work.id`},
-  {key: "userId", title: t`work.user`},
-  {key: "startTime", title: t`work.startTime`, render: getDate},
-  {key: "endTime", title: t`work.endTime`, render: getDate},
-  {key: "isSigned", title: t`work.status`, render: isSigned},
+const columns = [
+  {
+    key: "wid",
+    title: t`work.id`,
+  } as ColumnProps<string, string>,
+  {key: "userId", title: t`work.user`, width: 120} as ColumnProps<
+    string,
+    string
+  >,
+  {
+    key: "startTime",
+    title: t`work.startTime`,
+    render: getDate,
+    width: 136,
+  } as ColumnProps<string, number>,
+  {
+    key: "endTime",
+    title: t`work.endTime`,
+    render: getDate,
+    width: 120,
+  } as ColumnProps<string, number>,
+  {
+    key: "isSigned",
+    title: t`work.status`,
+    render: isSigned,
+    width: 80,
+  } as ColumnProps<string, boolean>,
   {
     key: "description",
     title: t`work.description`,
     render: (value?: string) => value || "-",
-  },
+  } as ColumnProps<string, string>,
 ] as const
 
 export function WorkContainer() {
@@ -58,7 +81,7 @@ export function WorkContainer() {
     const uniqueRecords: WorkRecord[] = []
     workRecords.forEach((r) => {
       if (!ids.has(r.wid)) {
-        uniqueRecords.push(r)
+        uniqueRecords.push({...r})
         ids.add(r.wid)
       }
     })
@@ -80,16 +103,15 @@ export function WorkContainer() {
     return uniqueRecords
   }, [workRecords, signedRecords])
 
-  const handleRowClick = (record: WorkRecord) => {
+  const handleRowClick = (record: Record<string, unknown>) => {
     console.log("Record clicked:", record)
   }
 
   return (
-    <Table
-      data={combinedRecords}
+    <Table<typeof columns>
       columns={columns}
-      rowKey="wid"
-      onRowClick={handleRowClick}
+      data={combinedRecords}
+      clickRow={handleRowClick}
     />
   )
 }

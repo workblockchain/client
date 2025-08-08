@@ -1,8 +1,7 @@
 import type {Preview} from "@storybook/react"
-import React from "react"
 import {ThemeProvider} from "styled-components"
 import "../src/i18n"
-import {GlobalStyles} from "../src/styles/globalStyles"
+import "../src/index.css"
 import {theme} from "../src/styles/theme"
 
 const preview: Preview = {
@@ -17,7 +16,6 @@ const preview: Preview = {
   decorators: [
     (Story) => (
       <ThemeProvider theme={theme}>
-        <GlobalStyles />
         <Story />
       </ThemeProvider>
     ),

@@ -16,73 +16,63 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {colors} from "@/styles/colors"
-import {memo} from "react"
 import {styled} from "styled-components"
-import {TableColumn, TableRow} from "./TableRows"
+import Row from "./TableRows"
+import {ColumnProps, DataRecordFromColumns} from "./interfaces"
 
-interface TableGroupProps<T> {
+interface TableGroupProps<TColumns extends ReadonlyArray<ColumnProps<any>>> {
   /**
    * 表格列的配置
    */
-  columns: TableColumn<T>[]
+  columns: TColumns
 
   /**
-   * 自定义分组头部渲染函数
-   * @param groupKey - 分组的键值
-   * @param groupData - 分组的数据
-   * @returns 自定义的分组头部节点
+   * 分组表格列的配置
    */
-  groupHeader?: React.ReactNode
+  groupKey?: string
 
   /**
-   * 分组数据
+   * 行数据
    */
-  groupData: T[]
+  rowData: DataRecordFromColumns<TColumns>[]
+  rowHeights?: Record<number, number>
 
   /**
    * 行点击事件处理函数
    * @param record - 点击的行数据
    */
-  onRowClick?: (record: T) => void
-
-  /**
-   * 布局配置
-   */
-  $gridTemplateColumns: string
-
-  getRowKey: (rowData: T) => string
+  clickRow?: (record: DataRecordFromColumns<TColumns>) => void
 }
 
-export const TableGroup = memo(
-  <T extends Record<string, any>>({
-    columns,
-    groupData,
-    groupHeader,
-    $gridTemplateColumns,
-    onRowClick,
-  }: TableGroupProps<T>) => {
-    return (
-      <TableGroupContainer>
-        {groupHeader == "" ? null : (
-          <TableGroupHeader colSpan={columns.length}>
-            {groupHeader ?? "没有分组"}
-          </TableGroupHeader>
-        )}
-
-        {groupData.map((rowData, index) => (
-          <TableRow
+function TableGroup<TColumns extends ReadonlyArray<ColumnProps<string, any>>>({
+  columns,
+  rowData,
+  rowHeights,
+  groupKey,
+  clickRow,
+}: TableGroupProps<TColumns>) {
+  return (
+    <TableGroupContainer>
+      {!!groupKey && <TableGroupHeader>{groupKey}</TableGroupHeader>}
+      {rowData.map((row, index) => {
+        const cols = columns.map((column) => ({
+          ...column,
+          value: row[column.key as keyof typeof row],
+        })) as ReadonlyArray<ColumnProps<string, any>> as TColumns
+        return (
+          <Row<TColumns>
             key={index}
-            onRowClick={() => onRowClick?.(rowData)}
-            $gridTemplateColumns={$gridTemplateColumns}
-            columns={columns as TableColumn<Record<string, any>>[]}
-            rowData={rowData}
-            rowIndex={index}
-          ></TableRow>
-        ))}
-      </TableGroupContainer>
-    )
-  }
-)
+            onClick={() => clickRow?.(row)}
+            columns={cols}
+            height={rowHeights?.[index]}
+          />
+        )
+      })}
+    </TableGroupContainer>
+  )
+}
+
+export default TableGroup
 
 const TableGroupContainer = styled.div`
   margin-bottom: 8px;
@@ -90,7 +80,6 @@ const TableGroupContainer = styled.div`
   border-radius: 8px;
   overflow: hidden;
   background-color: #ffffff;
-  padding: 0 16px;
   & > div:not(:last-child) {
     border-bottom: 1px solid ${colors.Neutral200};
   }
@@ -99,14 +88,7 @@ const TableGroupContainer = styled.div`
   }
 `
 
-const TableGroupHeader = styled.div<{colSpan: number}>`
-  grid-column: 1 / span ${({colSpan}) => colSpan};
-  padding: 10px 16px;
+export const TableGroupHeader = styled.div`
+  padding: 6px 16px;
   height: 100%;
-  font-weight: 600;
-  font-size: 15px;
-  color: ${colors.Neutral800};
-  border-bottom: 1px solid ${colors.Neutral100};
-  border-top: 1px solid ${colors.Neutral100};
-  margin-top: -1px;
 `

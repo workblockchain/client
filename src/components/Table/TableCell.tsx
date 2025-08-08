@@ -15,31 +15,24 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {colors} from "@/styles/colors"
-import {memo} from "react"
-import styled from "styled-components"
+import styled, {css} from "styled-components"
 
-interface TableCellProps {
-  children: string
+interface Props {
+  nowrap?: boolean
 }
 
-export const TableCell = memo(({children}: TableCellProps) => {
-  return <TableCellContainer>{children ?? "空"}</TableCellContainer>
-})
-
-const TableCellContainer = styled.div`
-  font-size: 14px;
+const TableCell = styled.div<Props>`
+  height: 100%;
   overflow: hidden;
   padding: 6px 12px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  color: ${colors.Neutral800};
-  /* border-bottom: 1px solid ${colors.Neutral100}; */
-  border-right: 1px solid ${colors.Neutral200};
-  box-sizing: border-box;
-  height: 100%;
-
-  &:last-child {
-    border-right: none;
-  }
+  align-items: baseline;
+  ${({nowrap = true}) =>
+    nowrap
+      ? css`
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        `
+      : ""}
 `
+
+export default TableCell

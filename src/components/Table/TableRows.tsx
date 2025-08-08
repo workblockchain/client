@@ -16,86 +16,60 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {colors} from "@/styles/colors"
-import {memo} from "react"
-import styled from "styled-components"
-import {TableCell} from "./TableCell"
+import type {ReactNode} from "react"
+import styled, {css} from "styled-components"
+import Cell from "./TableCell"
+import type {ColumnProps, DataRecordFromColumns, RowProps} from "./interfaces"
 
-export interface TableColumn<T> {
-  key: string
-  title: string
-  width?: number | string
-  render?: (value: any, record: T, index: number) => React.ReactNode
-}
+export const DEFAULT_WIDTH = 100 as const
 
-interface TableRowProps<T> {
-  /**
-   * 表格列的配置
-   */
-  columns: TableColumn<T>[]
-
-  /**
-   * 行数据
-   */
-  rowData: T
-
-  /**
-   * 行点击回调
-   */
-  onRowClick?: (record: T) => void
-
-  /**
-   * 布局配置
-   */
-  $gridTemplateColumns: string
-
-  /**
-   * 行下标
-   */
-  rowIndex: number
-}
-
-export const TableRow = memo(
-  <T extends Record<string, any>>({
-    columns,
-    onRowClick,
-    $gridTemplateColumns,
-    rowData,
-    rowIndex,
-  }: TableRowProps<T>) => {
-    return (
-      <TableRowContainer
-        onClick={() => onRowClick?.(rowData)}
-        $hasClickHandler={onRowClick ? true : false}
-        $gridTemplateColumns={$gridTemplateColumns}
-      >
-        {columns.map((column, index) => (
-          <TableCell key={index}>
+function TableRow<TColumns extends ReadonlyArray<ColumnProps<string, any>>>({
+  columns,
+  onClick,
+  height,
+}: RowProps<TColumns>) {
+  return (
+    <TableRowContainer
+      onClick={() => {
+        const data = Object.fromEntries(
+          columns.map((column) => [column.key, column.value])
+        ) as DataRecordFromColumns<TColumns>
+        return onClick?.(data)
+      }}
+      $clickable={!!onClick}
+      style={{height}}
+    >
+      {columns.map((column, index) => {
+        return (
+          <Cell
+            key={index}
+            style={{width: column.width ?? DEFAULT_WIDTH}}
+            onClick={() => column.clickCell?.(column.value)}
+          >
             {column.render
-              ? column.render(rowData[column.key], rowData, rowIndex)
-              : rowData[column.key]}
-          </TableCell>
-        ))}
-      </TableRowContainer>
-    )
-  }
-)
+              ? column.render(column.value, column.key, index)
+              : (column.value as ReactNode)}
+          </Cell>
+        )
+      })}
+    </TableRowContainer>
+  )
+}
 
-const BaseGrid = styled.div<{$gridTemplateColumns: string}>`
-  display: grid;
+export default TableRow
+
+const TableRowContainer = styled.div<{$clickable?: boolean}>`
+  display: flex;
   align-items: center;
-  grid-template-columns: ${({$gridTemplateColumns}) => $gridTemplateColumns};
-`
-
-const TableRowContainer = styled(BaseGrid)<{$hasClickHandler?: boolean}>`
   transition: background-color 0.1s ease-in-out;
+  padding: 0 16px;
 
-  ${({$hasClickHandler}) =>
-    $hasClickHandler &&
-    `
-    cursor: pointer;
-  `}
-
-  &:hover {
-    background-color: ${colors.Neutral200};
-  }
+  ${({$clickable}) =>
+    $clickable &&
+    css`
+      cursor: pointer;
+      &:hover {
+        background-color: ${colors.Neutral200};
+      }
+    `}
 `
