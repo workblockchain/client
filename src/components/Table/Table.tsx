@@ -15,24 +15,34 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {Fragment, HTMLAttributes, ReactNode, useMemo} from "react"
-import styled from "styled-components"
+import {
+  type ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table"
+import styled, {css, type CSSProperties} from "styled-components"
 import {colors} from "../../styles/colors"
-import {ColumnProps, DataRecordFromColumns} from "./interfaces"
-import Group, {TableGroupHeader} from "./TableGroup"
-import {DEFAULT_WIDTH} from "./TableRows"
-export interface TableProps<
-  TColumns extends ReadonlyArray<ColumnProps<string, any>>,
-> {
+import TableCell from "./TableCell"
+
+declare module "@tanstack/react-table" {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ColumnMeta<TData, TValue> {
+    cellStyle?: CSSProperties
+    headerStyle?: CSSProperties
+  }
+}
+
+export interface TableProps<TData extends Record<string, unknown>> {
   /**
    * 表格列的配置
    */
-  columns: TColumns
+  columns: ColumnDef<TData>[]
 
   /**
    * 表格的数据源
    */
-  data: DataRecordFromColumns<TColumns>[]
+  data: TData[]
 
   /**
    * 是否显示加载状态
@@ -44,104 +54,72 @@ export interface TableProps<
    * 行点击事件处理函数
    * @param record - 点击的行数据
    */
-  clickRow?: (record: DataRecordFromColumns<TColumns>) => void
-
-  /**
-   * 分组依据，column key
-   */
-  groupBy?: (keyof DataRecordFromColumns<TColumns>)[]
+  clickRow?: (record: TData) => void
 }
 
-export function Table<TColumn extends ReadonlyArray<ColumnProps<string, any>>>({
+export function Table<TData extends Record<string, unknown>>({
   data,
   columns,
   clickRow,
-  groupBy,
   loading = false,
-}: TableProps<TColumn>) {
-  const isGrouped = !groupBy || groupBy.length === 0
+}: TableProps<TData>) {
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  })
 
   return (
     <TableContainer>
       <TableHeader>
-        {columns.map(({key, title, width}) => (
-          <TableHeaderCell key={key} style={{width: width ?? DEFAULT_WIDTH}}>
-            {title}
-          </TableHeaderCell>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <TableHeaderRow key={headerGroup.id}>
+            {headerGroup.headers.map((header) => (
+              <TableHeaderCell
+                key={header.id}
+                style={{
+                  ...header.column.columnDef.meta?.headerStyle,
+                  width: header.column.getSize(),
+                }}
+              >
+                {flexRender(
+                  header.column.columnDef.header,
+                  header.getContext()
+                )}
+              </TableHeaderCell>
+            ))}
+          </TableHeaderRow>
         ))}
       </TableHeader>
       <TableBody>
         {loading && <EmptyState colSpan={columns.length}>加载中...</EmptyState>}
-        {data.length === 0 && (
+        {!loading && data.length === 0 && (
           <EmptyState colSpan={columns.length}>暂无数据</EmptyState>
         )}
-        {isGrouped ? (
-          <Group rowData={data} columns={columns} clickRow={clickRow} />
-        ) : (
-          <NestedGroup<DataRecordFromColumns<TColumn>[]>
-            groupKey={groupBy[0] as string}
-            remainingGroups={groupBy.slice(1)}
-            data={data}
-          >
-            {(data) => (
-              <Group rowData={data} columns={columns} clickRow={clickRow} />
-            )}
-          </NestedGroup>
-        )}
+        {!loading &&
+          table.getRowModel().rows.map((row) => (
+            <TableRow
+              key={row.id}
+              onClick={() => clickRow?.(row.original)}
+              $clickable={!!clickRow}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <TableCell
+                  key={cell.id}
+                  style={{
+                    ...cell.column.columnDef.meta?.cellStyle,
+                    width: cell.column.getSize(),
+                  }}
+                >
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
       </TableBody>
     </TableContainer>
   )
 }
-
-interface NestedGroupProps<TData extends Record<string, unknown>[]>
-  extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
-  groupKey: string
-  remainingGroups: string[]
-  data: TData
-  showEmpty?: boolean
-  children: (data: TData) => ReactNode
-}
-function NestedGroup<TData extends Record<string, unknown>[]>({
-  groupKey,
-  remainingGroups,
-  data,
-  children,
-  showEmpty,
-  ...props
-}: NestedGroupProps<TData>) {
-  const grouped = useMemo(
-    () =>
-      data.reduce<Record<string, TData>>((acc, item) => {
-        const groupValue = String(item[groupKey])
-        if (!acc[groupValue]) {
-          acc[groupValue] = [] as unknown as TData
-        }
-        acc[groupValue].push(item)
-        return acc
-      }, {}),
-    [groupKey, data]
-  )
-  if (!showEmpty && data.length === 0) return null
-  if (remainingGroups.length === 0) return children(data)
-  return (
-    <NestedGroupContainer {...props}>
-      {Object.entries(grouped).map(([value, groupData]) => (
-        <Fragment key={value}>
-          <TableGroupHeader>{value}</TableGroupHeader>
-          <NestedGroup
-            groupKey={remainingGroups[0]}
-            remainingGroups={remainingGroups.slice(1)}
-            data={groupData}
-          >
-            {children}
-          </NestedGroup>
-        </Fragment>
-      ))}
-    </NestedGroupContainer>
-  )
-}
-
-const NestedGroupContainer = styled.div``
 
 const TableContainer = styled.div`
   gap: 12px;
@@ -166,6 +144,11 @@ const TableHeader = styled.div`
   font-size: 16px;
 `
 
+const TableHeaderRow = styled.div`
+  display: flex;
+  width: 100%;
+`
+
 const TableHeaderCell = styled.div`
   font-size: 14px;
   font-weight: 600;
@@ -180,9 +163,36 @@ const TableHeaderCell = styled.div`
     border-right: none;
   }
 `
+
 const TableBody = styled.div`
   display: flex;
   flex-direction: column;
+  &:first-child {
+    border-radius: 8px 8px 0 0;
+  }
+  &:last-child {
+    border-radius: 0 0 8px 8px;
+    border-bottom: 1px solid ${colors.Neutral200};
+  }
+`
+
+const TableRow = styled.div<{$clickable?: boolean}>`
+  display: flex;
+  align-items: center;
+  transition: background-color 0.1s ease-in-out;
+  padding: 0 16px;
+  background-color: #ffffff;
+  border: 1px solid ${colors.Neutral200};
+  border-bottom: none;
+
+  ${({$clickable}) =>
+    $clickable &&
+    css`
+      cursor: pointer;
+      &:hover {
+        background-color: ${colors.Neutral200};
+      }
+    `}
 `
 
 const EmptyState = styled.div<{colSpan: number}>`

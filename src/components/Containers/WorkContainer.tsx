@@ -18,59 +18,52 @@
 import {Table} from "@/components/Table/Table"
 import {WorkData} from "@/interfaces/records"
 import {useSignedRecord} from "@/stores/useSignedRecord"
+import {ColumnDef} from "@tanstack/react-table"
 import {t} from "i18next"
 import {useMemo} from "react"
-import {ColumnProps} from "../Table/interfaces"
-
-interface WorkRecord extends Partial<WorkData> {
-  wid: string
-  userId: string
-  createdAt?: number
-  startTime?: number
-  endTime?: number
-  isSigned?: boolean
-  data?: string
-  [key: string]: any
-}
+import {Drawer} from "../Drawer"
+import {WorkRecord} from "./interfaces"
+import {WorkRecordForm} from "./WorkRecordForm"
 
 const getDate = (value?: number) =>
   value ? new Date(value).toLocaleString() : "-"
 const isSigned = (value?: boolean) =>
   value ? t`work.signed` : t`work.unsigned`
 
-const columns = [
+const columns: ColumnDef<WorkRecord>[] = [
   {
-    key: "wid",
-    title: t`work.id`,
-  } as ColumnProps<string, string>,
-  {key: "userId", title: t`work.user`, width: 120} as ColumnProps<
-    string,
-    string
-  >,
+    accessorKey: "wid",
+    header: t`work.id`,
+  },
   {
-    key: "startTime",
-    title: t`work.startTime`,
-    render: getDate,
-    width: 136,
-  } as ColumnProps<string, number>,
+    accessorKey: "userId",
+    header: t`work.user`,
+    size: 120,
+  },
   {
-    key: "endTime",
-    title: t`work.endTime`,
-    render: getDate,
-    width: 120,
-  } as ColumnProps<string, number>,
+    accessorKey: "startTime",
+    header: t`work.startTime`,
+    cell: ({getValue}) => getDate(getValue() as number),
+    size: 136,
+  },
   {
-    key: "isSigned",
-    title: t`work.status`,
-    render: isSigned,
-    width: 80,
-  } as ColumnProps<string, boolean>,
+    accessorKey: "endTime",
+    header: t`work.endTime`,
+    cell: ({getValue}) => getDate(getValue() as number),
+    size: 120,
+  },
   {
-    key: "description",
-    title: t`work.description`,
-    render: (value?: string) => value || "-",
-  } as ColumnProps<string, string>,
-] as const
+    accessorKey: "isSigned",
+    header: t`work.status`,
+    cell: ({getValue}) => isSigned(getValue() as boolean),
+    size: 80,
+  },
+  {
+    accessorKey: "description",
+    header: t`work.description`,
+    cell: ({getValue}) => (getValue() ? String(getValue()) : "-"),
+  },
+]
 
 export function WorkContainer() {
   const workRecords = useSignedRecord((state) => state.workRecords)
@@ -103,16 +96,21 @@ export function WorkContainer() {
     return uniqueRecords
   }, [workRecords, signedRecords])
 
-  const handleRowClick = (record: Record<string, unknown>) => {
-    console.log("Record clicked:", record)
+  const handleRowClick = (row: any) => {
+    console.log("Record clicked:", row.original)
   }
 
   return (
-    <Table<typeof columns>
-      columns={columns}
-      data={combinedRecords}
-      clickRow={handleRowClick}
-    />
+    <>
+      <Table<WorkRecord>
+        columns={columns}
+        data={combinedRecords}
+        clickRow={handleRowClick}
+      />
+      <Drawer isOpen={false} onClose={() => {}} title={"Drawer 标题"}>
+        <WorkRecordForm submit={() => {}} />
+      </Drawer>
+    </>
   )
 }
 

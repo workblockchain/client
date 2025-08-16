@@ -98,11 +98,11 @@ export const Basic: Story = {
   args: {
     data: sampleData,
     columns: [
-      {key: "name", title: "Name"},
-      {key: "age", title: "Age"},
-      {key: "department", title: "Department", width: 160},
-      {key: "status", title: "Status"},
-      {key: "joinDate", title: "Join Date"},
+      {accessorKey: "name", header: "Name", size: 100},
+      {accessorKey: "age", header: "Age", size: 80},
+      {accessorKey: "department", header: "Department", size: 120},
+      {accessorKey: "status", header: "Status", size: 80},
+      {accessorKey: "joinDate", header: "Join Date", size: 120},
     ],
   },
 }
@@ -111,10 +111,10 @@ export const CompactTable: Story = {
   args: {
     data: sampleData,
     columns: [
-      {key: "name", title: "Name", width: 80},
-      {key: "age", title: "Age", width: 80},
-      {key: "department", title: "Dept", width: 160},
-      {key: "status", title: "Status"},
+      {accessorKey: "name", header: "Name"},
+      {accessorKey: "age", header: "Age"},
+      {accessorKey: "department", header: "Dept"},
+      {accessorKey: "status", header: "Status"},
     ],
   },
 }
@@ -123,11 +123,11 @@ export const GroupedByStatus: Story = {
   args: {
     data: sampleData,
     columns: [
-      {key: "name", title: "Name"},
-      {key: "age", title: "Age"},
-      {key: "department", title: "Department"},
+      {accessorKey: "name", header: "Name"},
+      {accessorKey: "age", header: "Age"},
+      {accessorKey: "department", header: "Department"},
     ],
-    groupBy: ["status"],
+    // groupBy: ["status"],
     // renderGroupHeader: (groupKey) => (
     //   <div
     //     style={{
@@ -148,13 +148,13 @@ export const WithCustomRender: Story = {
   args: {
     data: sampleData,
     columns: [
-      {key: "name", title: "Name"},
+      {accessorKey: "name", header: "Name"},
       {
-        key: "age",
-        title: "Age",
-        render: (value) => `${value} years old`,
+        accessorKey: "age",
+        header: "Age",
+        // render: (value) => `${value} years old`,
       },
-      {key: "department", title: "Department"},
+      {accessorKey: "department", header: "Department"},
     ],
   },
 }
@@ -163,10 +163,10 @@ export const GroupedByDepartment: Story = {
   args: {
     data: sampleData,
     columns: [
-      {key: "name", title: "Name"},
-      {key: "age", title: "Age"},
+      {accessorKey: "name", header: "Name"},
+      {accessorKey: "age", header: "Age"},
     ],
-    groupBy: ["department"],
+    // groupBy: ["department"],
     // renderGroupHeader: (groupKey) => (
     //   <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
     //     <span style={{fontWeight: "bold"}}>Department:</span>

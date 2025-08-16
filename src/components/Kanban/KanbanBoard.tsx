@@ -28,6 +28,7 @@ import styled from "styled-components"
 import {Drawer} from "../Drawer"
 import {KanbanColumn} from "./KanbanColumn"
 import {KanbanForm} from "./KanbanForm"
+
 export const KanbanBoard = ({
   title,
   column,

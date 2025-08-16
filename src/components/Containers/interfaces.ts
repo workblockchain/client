@@ -15,13 +15,15 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import styled from "styled-components"
+import {WorkData} from "@/interfaces"
 
-const TableCell = styled.div`
-  height: 100%;
-  overflow: hidden;
-  padding: 6px 12px;
-  align-items: baseline;
-`
-
-export default TableCell
+export interface WorkRecord extends Partial<WorkData> {
+  wid: string
+  userId: string
+  createdAt?: number
+  startTime?: number
+  endTime?: number
+  isSigned?: boolean
+  data?: string
+  [key: string]: unknown // 添加字符串索引签名
+}
