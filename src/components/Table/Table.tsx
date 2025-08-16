@@ -122,7 +122,7 @@ export function Table<TData extends Record<string, unknown>>({
 }
 
 const TableContainer = styled.div`
-  gap: 12px;
+  gap: 8px;
   width: 100%;
   display: flex;
   padding: 8px;
@@ -167,10 +167,10 @@ const TableHeaderCell = styled.div`
 const TableBody = styled.div`
   display: flex;
   flex-direction: column;
-  &:first-child {
+  & :first-child {
     border-radius: 8px 8px 0 0;
   }
-  &:last-child {
+  & :last-child {
     border-radius: 0 0 8px 8px;
     border-bottom: 1px solid ${colors.Neutral200};
   }
