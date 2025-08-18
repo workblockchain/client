@@ -130,10 +130,10 @@ function NestedGroup<TData>({
   groupBy: string[]
   clickRow?: (record: TData) => void
 }) {
-  if (groupBy?.length === 0) {
-    return <TableGroup rows={rows} clickRow={clickRow} />
-  }
   const groupedRows = useMemo(() => {
+    if (groupBy.length === 0) {
+      return []
+    }
     const cur = groupBy[0]
     const res: Record<string, Row<TData>[]> = {}
     rows.forEach((row) => {
@@ -145,6 +145,10 @@ function NestedGroup<TData>({
     })
     return Object.entries(res)
   }, [rows, groupBy])
+
+  if (groupBy?.length === 0) {
+    return <TableGroup rows={rows} clickRow={clickRow} />
+  }
   return (
     <>
       {groupedRows.map(
