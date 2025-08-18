@@ -30,12 +30,12 @@ export const TableCell = memo(({children}: TableCellProps) => {
 const TableCellContainer = styled.div`
   font-size: 14px;
   overflow: hidden;
-  padding: 8px 16px;
+  padding: 6px 12px;
   white-space: nowrap;
   text-overflow: ellipsis;
   color: ${colors.Neutral800};
-  border-bottom: 1px solid ${colors.Neutral100};
-  border-right: 1px solid ${colors.Neutral100};
+  /* border-bottom: 1px solid ${colors.Neutral100}; */
+  border-right: 1px solid ${colors.Neutral200};
   box-sizing: border-box;
   height: 100%;
 

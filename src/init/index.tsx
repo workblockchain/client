@@ -75,6 +75,10 @@ async function init() {
   ])
 }
 
+function clear() {
+  useSignedRecord.getState().clear()
+}
+
 function Initializer({children}: {children: React.ReactNode}) {
   const [isInit, setIsInit] = useState(false)
   useEffect(() => {
@@ -86,6 +90,7 @@ function Initializer({children}: {children: React.ReactNode}) {
       .catch((error) => {
         console.error("Initialization failed:", error)
       })
+    return clear
   }, [])
   if (!isInit) {
     return null

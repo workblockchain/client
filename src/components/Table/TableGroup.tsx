@@ -86,10 +86,14 @@ export const TableGroup = memo(
 
 const TableGroupContainer = styled.div`
   margin-bottom: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid ${colors.Neutral200};
   border-radius: 8px;
   overflow: hidden;
   background-color: #ffffff;
+  padding: 0 16px;
+  & > div:not(:last-child) {
+    border-bottom: 1px solid ${colors.Neutral200};
+  }
   &:last-child {
     margin-bottom: 0;
   }
