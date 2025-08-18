@@ -126,8 +126,9 @@ export const GroupedByStatus: Story = {
       {accessorKey: "name", header: "Name"},
       {accessorKey: "age", header: "Age"},
       {accessorKey: "department", header: "Department"},
+      {accessorKey: "status", header: "Status"},
     ],
-    // groupBy: ["status"],
+    groupBy: ["status"],
     // renderGroupHeader: (groupKey) => (
     //   <div
     //     style={{
@@ -144,29 +145,16 @@ export const GroupedByStatus: Story = {
   },
 }
 
-export const WithCustomRender: Story = {
-  args: {
-    data: sampleData,
-    columns: [
-      {accessorKey: "name", header: "Name"},
-      {
-        accessorKey: "age",
-        header: "Age",
-        // render: (value) => `${value} years old`,
-      },
-      {accessorKey: "department", header: "Department"},
-    ],
-  },
-}
-
 export const GroupedByDepartment: Story = {
   args: {
     data: sampleData,
     columns: [
       {accessorKey: "name", header: "Name"},
       {accessorKey: "age", header: "Age"},
+      {accessorKey: "department", header: "Department"},
+      {accessorKey: "status", header: "Status"},
     ],
-    // groupBy: ["department"],
+    groupBy: ["department"],
     // renderGroupHeader: (groupKey) => (
     //   <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
     //     <span style={{fontWeight: "bold"}}>Department:</span>
