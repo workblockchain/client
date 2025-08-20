@@ -282,6 +282,7 @@ const GroupHeaderRow = styled.div`
   display: flex;
   align-items: center;
   padding: 7px 16px;
+  border-radius: 8px 8px 0 0;
   border: 1px solid ${colors.Neutral200};
   border-bottom: none;
   font-weight: 600;
