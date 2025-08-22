@@ -15,18 +15,15 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {createGlobalStyle} from "styled-components"
+import {WorkData} from "@/interfaces"
 
-export const GlobalStyles = createGlobalStyle`
-  @font-face {
-    font-family: 'Alibaba PuHuiTi 3.0';
-    src: url('../assets/AlibabaPuHuiTi-3-55-RegularL3.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-  }
-
-  body {
-    font-family: ${(props) => props.theme.fontFamily}, sans-serif;
-    margin: 0;
-  }
-`
+export interface WorkRecord extends Partial<WorkData> {
+  wid: string
+  userId: string
+  createdAt?: number
+  startTime?: number
+  endTime?: number
+  isSigned?: boolean
+  data?: string
+  [key: string]: unknown // 添加字符串索引签名
+}

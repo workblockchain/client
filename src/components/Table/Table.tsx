@@ -15,30 +15,37 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import React, {useCallback, useMemo} from "react"
-import styled from "styled-components"
+import {
+  flexRender,
+  getCoreRowModel,
+  getGroupedRowModel,
+  useReactTable,
+  type ColumnDef,
+  type Row,
+} from "@tanstack/react-table"
+import {useMemo} from "react"
+import styled, {css, type CSSProperties} from "styled-components"
 import {colors} from "../../styles/colors"
-import {TableGroup} from "./TableGroup"
+import TableCell from "./TableCell"
 
-/**
- * 表格组件的属性接口
- * @template T - 表格数据的类型
- */
-export interface TableProps<T> {
-  /**
-   * 表格的数据源
-   */
-  data: T[]
+declare module "@tanstack/react-table" {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ColumnMeta<TData, TValue> {
+    cellStyle?: CSSProperties
+    headerStyle?: CSSProperties
+  }
+}
 
+export interface TableProps<TData extends Record<string, unknown>> {
   /**
    * 表格列的配置
    */
-  columns: TableColumn<T>[]
+  columns: ColumnDef<TData>[]
 
   /**
-   * 每行数据的唯一标识，可以是字段名或生成唯一键的函数
+   * 表格的数据源
    */
-  rowKey: string | ((record: T) => string)
+  data: TData[]
 
   /**
    * 是否显示加载状态
@@ -50,126 +57,151 @@ export interface TableProps<T> {
    * 行点击事件处理函数
    * @param record - 点击的行数据
    */
-  onRowClick?: (record: T) => void
+  clickRow?: (record: TData) => void
 
   /**
-   * 分组依据，可以是字段名或生成分组键的函数
+   * 分组字段
    */
-  groupBy?: string | ((record: T) => string)
-
-  /**
-   * 自定义分组头部渲染函数
-   * @param groupKey - 分组的键值
-   * @param groupData - 分组的数据
-   * @returns 自定义的分组头部节点
-   */
-  renderGroupHeader?: (groupKey: string, groupData: T[]) => React.ReactNode
+  groupBy?: string[]
 }
 
-export interface TableColumn<T> {
-  key: string
-  title: string
-  width?: number | string
-  render?: (value: any, record: T, index: number) => React.ReactNode
-}
-
-export const Table = <T extends Record<string, any>>({
+export function Table<TData extends Record<string, unknown>>({
   data,
   columns,
-  rowKey,
-  onRowClick,
-  groupBy,
+  clickRow,
   loading = false,
-  renderGroupHeader,
-}: TableProps<T>) => {
-  const gridTemplateColumns = useMemo(
-    () =>
-      columns
-        .map((c) => {
-          if (typeof c.width === "number") return `${c.width}px`
-          if (typeof c.width === "string") return c.width
-          return "1fr"
-        })
-        .join(" "),
-    [columns]
-  )
-
-  const getRowKey = useCallback(
-    (record: T) => {
-      return typeof rowKey === "function" ? rowKey(record) : record[rowKey]
-    },
-    [rowKey]
-  )
-
-  const groups = useMemo(() => {
-    const result: Record<string, T[]> = {}
-    if (groupBy) {
-      const getGroupKey =
-        typeof groupBy === "function"
-          ? groupBy
-          : (record: T) => record[groupBy as string]
-
-      data.forEach((record) => {
-        const key = getGroupKey(record)
-        if (!result[key]) {
-          result[key] = []
-        }
-        result[key].push(record)
-      })
-    } else {
-      result[""] = [...data]
-    }
-    return result
-  }, [data, groupBy])
+  groupBy = [],
+}: TableProps<TData>) {
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getGroupedRowModel: getGroupedRowModel(),
+  })
 
   return (
     <TableContainer>
-      <TableHeader $gridTemplateColumns={gridTemplateColumns}>
-        {columns.map((column) => (
-          <TableHeaderCell key={column.key}>{column.title}</TableHeaderCell>
+      <TableHeader>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <TableHeaderRow key={headerGroup.id}>
+            {headerGroup.headers.map((header) => (
+              <TableHeaderCell
+                key={header.id}
+                style={{
+                  ...header.column.columnDef.meta?.headerStyle,
+                  width: header.column.getSize(),
+                }}
+              >
+                {flexRender(
+                  header.column.columnDef.header,
+                  header.getContext()
+                )}
+              </TableHeaderCell>
+            ))}
+          </TableHeaderRow>
         ))}
       </TableHeader>
-
-      <TableBody>
-        {loading ? (
-          <EmptyState colSpan={columns.length}>加载中...</EmptyState>
-        ) : data.length === 0 ? (
-          <EmptyState colSpan={columns.length}>暂无数据</EmptyState>
-        ) : (
-          Object.entries(groups).map(([groupKey, groupData], index) => (
-            <TableGroup
-              key={index}
-              groupHeader={
-                renderGroupHeader
-                  ? renderGroupHeader(groupKey, groupData)
-                  : groupKey
-              }
-              groupData={groupData}
-              columns={columns as TableColumn<Record<string, any>>[]}
-              $gridTemplateColumns={gridTemplateColumns}
-              onRowClick={
-                onRowClick as
-                  | ((record: Record<string, any>) => void)
-                  | undefined
-              }
-              getRowKey={getRowKey as (rowData: Record<string, any>) => string}
-            />
-          ))
-        )}
-      </TableBody>
+      {loading && <EmptyState colSpan={columns.length}>加载中...</EmptyState>}
+      {!loading && data.length === 0 && (
+        <EmptyState colSpan={columns.length}>暂无数据</EmptyState>
+      )}
+      {!loading && groupBy.length === 0 && (
+        <GroupContainer>
+          <TableGroup rows={table.getRowModel().rows} clickRow={clickRow} />
+        </GroupContainer>
+      )}
+      {!loading && groupBy.length > 0 && (
+        <NestedGroup
+          rows={table.getRowModel().rows}
+          groupBy={groupBy}
+          clickRow={clickRow}
+        />
+      )}
     </TableContainer>
   )
 }
 
-Table.getRowKey = <T extends Record<string, any>>(
-  rowKey: string | ((record: T) => string),
-  record: T
-): string => {
-  return typeof rowKey === "function" ? rowKey(record) : record[rowKey]
+function NestedGroup<TData>({
+  rows,
+  groupBy,
+  clickRow,
+}: {
+  rows: Row<TData>[]
+  groupBy: string[]
+  clickRow?: (record: TData) => void
+}) {
+  const groupedRows = useMemo(() => {
+    if (groupBy.length === 0) {
+      return []
+    }
+    const cur = groupBy[0]
+    const res: Record<string, Row<TData>[]> = {}
+    rows.forEach((row) => {
+      const key = `${row.getValue(cur)}`
+      if (!res[key]) {
+        res[key] = []
+      }
+      res[key].push(row)
+    })
+    return Object.entries(res)
+  }, [rows, groupBy])
+
+  if (groupBy?.length === 0) {
+    return <TableGroup rows={rows} clickRow={clickRow} />
+  }
+  return (
+    <>
+      {groupedRows.map(
+        ([key, rows]) =>
+          rows.length > 0 && (
+            <GroupContainer key={key}>
+              <GroupHeaderRow>{key}</GroupHeaderRow>
+              <NestedGroup
+                rows={rows}
+                groupBy={groupBy.slice(1)}
+                clickRow={clickRow}
+              />
+            </GroupContainer>
+          )
+      )}
+    </>
+  )
+}
+
+function TableGroup<TData>({
+  rows,
+  clickRow,
+}: {
+  rows: Row<TData>[]
+  clickRow?: (record: TData) => void
+}) {
+  return (
+    <>
+      {rows.map((row) => (
+        <TableRow
+          key={row.id}
+          onClick={() => clickRow?.(row.original)}
+          $clickable={!!clickRow}
+        >
+          {row.getVisibleCells().map((cell) => (
+            <TableCell
+              key={cell.id}
+              style={{
+                ...cell.column.columnDef.meta?.cellStyle,
+                width: cell.column.getSize(),
+              }}
+            >
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </TableCell>
+          ))}
+        </TableRow>
+      ))}
+    </>
+  )
 }
 
 const TableContainer = styled.div`
-  gap: 12px;
+  gap: 8px;
   width: 100%;
   display: flex;
   padding: 8px;
@@ -178,20 +210,22 @@ const TableContainer = styled.div`
   background-color: #f6f8f9;
 `
 
-const BaseGrid = styled.div<{$gridTemplateColumns: string}>`
-  display: grid;
-  align-items: center;
-  grid-template-columns: ${({$gridTemplateColumns}) => $gridTemplateColumns};
-  grid-auto-rows: max-content;
-`
-
-const TableHeader = styled(BaseGrid)`
+const TableHeader = styled.div`
+  position: sticky;
   top: 0;
   z-index: 10;
-  position: sticky;
+  display: flex;
+  align-items: center;
   border-radius: 8px;
   border: 1px solid ${colors.Neutral200};
   background-color: #ffffff;
+  padding: 0 16px;
+  font-size: 16px;
+`
+
+const TableHeaderRow = styled.div`
+  display: flex;
+  width: 100%;
 `
 
 const TableHeaderCell = styled.div`
@@ -199,7 +233,7 @@ const TableHeaderCell = styled.div`
   font-weight: 600;
   text-align: left;
   overflow: hidden;
-  padding: 12px 16px;
+  padding: 10px 12px;
   white-space: nowrap;
   text-overflow: ellipsis;
   border-right: 1px solid rgba(0, 0, 0, 0.05);
@@ -208,9 +242,33 @@ const TableHeaderCell = styled.div`
     border-right: none;
   }
 `
-const TableBody = styled.div`
+
+const TableRow = styled.div<{$clickable?: boolean}>`
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  transition: background-color 0.1s ease-in-out;
+  padding: 0 16px;
+  background-color: #ffffff;
+  border: 1px solid ${colors.Neutral200};
+  border-bottom: none;
+
+  &:first-child {
+    border-radius: 8px 8px 0 0;
+  }
+
+  &:last-child {
+    border-radius: 0 0 8px 8px;
+    border-bottom: 1px solid ${colors.Neutral200};
+  }
+
+  ${({$clickable}) =>
+    $clickable &&
+    css`
+      cursor: pointer;
+      &:hover {
+        background-color: ${colors.Neutral200};
+      }
+    `}
 `
 
 const EmptyState = styled.div<{colSpan: number}>`
@@ -218,4 +276,19 @@ const EmptyState = styled.div<{colSpan: number}>`
   padding: 48px 16px;
   text-align: center;
   color: ${colors.Neutral500};
+`
+
+const GroupHeaderRow = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 7px 16px;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid ${colors.Neutral200};
+  border-bottom: none;
+  font-weight: 600;
+`
+
+const GroupContainer = styled.div`
+  display: flex;
+  flex-direction: column;
 `

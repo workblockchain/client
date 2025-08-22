@@ -22,7 +22,6 @@ import {ThemeProvider} from "styled-components"
 import App from "./App.tsx"
 import "./i18n"
 import "./index.css"
-import {GlobalStyles} from "./styles/globalStyles"
 import {theme} from "./styles/theme"
 
 // 初始化用户配置
@@ -30,7 +29,6 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
       <App />
-      <GlobalStyles />
       <ToastContainer
         position="top-right"
         autoClose={3000}

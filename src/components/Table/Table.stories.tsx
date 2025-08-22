@@ -16,7 +16,6 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {Meta, StoryObj} from "@storybook/react"
-import {colors} from "../../styles/colors"
 import {Table} from "./Table"
 
 const meta: Meta<typeof Table> = {
@@ -99,13 +98,12 @@ export const Basic: Story = {
   args: {
     data: sampleData,
     columns: [
-      {key: "name", title: "Name"},
-      {key: "age", title: "Age"},
-      {key: "department", title: "Department"},
-      {key: "status", title: "Status"},
-      {key: "joinDate", title: "Join Date"},
+      {accessorKey: "name", header: "Name", size: 100},
+      {accessorKey: "age", header: "Age", size: 80},
+      {accessorKey: "department", header: "Department", size: 120},
+      {accessorKey: "status", header: "Status", size: 80},
+      {accessorKey: "joinDate", header: "Join Date", size: 120},
     ],
-    rowKey: "id",
   },
 }
 
@@ -113,12 +111,11 @@ export const CompactTable: Story = {
   args: {
     data: sampleData,
     columns: [
-      {key: "name", title: "Name", width: 120},
-      {key: "age", title: "Age", width: 80},
-      {key: "department", title: "Dept", width: 100},
-      {key: "status", title: "Status"},
+      {accessorKey: "name", header: "Name"},
+      {accessorKey: "age", header: "Age"},
+      {accessorKey: "department", header: "Dept"},
+      {accessorKey: "status", header: "Status"},
     ],
-    rowKey: "id",
   },
 }
 
@@ -126,41 +123,25 @@ export const GroupedByStatus: Story = {
   args: {
     data: sampleData,
     columns: [
-      {key: "name", title: "Name"},
-      {key: "age", title: "Age"},
-      {key: "department", title: "Department"},
+      {accessorKey: "name", header: "Name"},
+      {accessorKey: "age", header: "Age"},
+      {accessorKey: "department", header: "Department"},
+      {accessorKey: "status", header: "Status"},
     ],
-    rowKey: "id",
-    groupBy: "status",
-    renderGroupHeader: (groupKey) => (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          color: groupKey === "Active" ? colors.Neutral800 : colors.Neutral500,
-        }}
-      >
-        <span style={{fontWeight: "bold"}}>Status:</span>
-        <span>{groupKey}</span>
-      </div>
-    ),
-  },
-}
-
-export const WithCustomRender: Story = {
-  args: {
-    data: sampleData,
-    columns: [
-      {key: "name", title: "Name"},
-      {
-        key: "age",
-        title: "Age",
-        render: (value) => `${value} years old`,
-      },
-      {key: "department", title: "Department"},
-    ],
-    rowKey: "id",
+    groupBy: ["status"],
+    // renderGroupHeader: (groupKey) => (
+    //   <div
+    //     style={{
+    //       display: "flex",
+    //       alignItems: "center",
+    //       gap: "8px",
+    //       color: groupKey === "Active" ? colors.Neutral800 : colors.Neutral500,
+    //     }}
+    //   >
+    //     <span style={{fontWeight: "bold"}}>Status:</span>
+    //     <span>{groupKey}</span>
+    //   </div>
+    // ),
   },
 }
 
@@ -168,16 +149,17 @@ export const GroupedByDepartment: Story = {
   args: {
     data: sampleData,
     columns: [
-      {key: "name", title: "Name"},
-      {key: "age", title: "Age"},
+      {accessorKey: "name", header: "Name"},
+      {accessorKey: "age", header: "Age"},
+      {accessorKey: "department", header: "Department"},
+      {accessorKey: "status", header: "Status"},
     ],
-    rowKey: "id",
-    groupBy: "department",
-    renderGroupHeader: (groupKey) => (
-      <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-        <span style={{fontWeight: "bold"}}>Department:</span>
-        <span>{groupKey}</span>
-      </div>
-    ),
+    groupBy: ["department"],
+    // renderGroupHeader: (groupKey) => (
+    //   <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+    //     <span style={{fontWeight: "bold"}}>Department:</span>
+    //     <span>{groupKey}</span>
+    //   </div>
+    // ),
   },
 }

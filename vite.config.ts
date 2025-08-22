@@ -5,7 +5,12 @@ import svgr from "vite-plugin-svgr"
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), svgr()],
+  plugins: [
+    react({
+      plugins: [["@swc/plugin-styled-components", {}]],
+    }),
+    svgr(),
+  ],
   base: "./",
   resolve: {
     alias: {
