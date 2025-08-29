@@ -52,8 +52,20 @@ export const routerData: Record<string, RouteMeta> = {
     showInBreadcrumb: true,
   },
   [paths.home + paths.dashboard + "/kanban"]: {
-    label: "需求列表",
+    label: "需求看板",
     icon: <svgIcons.Workbench />,
+    showInMenu: true,
+    showInBreadcrumb: true,
+  },
+  [paths.home + paths.dashboard + "/requirements"]: {
+    label: "需求管理",
+    icon: <svgIcons.List />,
+    showInMenu: true,
+    showInBreadcrumb: true,
+  },
+  [paths.home + paths.dashboard + "/projects"]: {
+    label: "项目管理",
+    icon: <svgIcons.Kanban />,
     showInMenu: true,
     showInBreadcrumb: true,
   },

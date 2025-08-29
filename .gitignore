@@ -20,3 +20,9 @@ storybook-static/
 
 *.ttf
 .swc
+
+# AI dev
+.bmad-core
+.roomodes
+.windsurf
+web-bundles

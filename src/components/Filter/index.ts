@@ -15,15 +15,4 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {WorkData} from "@/interfaces"
-
-export interface WorkRecord extends Partial<WorkData> {
-  wid: string
-  userId: string
-  createdAt?: number
-  startTime?: number
-  endTime?: number
-  isSigned?: boolean
-  data?: string
-  [key: string]: unknown // 添加字符串索引签名
-}
+export {FilterBar, type FilterConfig} from "./FilterBar"

@@ -16,7 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import CrossIcon from "@/assets/cross.svg?react"
-import {ReactNode, useCallback} from "react"
+import {ReactNode, useCallback, useEffect, useState} from "react"
 import styled, {keyframes} from "styled-components"
 import {Portal} from "../Portal"
 
@@ -77,25 +77,47 @@ export const Drawer = ({
   width = "400px",
   direction = "right",
 }: DrawerProps) => {
+  const [isAnimating, setIsAnimating] = useState(false)
+  const [shouldRender, setShouldRender] = useState(isOpen)
+
+  useEffect(() => {
+    if (isOpen) {
+      setShouldRender(true)
+      setIsAnimating(true)
+      const timer = setTimeout(() => {
+        setIsAnimating(false)
+      }, 300) // Match animation duration
+      return () => clearTimeout(timer)
+    } else {
+      setIsAnimating(true)
+      const timer = setTimeout(() => {
+        setShouldRender(false)
+        setIsAnimating(false)
+      }, 300) // Match animation duration
+      return () => clearTimeout(timer)
+    }
+  }, [isOpen])
+
   const handleOverlayClick = useCallback(
     (e: React.MouseEvent) => {
-      if (e.target === e.currentTarget) onClose()
+      if (e.target === e.currentTarget && !isAnimating) onClose()
     },
-    [onClose]
+    [onClose, isAnimating]
   )
 
-  if (!isOpen) return null
+  if (!shouldRender) return null
 
   return (
     <Portal>
       <DrawerOverlay
-        className={isOpen ? "open" : ""}
+        className={isOpen ? "open" : "closing"}
         onClick={handleOverlayClick}
+        // style={{pointerEvents: isAnimating ? "none" : "auto"}}
       >
         <DrawerContent
           $width={width}
           $direction={direction}
-          className={isOpen ? "open" : ""}
+          className={isOpen ? "open" : "closing"}
         >
           <DrawerHeader>
             {title && <DrawerTitle>{title}</DrawerTitle>}
@@ -126,6 +148,11 @@ const DrawerOverlay = styled.div`
   &.open {
     background-color: rgba(0, 0, 0, 0.25);
     opacity: 1;
+  }
+
+  &.closing {
+    background-color: rgba(0, 0, 0, 0);
+    opacity: 0;
   }
 `
 
@@ -206,7 +233,7 @@ const DrawerContent = styled.div<{
       ease-out forwards;
   }
 
-  &:not(.open) {
+  &.closing {
     animation: ${({$direction}) => getAnimationKeyframes($direction, false)}
       0.3s ease-out forwards;
   }

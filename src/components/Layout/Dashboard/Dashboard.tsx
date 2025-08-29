@@ -78,6 +78,10 @@ const Top = styled.div`
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 100;
 `
 
 const Left = styled.div`

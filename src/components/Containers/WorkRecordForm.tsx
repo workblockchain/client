@@ -15,19 +15,25 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {WorkData} from "@/interfaces/records"
 import {useUserProfile} from "@/stores/useUserProfile"
+import {t} from "i18next"
 import {useEffect, useMemo} from "react"
 import {useForm} from "react-hook-form"
 import styled from "styled-components"
+import {Button} from "../Button"
 import {TextInputWithLabel} from "../Input"
-import {WorkRecord} from "./interfaces"
 
-export function WorkRecordForm({submit}: {submit: (data: WorkRecord) => void}) {
-  const {register, handleSubmit, reset} = useForm<WorkRecord>()
+export function WorkRecordForm({
+  submit,
+}: {
+  submit: (data: Partial<WorkData>) => void
+}) {
+  const {register, handleSubmit, reset} = useForm<Partial<WorkData>>()
   const userId = useUserProfile((state) => state.uid)
 
-  const defaultValues = useMemo<WorkRecord>(() => {
-    const res: WorkRecord = {
+  const defaultValues = useMemo<Partial<WorkData>>(() => {
+    const res: Partial<WorkData> = {
       wid: "",
       outcome: "",
       duration: 0,
@@ -48,6 +54,13 @@ export function WorkRecordForm({submit}: {submit: (data: WorkRecord) => void}) {
         label={"时长"}
         {...register("duration")}
       />
+      {/* TODO：团队功能，代为提交 <Flex>
+        <Switch />
+      </Flex> */}
+      <Button
+        style={{marginTop: 24}}
+        type="submit"
+      >{t`drawer.work-record-submit`}</Button>
     </Form>
   )
 }

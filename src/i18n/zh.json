@@ -5,6 +5,7 @@
   "commit.confirm": "提交",
   "commit.confirm-abort": "确认放弃",
   "commit.hintText": "你已经工作了 {{timePassed}}.",
+  "dashboard.work-container.add": "添加劳动记录",
   "date.day": "日",
   "date.friday": "星期五",
   "date.monday": "星期一",

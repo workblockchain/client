@@ -5,6 +5,7 @@
   "commit.confirm": "Confirm",
   "commit.confirm-abort": "Confirm Abort",
   "commit.hintText": "You've worked for {{timePassed}} seconds",
+  "dashboard.work-container.add": "Add Work Record",
   "date.day": "Day",
   "date.friday": "Friday",
   "date.monday": "Monday",

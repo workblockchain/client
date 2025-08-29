@@ -23,8 +23,11 @@ import {
 } from "@/interfaces/records"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {t} from "i18next"
+import {useMemo, useState} from "react"
+import {FilterBar, FilterConfig} from "../Filter"
 import {KanbanBoard} from "../Kanban/KanbanBoard"
 import {Props as StoryCard} from "../StoryCard"
+import {Container} from "./common/styles"
 
 interface CardProps extends StoryCard {
   cid: string
@@ -44,6 +47,31 @@ export function KanbanContainer() {
     (state) => state.deleteRequirementRecord
   )
   const save = useSignedRecord((state) => state.save)
+
+  // 筛选状态
+  const [filters, setFilters] = useState({
+    status: "",
+    priority: "",
+    assignedTo: "",
+    tags: [] as string[],
+  })
+
+  // 应用筛选
+  const filteredRequirements = useMemo(() => {
+    return requirementRecords.filter((req) => {
+      if (filters.status && req.status !== filters.status) return false
+      if (filters.priority && req.priority !== filters.priority) return false
+      if (filters.assignedTo && req.assignedTo !== filters.assignedTo)
+        return false
+      if (filters.tags.length > 0 && req.tags) {
+        const hasMatchingTag = filters.tags.some((tag) =>
+          req.tags.includes(tag)
+        )
+        if (!hasMatchingTag) return false
+      }
+      return true
+    })
+  }, [requirementRecords, filters])
 
   // 处理添加卡片
   const handleAddCard = (state: RequirementStatusType, cardData: StoryCard) => {
@@ -77,21 +105,72 @@ export function KanbanContainer() {
     id: status,
     title: status,
     columnTitle: t(status),
-    cards: requirementRecords
+    cards: filteredRequirements
       .filter((req) => req.status === status)
       .map((req) => convertToCardProps(req)),
   }))
 
+  // 筛选器配置
+  const filterConfig: FilterConfig[] = [
+    {
+      type: "select",
+      key: "status",
+      label: "状态",
+      options: [
+        {value: "", label: "全部"},
+        {value: "todo", label: "待办"},
+        {value: "doing", label: "进行中"},
+        {value: "done", label: "已完成"},
+      ],
+    },
+    {
+      type: "select",
+      key: "priority",
+      label: "优先级",
+      options: [
+        {value: "", label: "全部"},
+        {value: "high", label: "高"},
+        {value: "medium", label: "中"},
+        {value: "low", label: "低"},
+      ],
+    },
+    {
+      type: "text",
+      key: "assignedTo",
+      label: "负责人",
+      placeholder: "负责人ID",
+    },
+    {
+      type: "tags",
+      key: "tags",
+      label: "标签",
+      placeholder: "输入标签，用逗号分隔",
+    },
+  ]
+
+  const handleFilterChange = (key: string, value: any) => {
+    setFilters((prev) => ({...prev, [key]: value}))
+  }
+
   return (
-    <KanbanBoard
-      id="kanban-container"
-      title="需求看板"
-      column={kanbanColumns}
-      addCard={handleAddCard}
-      deleteCard={handleDelete}
-      moveCard={handleMoveCard}
-      updateCard={handleUpdateCard}
-    />
+    <Container>
+      {/* 筛选器组件 */}
+      <FilterBar
+        filters={filterConfig}
+        values={filters}
+        onChange={handleFilterChange}
+      />
+
+      <KanbanBoard
+        id="kanban-container"
+        title="需求看板"
+        column={kanbanColumns}
+        addCard={handleAddCard}
+        deleteCard={handleDelete}
+        moveCard={handleMoveCard}
+        updateCard={handleUpdateCard}
+      />
+    </Container>
   )
 }
 

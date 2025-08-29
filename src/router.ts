@@ -90,6 +90,22 @@ export const routers: RouteObject[] = [
               ).default,
             }),
           },
+          {
+            path: "requirements",
+            lazy: async () => ({
+              Component: (
+                await import("./components/Containers/RequirementContainer")
+              ).default,
+            }),
+          },
+          {
+            path: "projects",
+            lazy: async () => ({
+              Component: (
+                await import("./components/Containers/ProjectContainer")
+              ).default,
+            }),
+          },
         ],
       },
     ],

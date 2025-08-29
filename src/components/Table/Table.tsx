@@ -23,7 +23,7 @@ import {
   type ColumnDef,
   type Row,
 } from "@tanstack/react-table"
-import {useMemo} from "react"
+import {useMemo, type ReactNode} from "react"
 import styled, {css, type CSSProperties} from "styled-components"
 import {colors} from "../../styles/colors"
 import TableCell from "./TableCell"
@@ -36,7 +36,7 @@ declare module "@tanstack/react-table" {
   }
 }
 
-export interface TableProps<TData extends Record<string, unknown>> {
+export interface TableProps<TData> {
   /**
    * 表格列的配置
    */
@@ -63,14 +63,20 @@ export interface TableProps<TData extends Record<string, unknown>> {
    * 分组字段
    */
   groupBy?: string[]
+
+  /**
+   * 额外行
+   */
+  extra?: string | ReactNode
 }
 
-export function Table<TData extends Record<string, unknown>>({
+export function Table<TData>({
   data,
   columns,
   clickRow,
   loading = false,
   groupBy = [],
+  extra,
 }: TableProps<TData>) {
   const table = useReactTable({
     data,
@@ -116,6 +122,11 @@ export function Table<TData extends Record<string, unknown>>({
           groupBy={groupBy}
           clickRow={clickRow}
         />
+      )}
+      {!!extra && (
+        <TableRow style={{borderRadius: 8, padding: 0, overflow: "hidden"}}>
+          {extra}
+        </TableRow>
       )}
     </TableContainer>
   )
@@ -180,7 +191,10 @@ function TableGroup<TData>({
       {rows.map((row) => (
         <TableRow
           key={row.id}
-          onClick={() => clickRow?.(row.original)}
+          onClick={() => {
+            console.log("Row clicked:", row.original)
+            clickRow?.(row.original)
+          }}
           $clickable={!!clickRow}
         >
           {row.getVisibleCells().map((cell) => (
