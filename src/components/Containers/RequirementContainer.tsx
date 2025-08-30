@@ -144,16 +144,6 @@ export function RequirementContainer() {
 
   // 无限滚动相关
   const [visibleRecords, setVisibleRecords] = useState<RequirementData[]>([])
-  const observer = useMemo(() => {
-    return new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loading) {
-          loadMore()
-        }
-      },
-      {threshold: 1.0}
-    )
-  }, [loading])
 
   // 合并工作记录
   const combinedWorkRecords = useMemo(() => {
@@ -223,6 +213,17 @@ export function RequirementContainer() {
       setLoading(false)
     }, 300)
   }, [page, filteredRequirements, loading, hasMore])
+
+  const observer = useMemo(() => {
+    return new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loading) {
+          loadMore()
+        }
+      },
+      {threshold: 1.0}
+    )
+  }, [loading, loadMore])
 
   // 初始化加载
   useEffect(() => {

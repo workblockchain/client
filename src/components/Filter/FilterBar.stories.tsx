@@ -94,108 +94,108 @@ const requirementFilterConfig: FilterConfig[] = [
   },
 ]
 
-export const WorkFilters: Story = {
-  render: () => {
-    const [filters, setFilters] = useState({})
+const WorkFiltersComponent = () => {
+  const [filters, setFilters] = useState({})
 
-    const handleFilterChange = (key: string, value: any) => {
-      setFilters((prev) => ({...prev, [key]: value}))
-    }
+  const handleFilterChange = (key: string, value: any) => {
+    setFilters((prev) => ({...prev, [key]: value}))
+  }
 
-    return (
-      <div style={{width: "800px"}}>
-        <FilterBar
-          filters={workFilterConfig}
-          values={filters}
-          onChange={handleFilterChange}
-        />
-        <div
-          style={{marginTop: "20px", padding: "10px", background: "#f5f5f5"}}
-        >
-          <pre>{JSON.stringify(filters, null, 2)}</pre>
-        </div>
+  return (
+    <div style={{width: "800px"}}>
+      <FilterBar
+        filters={workFilterConfig}
+        values={filters}
+        onChange={handleFilterChange}
+      />
+      <div style={{marginTop: "20px", padding: "10px", background: "#f5f5f5"}}>
+        <pre>{JSON.stringify(filters, null, 2)}</pre>
       </div>
-    )
-  },
+    </div>
+  )
+}
+
+export const WorkFilters: Story = {
+  render: () => <WorkFiltersComponent />,
+}
+
+const RequirementFiltersComponent = () => {
+  const [filters, setFilters] = useState({})
+
+  const handleFilterChange = (key: string, value: any) => {
+    setFilters((prev) => ({...prev, [key]: value}))
+  }
+
+  return (
+    <div style={{width: "800px"}}>
+      <FilterBar
+        filters={requirementFilterConfig}
+        values={filters}
+        onChange={handleFilterChange}
+      />
+      <div style={{marginTop: "20px", padding: "10px", background: "#f5f5f5"}}>
+        <pre>{JSON.stringify(filters, null, 2)}</pre>
+      </div>
+    </div>
+  )
 }
 
 export const RequirementFilters: Story = {
-  render: () => {
-    const [filters, setFilters] = useState({})
+  render: () => <RequirementFiltersComponent />,
+}
 
-    const handleFilterChange = (key: string, value: any) => {
-      setFilters((prev) => ({...prev, [key]: value}))
-    }
+const ProjectFiltersComponent = () => {
+  const [filters, setFilters] = useState({})
 
-    return (
-      <div style={{width: "800px"}}>
-        <FilterBar
-          filters={requirementFilterConfig}
-          values={filters}
-          onChange={handleFilterChange}
-        />
-        <div
-          style={{marginTop: "20px", padding: "10px", background: "#f5f5f5"}}
-        >
-          <pre>{JSON.stringify(filters, null, 2)}</pre>
-        </div>
+  const handleFilterChange = (key: string, value: any) => {
+    setFilters((prev) => ({...prev, [key]: value}))
+  }
+
+  const projectFilterConfig: FilterConfig[] = [
+    {
+      type: "select",
+      key: "status",
+      label: "状态",
+      options: [
+        {value: "", label: "全部"},
+        {value: "active", label: "活跃"},
+        {value: "completed", label: "已完成"},
+        {value: "archived", label: "已归档"},
+      ],
+    },
+    {
+      type: "select",
+      key: "projectType",
+      label: "项目类型",
+      options: [
+        {value: "", label: "全部"},
+        {value: "development", label: "开发"},
+        {value: "design", label: "设计"},
+        {value: "research", label: "研究"},
+      ],
+    },
+    {
+      type: "text",
+      key: "assignedTo",
+      label: "负责人",
+      placeholder: "负责人ID",
+    },
+  ]
+
+  return (
+    <div style={{width: "800px"}}>
+      <FilterBar
+        filters={projectFilterConfig}
+        values={filters}
+        onChange={handleFilterChange}
+      />
+      <div style={{marginTop: "20px", padding: "10px", background: "#f5f5f5"}}>
+        <pre>{JSON.stringify(filters, null, 2)}</pre>
       </div>
-    )
-  },
+    </div>
+  )
 }
 
 export const ProjectFilters: Story = {
-  render: () => {
-    const [filters, setFilters] = useState({})
-
-    const handleFilterChange = (key: string, value: any) => {
-      setFilters((prev) => ({...prev, [key]: value}))
-    }
-
-    const projectFilterConfig: FilterConfig[] = [
-      {
-        type: "select",
-        key: "status",
-        label: "状态",
-        options: [
-          {value: "", label: "全部"},
-          {value: "active", label: "活跃"},
-          {value: "completed", label: "已完成"},
-          {value: "archived", label: "已归档"},
-        ],
-      },
-      {
-        type: "select",
-        key: "projectType",
-        label: "项目类型",
-        options: [
-          {value: "", label: "全部"},
-          {value: "development", label: "开发"},
-          {value: "design", label: "设计"},
-          {value: "research", label: "研究"},
-        ],
-      },
-      {
-        type: "text",
-        key: "assignedTo",
-        label: "负责人",
-        placeholder: "负责人ID",
-      },
-    ]
-
-    return (
-      <div style={{width: "800px"}}>
-        <FilterBar
-          filters={projectFilterConfig}
-          values={filters}
-          onChange={handleFilterChange}
-        />
-        <div
-          style={{marginTop: "20px", padding: "10px", background: "#f5f5f5"}}
-        >
-          <pre>{JSON.stringify(filters, null, 2)}</pre>
-        </div>
-      </div>
-    )
-  },
+  render: () => <ProjectFiltersComponent />,
 }
