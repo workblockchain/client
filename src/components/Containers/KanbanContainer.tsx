@@ -29,8 +29,9 @@ import {KanbanBoard} from "../Kanban/KanbanBoard"
 import {Props as StoryCard} from "../StoryCard"
 import {Container} from "./common/styles"
 
-interface CardProps extends StoryCard {
+interface CardProps extends Omit<StoryCard, "children"> {
   cid: string
+  children?: React.ReactNode
 }
 
 export function KanbanContainer() {
@@ -175,7 +176,7 @@ export function KanbanContainer() {
 }
 
 const convertToCardProps = (req: RequirementData): CardProps => ({
-  children: req.description || "",
+  children: req.description ? <>{req.description}</> : undefined,
   tags: req.tags,
   cid: req.rid,
 })
