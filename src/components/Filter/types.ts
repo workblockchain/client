@@ -35,10 +35,27 @@ export interface FilterState {
   [key: string]: string | string[] | null
 }
 
+export type FilterOperator =
+  | "equal"
+  | "notEqual"
+  | "contains"
+  | "notContains"
+  | "empty"
+  | "notEmpty"
+
+export interface FilterCondition {
+  id: string
+  field: string
+  operator: FilterOperator
+  value?: string | string[]
+}
+
 export interface FilterProps {
   filters: FilterDefinition[]
   values: FilterState
   onChange: (values: FilterState) => void
   disabled?: boolean
   className?: string
+  mode?: "inline" | "flyout"
+  onConditionsChange?: (conditions: FilterCondition[]) => void
 }

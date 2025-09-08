@@ -178,3 +178,14 @@ export const RequirementFilters: Story = {
     onChange: (values) => console.log("Requirement filters changed:", values),
   },
 }
+
+export const FlyoutMode: Story = {
+  args: {
+    filters: sampleFilters,
+    values: {},
+    onChange: (values) => console.log("Filter values changed:", values),
+    onConditionsChange: (conditions) =>
+      console.log("Conditions changed:", conditions),
+    mode: "flyout",
+  },
+}
