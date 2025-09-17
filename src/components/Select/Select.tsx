@@ -36,6 +36,7 @@ interface SelectProps {
   isMulti?: boolean
   size?: "x-small" | "small" | "medium" | "large"
   placeholder?: string
+  align?: "start" | "center" | "end"
 }
 
 const animatedComponents = makeAnimated()
@@ -57,6 +58,7 @@ export const Select = ({
   isMulti = false,
   size = "medium",
   placeholder,
+  align = "start",
 }: SelectProps) => {
   const getSelectedOptions = () => {
     if (isMulti && Array.isArray(value)) {
@@ -88,7 +90,10 @@ export const Select = ({
         isDisabled={disabled}
         isSearchable={isSearchable}
         isMulti={isMulti}
-        styles={customStyles(sizeConfig[size])}
+        styles={customStyles({
+          ...sizeConfig[size],
+          align,
+        })}
         components={{
           IndicatorSeparator: () => null,
           ...animatedComponents,
@@ -110,32 +115,37 @@ const customStyles: (config: {
   fontSize: number
   padding: number
   arrowSize: number
+  align: "start" | "center" | "end"
 }) => StylesConfig<SelectOption, false> = ({
   width,
   height,
   fontSize,
   padding,
   arrowSize,
+  align,
 }) => ({
-  control: (base, {isDisabled}) => ({
-    ...base,
-    backgroundColor: "#f5f5f5",
-    padding: `0 ${padding}px`,
-    border: "none",
-    outline: "none",
-    boxShadow: "0 0 0 1px rgba(0, 0, 0, 0.1)",
-    width: `${width}px`,
-    height: `${height}px`,
-    minHeight: `${height}px`,
-    borderRadius: `${height / 2}px`,
-    cursor: isDisabled ? "not-allowed" : "pointer",
-    opacity: isDisabled ? 0.6 : 1,
-    alignItems: "center",
-    fontSize: `${fontSize}px`,
-  }),
+  control: (base, {isDisabled}) => {
+    return {
+      ...base,
+      backgroundColor: "#f5f5f5",
+      padding: `0 ${padding}px`,
+      border: "none",
+      outline: "none",
+      boxShadow: "0 0 0 1px rgba(0, 0, 0, 0.1)",
+      width: `fit-content`,
+      minWidth: `${width}px`,
+      height: `${height}px`,
+      minHeight: `${height}px`,
+      borderRadius: `${height / 2}px`,
+      cursor: isDisabled ? "not-allowed" : "pointer",
+      opacity: isDisabled ? 0.6 : 1,
+      alignItems: "center",
+      fontSize: `${fontSize}px`,
+    }
+  },
   singleValue: (base) => ({
     ...base,
-    textAlign: "center",
+    textAlign: align,
     width: "100%",
     fontSize: `${fontSize}px`,
     lineHeight: `${height}px`,
@@ -143,6 +153,7 @@ const customStyles: (config: {
   valueContainer: (base) => ({
     ...base,
     padding: 0,
+    flexWrap: "nowrap",
   }),
   indicatorsContainer: (base) => ({
     ...base,
