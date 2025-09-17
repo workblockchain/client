@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import type {Meta, StoryObj} from "@storybook/react"
+import type {Meta, StoryObj} from "@storybook/react-vite"
 import {useRef} from "react"
 import AvatarEditor from "react-avatar-editor"
 import {AvatarEditorModal} from "./AvatarEditorModal"

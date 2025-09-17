@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import type {Meta} from "@storybook/react"
+import type {Meta} from "@storybook/react-vite"
 import styled from "styled-components"
 import {colors} from "./colors"
 

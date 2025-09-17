@@ -18,7 +18,7 @@
 import ClockIcon from "@/assets/clock.svg?react"
 import GearIcon from "@/assets/gear.svg?react"
 import PomodoroIcon from "@/assets/pomodoro.svg?react"
-import type {Meta, StoryObj} from "@storybook/react"
+import type {Meta, StoryObj} from "@storybook/react-vite"
 import {useState} from "react"
 import {Navigation, type NavigationProps} from "./Navigation"
 

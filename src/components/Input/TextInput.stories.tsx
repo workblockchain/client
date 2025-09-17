@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import type {Meta, StoryObj} from "@storybook/react"
+import type {Meta, StoryObj} from "@storybook/react-vite"
 import {TextInputWithLabel} from "./Input"
 
 const meta: Meta<typeof TextInputWithLabel> = {

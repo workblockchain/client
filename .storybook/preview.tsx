@@ -1,4 +1,4 @@
-import type {Preview} from "@storybook/react"
+import type {Preview} from "@storybook/react-vite"
 import {StrictMode} from "react"
 import {ThemeProvider} from "styled-components"
 import "../src/i18n"

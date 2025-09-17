@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import ReactSelect, {StylesConfig} from "react-select"
+import ReactSelect, {SingleValue, StylesConfig} from "react-select"
 import makeAnimated from "react-select/animated"
 import styled, {CSSProperties} from "styled-components"
 import {colors} from "../../styles"
@@ -28,19 +28,21 @@ interface SelectOption {
 
 interface SelectProps {
   options: SelectOption[]
-  value?: string
-  onChange?: (value: string | null) => void
+  value?: string | string[]
+  onChange?: (value?: string | string[]) => void
   disabled?: boolean
   containerStyle?: CSSProperties
   isSearchable?: boolean
+  isMulti?: boolean
   size?: "x-small" | "small" | "medium" | "large"
+  placeholder?: string
 }
 
 const animatedComponents = makeAnimated()
 
 const sizeConfig = {
-  "x-small": {height: 24, fontSize: 12, padding: 8, arrowSize: 16},
-  small: {height: 32, fontSize: 14, padding: 12, arrowSize: 20},
+  "x-small": {height: 24, fontSize: 12, padding: 6, arrowSize: 12},
+  small: {height: 32, fontSize: 14, padding: 8, arrowSize: 16},
   medium: {height: 48, fontSize: 16, padding: 16, arrowSize: 24},
   large: {height: 64, fontSize: 18, padding: 20, arrowSize: 28},
 } as const
@@ -52,23 +54,46 @@ export const Select = ({
   disabled,
   containerStyle,
   isSearchable = false,
+  isMulti = false,
   size = "medium",
+  placeholder,
 }: SelectProps) => {
-  const selectedOption = options.find((opt) => opt.value === value)
+  const getSelectedOptions = () => {
+    if (isMulti && Array.isArray(value)) {
+      return options.filter((opt) => value.includes(opt.value))
+    } else if (!isMulti && typeof value === "string") {
+      return options.find((opt) => opt.value === value) || null
+    }
+    return null
+  }
+
+  const selectedOptions = getSelectedOptions()
 
   return (
     <SelectWrapper style={containerStyle}>
       <ReactSelect
         options={options}
-        value={selectedOption}
-        onChange={(selected) => onChange?.(selected?.value ?? null)}
+        value={selectedOptions}
+        onChange={(selected) => {
+          if (isMulti) {
+            const selectedValues = Array.isArray(selected)
+              ? selected.map((opt) => opt.value)
+              : []
+            onChange?.(selectedValues)
+          } else {
+            const selectedValue = selected as SingleValue<SelectOption>
+            onChange?.(selectedValue?.value)
+          }
+        }}
         isDisabled={disabled}
         isSearchable={isSearchable}
+        isMulti={isMulti}
         styles={customStyles(sizeConfig[size])}
         components={{
           IndicatorSeparator: () => null,
           ...animatedComponents,
         }}
+        placeholder={placeholder}
         aria-label="选择框"
       />
     </SelectWrapper>
@@ -118,6 +143,14 @@ const customStyles: (config: {
     padding: `0 ${padding / 2}px`,
   }),
   dropdownIndicator: (base) => ({
+    ...base,
+    padding: 0,
+    svg: {
+      width: `${arrowSize}px`,
+      height: `${arrowSize}px`,
+    },
+  }),
+  clearIndicator: (base) => ({
     ...base,
     padding: 0,
     svg: {

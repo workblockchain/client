@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import type {Meta, StoryObj} from "@storybook/react"
+import type {Meta, StoryObj} from "@storybook/react-vite"
 import {BrowserRouter} from "react-router"
 import {svgIcons} from "../Icons"
 import {MenuItem} from "./MenuItem"
