@@ -41,10 +41,10 @@ interface SelectProps {
 const animatedComponents = makeAnimated()
 
 const sizeConfig = {
-  "x-small": {height: 24, fontSize: 12, padding: 6, arrowSize: 12},
-  small: {height: 32, fontSize: 14, padding: 8, arrowSize: 16},
-  medium: {height: 48, fontSize: 16, padding: 16, arrowSize: 24},
-  large: {height: 64, fontSize: 18, padding: 20, arrowSize: 28},
+  "x-small": {width: 120, height: 24, fontSize: 12, padding: 6, arrowSize: 12},
+  small: {width: 160, height: 32, fontSize: 14, padding: 8, arrowSize: 16},
+  medium: {width: 200, height: 48, fontSize: 16, padding: 16, arrowSize: 24},
+  large: {width: 320, height: 64, fontSize: 18, padding: 20, arrowSize: 28},
 } as const
 
 export const Select = ({
@@ -105,11 +105,13 @@ const SelectWrapper = styled.div`
 `
 
 const customStyles: (config: {
+  width: number
   height: number
   fontSize: number
   padding: number
   arrowSize: number
 }) => StylesConfig<SelectOption, false> = ({
+  width,
   height,
   fontSize,
   padding,
@@ -122,6 +124,7 @@ const customStyles: (config: {
     border: "none",
     outline: "none",
     boxShadow: "0 0 0 1px rgba(0, 0, 0, 0.1)",
+    width: `${width}px`,
     height: `${height}px`,
     minHeight: `${height}px`,
     borderRadius: `${height / 2}px`,
@@ -136,6 +139,10 @@ const customStyles: (config: {
     width: "100%",
     fontSize: `${fontSize}px`,
     lineHeight: `${height}px`,
+  }),
+  valueContainer: (base) => ({
+    ...base,
+    padding: 0,
   }),
   indicatorsContainer: (base) => ({
     ...base,
