@@ -16,17 +16,18 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {Meta, StoryObj} from "@storybook/react-vite"
-import {Filter} from "./Filter"
-import {FilterDefinition} from "./types"
+import {operatorOptions} from "./Filter.utils"
+import {FilterCondition} from "./FilterCondition"
+import {FilterCondition as FilterConditionType, FilterDefinition} from "./types"
 
-const meta: Meta<typeof Filter> = {
-  title: "Components/Filter",
-  component: Filter,
+const meta: Meta<typeof FilterCondition> = {
+  title: "Components/Filter/FilterCondition",
+  component: FilterCondition,
 }
 
 export default meta
 
-type Story = StoryObj<typeof Filter>
+type Story = StoryObj<typeof FilterCondition>
 
 const sampleFilters: FilterDefinition[] = [
   {
@@ -53,34 +54,25 @@ const sampleFilters: FilterDefinition[] = [
     ],
   },
   {
-    key: "status",
-    label: "状态",
-    type: "select",
-    options: [
-      {value: "active", label: "活跃"},
-      {value: "inactive", label: "非活跃"},
-    ],
-  },
-  {
     key: "joinDate",
     label: "加入日期",
     type: "date",
   },
 ]
 
-export const Basic: Story = {
-  args: {
-    filters: sampleFilters,
-    onConditionsChange: (conditions) =>
-      console.log("Conditions changed:", conditions),
-  },
+const defaultCondition: FilterConditionType = {
+  id: "1",
+  field: "name",
+  operator: "contains",
+  value: "John",
 }
 
-export const Disabled: Story = {
+export const Basic: Story = {
   args: {
+    condition: defaultCondition,
     filters: sampleFilters,
-    disabled: true,
-    onConditionsChange: (conditions) =>
-      console.log("Conditions changed:", conditions),
+    onUpdate: (id, updates) => console.log("Update condition:", id, updates),
+    onRemove: (id) => console.log("Remove condition:", id),
+    operatorOptions,
   },
 }

@@ -47,7 +47,7 @@ export interface FilterCondition {
   id: string
   field: string
   operator: FilterOperator
-  value?: string | string[]
+  value: string | string[] | null
 }
 
 export interface FilterProps {
@@ -56,6 +56,5 @@ export interface FilterProps {
   onChange: (values: FilterState) => void
   disabled?: boolean
   className?: string
-  mode?: "inline" | "flyout"
   onConditionsChange?: (conditions: FilterCondition[]) => void
 }
