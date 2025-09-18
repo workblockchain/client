@@ -46,7 +46,7 @@ export const ConfigLayout = ({
           <Select
             options={workOptions}
             value={workDuration.toString()}
-            onChange={(v) => v && setWorkDuration(parseInt(v))}
+            onChange={(v) => v && setWorkDuration(parseInt(v as string))}
             containerStyle={{width: "100%"}}
             size="small"
           />
@@ -56,7 +56,7 @@ export const ConfigLayout = ({
           <Select
             options={breakOptions}
             value={breakDuration.toString()}
-            onChange={(v) => v && setBreakDuration(parseInt(v))}
+            onChange={(v) => v && setBreakDuration(parseInt(v as string))}
             containerStyle={{width: "100%"}}
             size="small"
           />
