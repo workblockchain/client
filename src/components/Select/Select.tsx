@@ -128,7 +128,7 @@ const customStyles: (config: {
     return {
       ...base,
       backgroundColor: "#f5f5f5",
-      padding: `0 ${padding}px`,
+      padding: `0 ${padding * 4}px 0 ${padding}px`,
       border: "none",
       outline: "none",
       boxShadow: "0 0 0 1px rgba(0, 0, 0, 0.1)",
@@ -142,6 +142,7 @@ const customStyles: (config: {
       alignItems: "center",
       fontSize: `${fontSize}px`,
       position: "relative",
+      overflow: "hidden",
     }
   },
   singleValue: (base) => ({
@@ -155,6 +156,7 @@ const customStyles: (config: {
     ...base,
     padding: 0,
     flexWrap: "nowrap",
+    flex: `0 0 auto`,
   }),
   indicatorsContainer: (base) => ({
     ...base,
