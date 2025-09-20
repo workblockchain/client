@@ -17,6 +17,7 @@
 
 import {useState} from "react"
 import {Button} from "../Button"
+import {Dropdown} from "../Dropdown"
 import {
   ConditionsRow,
   EmptyState,
@@ -81,52 +82,63 @@ export const Filter = ({
 
   return (
     <FlyoutTrigger>
-      <Button
-        $variant="solid"
-        $size="small"
-        disabled={disabled}
-        onClick={() => handleFlyoutToggle(!isFlyoutOpen)}
+      <Dropdown
+        isOpen={isFlyoutOpen}
+        onOpenChange={handleFlyoutToggle}
+        dropdownElement={
+          <FlyoutContent $isOpen={isFlyoutOpen}>
+            <FlyoutContainer>
+              <h4>筛选条件</h4>
+
+              {conditions.length === 0 ? (
+                <EmptyState>暂无筛选条件</EmptyState>
+              ) : (
+                <ConditionsRow>
+                  {conditions.map((condition) => (
+                    <FilterCondition
+                      key={condition.id}
+                      condition={condition}
+                      filters={filters}
+                      onUpdate={updateCondition}
+                      onRemove={removeCondition}
+                      operatorOptions={operatorOptions}
+                    />
+                  ))}
+                </ConditionsRow>
+              )}
+
+              <Button
+                onClick={addNewCondition}
+                $size="small"
+                $variant="solid"
+                disabled={hasIncompleteCondition}
+                style={{
+                  height: "24px",
+                  padding: "0 8px",
+                  fontSize: "12px",
+                  marginTop: "12px",
+                }}
+              >
+                添加条件
+              </Button>
+            </FlyoutContainer>
+          </FlyoutContent>
+        }
       >
-        筛选
-      </Button>
-
-      <FlyoutContent $isOpen={isFlyoutOpen}>
-        <FlyoutContainer>
-          <h4>筛选条件</h4>
-
-          {conditions.length === 0 ? (
-            <EmptyState>暂无筛选条件</EmptyState>
-          ) : (
-            <ConditionsRow>
-              {conditions.map((condition) => (
-                <FilterCondition
-                  key={condition.id}
-                  condition={condition}
-                  filters={filters}
-                  onUpdate={updateCondition}
-                  onRemove={removeCondition}
-                  operatorOptions={operatorOptions}
-                />
-              ))}
-            </ConditionsRow>
-          )}
-
+        {(setOpen, setTriggerRectGetter) => (
           <Button
-            onClick={addNewCondition}
-            $size="small"
-            $variant="solid"
-            disabled={hasIncompleteCondition}
-            style={{
-              height: "24px",
-              padding: "0 8px",
-              fontSize: "12px",
-              marginTop: "12px",
+            ref={(el) => {
+              if (el) setTriggerRectGetter(() => el.getBoundingClientRect())
             }}
+            $variant="solid"
+            $size="small"
+            disabled={disabled}
+            onClick={() => setOpen(!isFlyoutOpen)}
           >
-            添加条件
+            筛选
           </Button>
-        </FlyoutContainer>
-      </FlyoutContent>
+        )}
+      </Dropdown>
     </FlyoutTrigger>
   )
 }

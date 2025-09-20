@@ -68,11 +68,25 @@ export const FlyoutTrigger = styled.div`
   display: inline-block;
 `
 
-export const FlyoutContent = styled.div<{$isOpen: boolean}>`
+export const FlyoutContent = styled.div<{
+  $isOpen: boolean
+  $inPortal?: boolean
+  $top?: number
+  $left?: number
+}>`
   display: ${(props) => (props.$isOpen ? "block" : "none")};
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: ${zIndex.filterFlyout};
-  margin-top: 8px;
+  position: ${(props) => (props.$inPortal ? "fixed" : "absolute")};
+  ${(props) =>
+    props.$inPortal
+      ? `
+    top: ${props.$top}px;
+    left: ${props.$left}px;
+    z-index: 1001;
+  `
+      : `
+    top: 100%;
+    left: 0;
+    margin-top: 8px;
+    z-index: ${zIndex.filterFlyout};
+  `}
 `
