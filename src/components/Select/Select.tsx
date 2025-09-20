@@ -141,6 +141,7 @@ const customStyles: (config: {
       opacity: isDisabled ? 0.6 : 1,
       alignItems: "center",
       fontSize: `${fontSize}px`,
+      position: "relative",
     }
   },
   singleValue: (base) => ({
@@ -159,6 +160,11 @@ const customStyles: (config: {
     ...base,
     height: `${height}px`,
     padding: `0 ${padding / 2}px`,
+    borderRadius: `0px ${height / 2}px  ${height / 2}px 0px `,
+    backgroundColor: "#f5f5f5",
+    position: "absolute",
+    right: 0,
+    top: 0,
   }),
   dropdownIndicator: (base) => ({
     ...base,
