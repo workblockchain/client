@@ -20,8 +20,9 @@ import {
   RatioContainer,
   RatioSlider,
   RatioOption as StyledRatioOption,
+  sizeConfig,
 } from "./Ratio.styles"
-import {RatioOption, RatioProps} from "./types"
+import {RatioOption as RatioOptionType, RatioProps} from "./types"
 
 export const Ratio = ({
   options,
@@ -45,6 +46,25 @@ export const Ratio = ({
   const selectedIndex = options.findIndex((option) => option.key === value)
   const validSelectedIndex = selectedIndex >= 0 ? selectedIndex : 0
 
+  // 计算动态宽度
+  const calculateWidths = () => {
+    // 总宽度优先使用containerStyle.width，否则使用size对应的默认总宽度
+    const totalWidth = containerStyle?.width
+      ? parseInt(String(containerStyle.width))
+      : sizeConfig[size].totalWidth
+
+    // 动态计算每个选项的宽度
+    const gap =
+      size === "x-small" ? 2 : size === "small" ? 3 : size === "medium" ? 4 : 5
+    const padding = 8 // 容器内边距
+    const availableWidth = totalWidth - padding * 2 - gap * (options.length - 1)
+    const optionWidth = Math.floor(availableWidth / options.length)
+
+    return {totalWidth, optionWidth}
+  }
+
+  const {totalWidth, optionWidth} = calculateWidths()
+
   // 更新滑块位置和宽度
   useEffect(() => {
     if (containerRef.current && optionRefs.current[validSelectedIndex]) {
@@ -54,9 +74,9 @@ export const Ratio = ({
 
       setSliderPosition(optionRect.left - containerRect.left)
     }
-  }, [validSelectedIndex, options])
+  }, [validSelectedIndex, options, totalWidth, optionWidth])
 
-  const handleOptionClick = (option: RatioOption) => {
+  const handleOptionClick = (option: RatioOptionType) => {
     if (!disabled && option.key !== value) {
       onChange?.(option.key)
     }
@@ -75,11 +95,16 @@ export const Ratio = ({
       $size={size}
       $disabled={disabled}
       $align={align}
+      $totalWidth={totalWidth}
       style={containerStyle}
       role="radiogroup"
       aria-label="选项组"
     >
-      <RatioSlider $size={size} $position={sliderPosition} />
+      <RatioSlider
+        $size={size}
+        $position={sliderPosition}
+        $optionWidth={optionWidth}
+      />
 
       {options.map((option, index) => (
         <StyledRatioOption
@@ -90,6 +115,7 @@ export const Ratio = ({
           $size={size}
           $selected={option.key === value}
           $disabled={disabled}
+          $optionWidth={optionWidth}
           onClick={() => handleOptionClick(option)}
           role="radio"
           aria-checked={option.key === value}

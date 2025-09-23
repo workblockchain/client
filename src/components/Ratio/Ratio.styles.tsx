@@ -20,9 +20,9 @@ import {colors} from "../../styles"
 
 export type RatioSizeType = "x-small" | "small" | "medium" | "large"
 
-const sizeConfig = {
+export const sizeConfig = {
   "x-small": {
-    bar: 60,
+    totalWidth: 60,
     height: 24,
     fontSize: 12,
     padding: 6,
@@ -30,7 +30,7 @@ const sizeConfig = {
     gap: 2,
   },
   small: {
-    bar: 100,
+    totalWidth: 100,
     height: 32,
     fontSize: 14,
     padding: 8,
@@ -38,7 +38,7 @@ const sizeConfig = {
     gap: 3,
   },
   medium: {
-    bar: 120,
+    totalWidth: 120,
     height: 48,
     fontSize: 16,
     padding: 16,
@@ -46,7 +46,7 @@ const sizeConfig = {
     gap: 4,
   },
   large: {
-    bar: 160,
+    totalWidth: 160,
     height: 64,
     fontSize: 18,
     padding: 20,
@@ -59,6 +59,7 @@ export const RatioContainer = styled.div<{
   $size: RatioSizeType
   $disabled?: boolean
   $align?: "start" | "center" | "end"
+  $totalWidth?: number
 }>`
   position: relative;
   display: inline-flex;
@@ -70,6 +71,8 @@ export const RatioContainer = styled.div<{
   opacity: ${(props) => (props.$disabled ? 0.6 : 1)};
   transition: all 0.2s ease-out;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  width: ${(props) =>
+    props.$totalWidth || sizeConfig[props.$size].totalWidth}px;
 
   ${(props) => {
     switch (props.$align) {
@@ -103,9 +106,11 @@ export const RatioOption = styled.button<{
   $size: RatioSizeType
   $selected: boolean
   $disabled?: boolean
+  $optionWidth?: number
 }>`
   position: relative;
-  width: ${(props) => sizeConfig[props.$size].bar}px;
+  width: ${(props) =>
+    props.$optionWidth || sizeConfig[props.$size].totalWidth}px;
   border: none;
   background: transparent;
   color: ${(props) =>
@@ -133,11 +138,13 @@ export const RatioOption = styled.button<{
 export const RatioSlider = styled.div<{
   $size: RatioSizeType
   $position: number
+  $optionWidth?: number
 }>`
   position: absolute;
   top: 4px;
   left: ${(props) => props.$position}px;
-  width: ${(props) => sizeConfig[props.$size].bar}px;
+  width: ${(props) =>
+    props.$optionWidth || sizeConfig[props.$size].totalWidth}px;
   height: ${(props) => sizeConfig[props.$size].height}px;
   background-color: white;
   border-radius: ${(props) => sizeConfig[props.$size].borderRadius - 4}px;
