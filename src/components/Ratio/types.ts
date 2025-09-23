@@ -15,29 +15,26 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {StrictMode} from "react"
-import {createRoot} from "react-dom/client"
-import {Bounce, ToastContainer} from "react-toastify"
-import App from "./App.tsx"
-import "./i18n"
-import "./index.css"
+import type {AlignType, SizeType} from "../types"
 
-// 初始化用户配置
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <App />
-    <ToastContainer
-      position="top-right"
-      autoClose={3000}
-      limit={3}
-      hideProgressBar={false}
-      newestOnTop={false}
-      closeOnClick={false}
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
-      transition={Bounce}
-    />
-  </StrictMode>
-)
+export interface RatioOption {
+  key: string
+  value: string | number | boolean
+}
+
+export interface RatioProps {
+  /** 选项列表，最少需要两个选项 */
+  options: RatioOption[]
+  /** 当前选中的选项key */
+  value?: string
+  /** 选项改变时的回调函数 */
+  onChange?: (key: string) => void
+  /** 是否禁用 */
+  disabled?: boolean
+  /** 容器样式 */
+  containerStyle?: React.CSSProperties
+  /** 尺寸大小 */
+  size?: SizeType
+  /** 对齐方式 */
+  align?: AlignType
+}

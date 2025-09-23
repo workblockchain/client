@@ -32,6 +32,10 @@ const meta: Meta<typeof TextInputWithLabel> = {
     disabled: {
       control: "boolean",
     },
+    inputSize: {
+      control: "select",
+      options: ["x-small", "small", "medium", "large"],
+    },
   },
 }
 
@@ -55,4 +59,40 @@ export const Default: Story = {
       exclude: ["as", "css", "theme"],
     },
   },
+}
+
+export const Sizes: Story = {
+  render: () => (
+    <div
+      style={{
+        maxWidth: "400px",
+        margin: "20px",
+        background: "#de9696",
+        display: "flex",
+        flexDirection: "column",
+        gap: "16px",
+      }}
+    >
+      <TextInputWithLabel
+        label="x-small 尺寸"
+        inputSize="x-small"
+        placeholder="x-small"
+      />
+      <TextInputWithLabel
+        label="small 尺寸"
+        inputSize="small"
+        placeholder="small"
+      />
+      <TextInputWithLabel
+        label="medium 尺寸"
+        inputSize="medium"
+        placeholder="medium"
+      />
+      <TextInputWithLabel
+        label="large 尺寸"
+        inputSize="large"
+        placeholder="large"
+      />
+    </div>
+  ),
 }

@@ -15,8 +15,5 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-declare module "styled-components" {
-  export interface DefaultTheme {
-    fontFamily: string
-  }
-}
+export {Ratio} from "./Ratio"
+export type {RatioOption, RatioProps} from "./types"
