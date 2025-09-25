@@ -17,12 +17,11 @@
 
 import styled, {css} from "styled-components"
 import {colors} from "../../styles"
-
-export type RatioSizeType = "x-small" | "small" | "medium" | "large"
+import {SizeType} from "../types"
 
 export const sizeConfig = {
   "x-small": {
-    totalWidth: 60,
+    totalWidth: 180,
     height: 24,
     fontSize: 12,
     padding: 6,
@@ -30,7 +29,7 @@ export const sizeConfig = {
     gap: 2,
   },
   small: {
-    totalWidth: 100,
+    totalWidth: 300,
     height: 32,
     fontSize: 14,
     padding: 8,
@@ -38,7 +37,7 @@ export const sizeConfig = {
     gap: 3,
   },
   medium: {
-    totalWidth: 120,
+    totalWidth: 360,
     height: 48,
     fontSize: 16,
     padding: 16,
@@ -46,7 +45,7 @@ export const sizeConfig = {
     gap: 4,
   },
   large: {
-    totalWidth: 160,
+    totalWidth: 480,
     height: 64,
     fontSize: 18,
     padding: 20,
@@ -56,7 +55,7 @@ export const sizeConfig = {
 } as const
 
 export const RatioContainer = styled.div<{
-  $size: RatioSizeType
+  $size: SizeType
   $disabled?: boolean
   $align?: "start" | "center" | "end"
   $totalWidth?: number
@@ -103,7 +102,7 @@ export const RatioContainer = styled.div<{
 `
 
 export const RatioOption = styled.button<{
-  $size: RatioSizeType
+  $size: SizeType
   $selected: boolean
   $disabled?: boolean
   $optionWidth?: number
@@ -136,7 +135,7 @@ export const RatioOption = styled.button<{
 `
 
 export const RatioSlider = styled.div<{
-  $size: RatioSizeType
+  $size: SizeType
   $position: number
   $optionWidth?: number
 }>`
