@@ -17,6 +17,7 @@
 
 import type {ReactNode} from "react"
 import {useEffect, useRef, useState} from "react"
+import styled from "styled-components"
 import {Portal} from "../Portal"
 
 export interface DropdownProps {
@@ -25,6 +26,7 @@ export interface DropdownProps {
     setTriggerRectGetter: (getter: () => DOMRect) => void
   ) => ReactNode
   isOpen?: boolean
+  shadow?: boolean
   onOpenChange?: (isOpen: boolean) => void
   dropdownElement?: ReactNode
 }
@@ -32,6 +34,7 @@ export interface DropdownProps {
 export const Dropdown = ({
   children,
   isOpen: controlledIsOpen,
+  shadow = true,
   onOpenChange,
   dropdownElement,
 }: DropdownProps) => {
@@ -91,15 +94,9 @@ export const Dropdown = ({
       {children(setIsOpen, setTriggerRectGetter)}
       {isOpen && (
         <Portal>
-          <div
+          <Blocker
             style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100vw",
-              height: "100vh",
-              zIndex: 1000,
-              backgroundColor: "transparent",
+              backgroundColor: shadow ? "rgba(0, 0, 0, 0.2)" : "transparent",
             }}
             onClick={handleOverlayClick}
           />
@@ -118,3 +115,12 @@ export const Dropdown = ({
     </>
   )
 }
+
+const Blocker = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+`
