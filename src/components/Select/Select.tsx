@@ -132,7 +132,7 @@ const customStyles: (config: {
       border: "none",
       outline: "none",
       boxShadow: "0 0 0 1px rgba(0, 0, 0, 0.1)",
-      width: `fit-content`,
+      width: `${width}px`,
       minWidth: `${width}px`,
       height: `${height}px`,
       minHeight: `${height}px`,
