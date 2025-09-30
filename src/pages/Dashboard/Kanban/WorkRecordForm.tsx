@@ -15,12 +15,12 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {TextInputWithLabel} from "@/components/Input"
+import {WorkRecord} from "@/pages/Dashboard/interfaces"
 import {useUserProfile} from "@/stores/useUserProfile"
 import {useEffect, useMemo} from "react"
 import {useForm} from "react-hook-form"
 import styled from "styled-components"
-import {TextInputWithLabel} from "../Input"
-import {WorkRecord} from "./interfaces"
 
 export function WorkRecordForm({submit}: {submit: (data: WorkRecord) => void}) {
   const {register, handleSubmit, reset} = useForm<WorkRecord>()

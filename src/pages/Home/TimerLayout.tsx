@@ -15,13 +15,13 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {Button} from "@/components/Button"
+import {TimeDisplay} from "@/components/TimeDisplay/TimeDisplay"
+import type {TimerPhaseType} from "@/stores/usePomodoroTimer"
+import {colors} from "@/styles"
 import {useTranslation} from "react-i18next"
 import {useMediaQuery} from "react-responsive"
 import styled from "styled-components"
-import {Button} from ".."
-import type {TimerPhaseType} from "../../stores/usePomodoroTimer"
-import {colors} from "../../styles"
-import {TimeDisplay} from "../TimeDisplay/TimeDisplay"
 import WipBar from "./WipBar"
 
 export type TimerLayoutProps = {

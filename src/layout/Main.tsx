@@ -15,14 +15,14 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {Button} from "@/components/Button"
+import {HintText} from "@/components/CommonLayout"
+import {svgIcons} from "@/components/Icons"
 import {colors} from "@/styles"
 import {isTauri} from "@tauri-apps/api/core"
 import {t} from "i18next"
 import {Outlet, useLocation, useNavigate} from "react-router"
 import styled from "styled-components"
-import {HintText} from "."
-import {Button} from ".."
-import {svgIcons} from "../Icons"
 
 export function Main() {
   const navigate = useNavigate()

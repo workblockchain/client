@@ -15,14 +15,15 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {Button} from "@/components/Button"
+import {HintText, Row} from "@/components/CommonLayout"
+import {svgIcons} from "@/components/Icons"
+import {Textarea} from "@/components/Input"
+import {Switch} from "@/components/Switch"
+import {colors} from "@/styles"
 import {useState} from "react"
 import {useTranslation} from "react-i18next"
 import styled from "styled-components"
-import {Button, Textarea} from ".."
-import {colors} from "../../styles"
-import {svgIcons} from "../Icons"
-import {HintText, Row} from "../Layout"
-import {Switch} from "../Switch"
 
 export type CommitLayoutProps = {
   description: string

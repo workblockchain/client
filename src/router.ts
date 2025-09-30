@@ -16,7 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {createBrowserRouter, RouteObject} from "react-router"
-import {Main} from "./components/Layout/Main"
+import {Main} from "./layout/Main"
 
 export const paths = {
   home: "/",
@@ -34,60 +34,49 @@ export const routers: RouteObject[] = [
       {
         index: true,
         lazy: async () => ({
-          Component: (
-            await import("./components/PomodoroLayout/PomodoroLayout")
-          ).default,
+          Component: (await import("./pages/Home")).default,
         }),
       },
       {
         path: paths.config,
         lazy: async () => ({
-          Component: (await import("./components/Layout/Config")).default,
+          Component: (await import("./pages/Config")).default,
         }),
       },
       {
         path: paths.profile,
         lazy: async () => ({
-          Component: (
-            await import("./components/Layout/UserProfile/UserProfile")
-          ).default,
+          Component: (await import("./pages/UserProfile")).default,
         }),
       },
       {
         path: paths.records,
         lazy: async () => ({
-          Component: (await import("./components/Layout/RecordsLayout"))
-            .default,
+          Component: (await import("./pages/Records")).default,
         }),
       },
       {
         path: paths.dashboard,
         lazy: async () => ({
-          Component: (await import("./components/Layout/Dashboard/Dashboard"))
-            .default,
+          Component: (await import("./pages/Dashboard")).default,
         }),
         children: [
           {
             index: true,
             lazy: async () => ({
-              Component: (
-                await import("./components/Containers/KanbanContainer")
-              ).default,
+              Component: (await import("./pages/Dashboard/Kanban")).default,
             }),
           },
           {
             path: "work",
             lazy: async () => ({
-              Component: (await import("./components/Containers/WorkContainer"))
-                .default,
+              Component: (await import("./pages/Dashboard/Work")).default,
             }),
           },
           {
             path: "kanban",
             lazy: async () => ({
-              Component: (
-                await import("./components/Containers/KanbanContainer")
-              ).default,
+              Component: (await import("./pages/Dashboard/Kanban")).default,
             }),
           },
         ],

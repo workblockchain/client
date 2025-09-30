@@ -15,15 +15,15 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {Drawer} from "@/components/Drawer"
 import {Table} from "@/components/Table/Table"
 import {WorkData} from "@/interfaces/records"
+import {WorkRecord} from "@/pages/Dashboard/interfaces"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {ColumnDef} from "@tanstack/react-table"
 import {t} from "i18next"
 import {useMemo} from "react"
-import {Drawer} from "../Drawer"
-import {WorkRecord} from "./interfaces"
-import {WorkRecordForm} from "./WorkRecordForm"
+import {WorkRecordForm} from "../Kanban/WorkRecordForm"
 
 const getDate = (value?: number) =>
   value ? new Date(value).toLocaleString() : "-"

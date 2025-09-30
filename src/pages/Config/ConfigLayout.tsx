@@ -15,13 +15,13 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {ConfigContainer, Row, Title} from "@/components/CommonLayout"
+import {DividerHorizontal} from "@/components/Divider"
+import {Select} from "@/components/Select/Select"
+import {Switch} from "@/components/Switch/Switch"
+import {useConfig} from "@/stores/useConfig"
+import {colors} from "@/styles"
 import styled from "styled-components"
-import {ConfigContainer, Row, Title} from "."
-import {useConfig} from "../../stores/useConfig"
-import {colors} from "../../styles"
-import {DividerHorizontal} from "../Divider"
-import {Select} from "../Select/Select"
-import {Switch} from "../Switch/Switch"
 
 interface ConfigLayoutProps {
   workDuration: number

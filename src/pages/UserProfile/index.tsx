@@ -15,19 +15,19 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {AvatarRow} from "@/components/Avatar/AvatarRow"
+import {Button} from "@/components/Button"
+import {ConfigContainer} from "@/components/CommonLayout"
+import {DividerHorizontal} from "@/components/Divider"
+import {TextInputWithLabel} from "@/components/Input"
+import {Modal} from "@/components/Modal"
+import {SubDescription} from "@/components/Typographies"
 import {UserInfoProps} from "@/interfaces"
 import {useUserProfile} from "@/stores/useUserProfile"
 import {colors} from "@/styles"
 import {ChangeEvent, useState} from "react"
 import {toast} from "react-toastify"
 import styled from "styled-components"
-import {ConfigContainer} from ".."
-import {Button} from "../../Button"
-import {DividerHorizontal} from "../../Divider"
-import {TextInputWithLabel} from "../../Input"
-import {Modal} from "../../Modal"
-import {SubDescription} from "../../Typographies"
-import {AvatarRow} from "../AvatarRow"
 
 export function UserProfile() {
   const [showSecretKey, setShowSecretKey] = useState(false)

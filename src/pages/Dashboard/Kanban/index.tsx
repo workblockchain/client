@@ -15,6 +15,8 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {KanbanBoard} from "@/components/Kanban/KanbanBoard"
+import {Props as StoryCard} from "@/components/StoryCard"
 import {ColumnProps} from "@/interfaces"
 import {
   RequirementData,
@@ -23,8 +25,6 @@ import {
 } from "@/interfaces/records"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {t} from "i18next"
-import {KanbanBoard} from "../Kanban/KanbanBoard"
-import {Props as StoryCard} from "../StoryCard"
 
 interface CardProps extends StoryCard {
   cid: string
