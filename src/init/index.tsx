@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import usePomodoroStore from "@/components/PomodoroLayout/usePomodoroStore"
+import usePomodoroStore from "@/pages/Home/usePomodoroStore"
 import {useConfig} from "@/stores/useConfig"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {handleTauriSignals} from "@/stores/useTauriSignals"
