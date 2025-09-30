@@ -26,6 +26,7 @@ import {
 import {useMemo, type ReactNode} from "react"
 import styled, {css, type CSSProperties} from "styled-components"
 import {colors} from "../../styles/colors"
+import {zIndex} from "../../styles/zIndex"
 import TableCell from "./TableCell"
 
 declare module "@tanstack/react-table" {
@@ -227,7 +228,7 @@ const TableContainer = styled.div`
 const TableHeader = styled.div`
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: ${zIndex.tableHeader};
   display: flex;
   align-items: center;
   border-radius: 8px;

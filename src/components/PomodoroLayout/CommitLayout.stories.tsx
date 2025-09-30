@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import type {Meta, StoryObj} from "@storybook/react"
+import type {Meta, StoryObj} from "@storybook/react-vite"
 import type {CommitLayoutProps} from "./CommitLayout"
 import {CommitLayout} from "./CommitLayout"
 

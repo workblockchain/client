@@ -16,7 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {BoardProps} from "@/interfaces/kanban"
-import {Meta, StoryObj} from "@storybook/react"
+import {Meta, StoryObj} from "@storybook/react-vite"
 import {KanbanBoard} from "./KanbanBoard"
 const meta: Meta<typeof KanbanBoard> = {
   title: "Components/KanbanBoard",

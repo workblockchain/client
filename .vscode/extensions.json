@@ -1,7 +1,7 @@
 {
   "recommendations": [
     // Languages and frameworks.
-    "mf.vscode-styled-components",
+    "styled-components.vscode-styled-components",
     "rust-lang.rust-analyzer",
 
     // Configurations.
