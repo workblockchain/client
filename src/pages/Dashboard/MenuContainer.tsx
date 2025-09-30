@@ -18,7 +18,7 @@
 import {routers} from "@/router"
 import routerData from "@/router/routerData"
 import {RouteObject, useMatches} from "react-router"
-import Menu, {MenuItem} from "../Menu/Menu"
+import Menu, {MenuItem} from "../../components/Menu/Menu"
 
 function getMenuFromRouter(routers: RouteObject[], basePath = ""): MenuItem[] {
   const menuItems: MenuItem[] = []

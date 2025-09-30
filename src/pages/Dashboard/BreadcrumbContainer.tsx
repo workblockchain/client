@@ -16,8 +16,11 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {useLocation} from "react-router"
+import {
+  Breadcrumb,
+  BreadcrumbProps,
+} from "../../components/Breadcrumb/Breadcrumb"
 import {paths} from "../../router"
-import {Breadcrumb, BreadcrumbProps} from "../Breadcrumb/Breadcrumb"
 
 const routeTitles: Record<string, string> = {
   [paths.home]: "首页",
