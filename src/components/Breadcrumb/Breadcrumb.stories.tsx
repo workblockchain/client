@@ -15,8 +15,8 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import type {Meta, StoryObj} from "@storybook/react"
-import {expect, within} from "@storybook/test"
+import type {Meta, StoryObj} from "@storybook/react-vite"
+import {expect, within} from "storybook/test"
 import {Breadcrumb} from "./Breadcrumb"
 
 const meta: Meta<typeof Breadcrumb> = {

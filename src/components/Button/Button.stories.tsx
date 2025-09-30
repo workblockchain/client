@@ -16,7 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import GearIcon from "@/assets/gear.svg?react"
-import type {Meta, StoryObj} from "@storybook/react"
+import type {Meta, StoryObj} from "@storybook/react-vite"
 import {Button} from "./Button"
 
 const meta = {

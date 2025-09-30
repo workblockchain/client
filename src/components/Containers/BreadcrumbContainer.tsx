@@ -54,7 +54,7 @@ export function BreadcrumbContainer() {
     })
   }
 
-  return Breadcrumb({items: path})
+  return <Breadcrumb items={path} />
 }
 
 export default BreadcrumbContainer

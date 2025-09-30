@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import type {Meta, StoryObj} from "@storybook/react"
+import type {Meta, StoryObj} from "@storybook/react-vite"
 import PomodoroLayout from "./PomodoroLayout"
 
 const meta: Meta<typeof PomodoroLayout> = {

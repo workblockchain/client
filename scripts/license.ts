@@ -37,10 +37,14 @@ class LicenseNotationGenerator {
 
   reviewDir(root: string) {
     const extensions = this.options.fileExtensions
+    const ignorePatterns = this.options.ignorePatterns
     readdirSync(root, {recursive: true})
       .map((path) => path.toString())
       .map((path) => join(root, path))
       .filter((path) => extensions.some((ext) => path.endsWith(ext)))
+      .filter(
+        (path) => !ignorePatterns.some((pattern) => path.includes(pattern))
+      )
       .filter((path) => statSync(path).isFile())
       .forEach((path) => this.reviewFile(path))
 
@@ -62,10 +66,14 @@ class LicenseNotationGenerator {
 
   updateDir(root: string) {
     const extensions = this.options.fileExtensions
+    const ignorePatterns = this.options.ignorePatterns
     readdirSync(root, {recursive: true})
       .map((path) => path.toString())
       .map((path) => join(root, path))
       .filter((path) => extensions.some((ext) => path.endsWith(ext)))
+      .filter(
+        (path) => !ignorePatterns.some((pattern) => path.includes(pattern))
+      )
       .filter((path) => statSync(path).isFile())
       .forEach((path) => this.updateFile(path))
 
@@ -104,17 +112,20 @@ class FileCommentOptions {
     commentPrefix: string
     spaceBeforeComment: boolean
     fileExtensions: string[]
+    ignorePatterns: string[]
   }) {
     this.eol = options.eol
     this.commentPrefix = options.commentPrefix
     this.spaceBeforeComment = options.spaceBeforeComment
     this.fileExtensions = options.fileExtensions
+    this.ignorePatterns = options.ignorePatterns
   }
 
   eol: string
   commentPrefix: string
   spaceBeforeComment: boolean
   fileExtensions: string[]
+  ignorePatterns: string[]
 
   addComment(raw: string): string {
     return raw
@@ -140,6 +151,7 @@ function main() {
       commentPrefix: "//",
       spaceBeforeComment: true,
       fileExtensions: [".ts", ".tsx"],
+      ignorePatterns: [".storybook", ".md"],
     }),
   })
   const codes = ["src", "scripts"].map((path) => join(root, path))

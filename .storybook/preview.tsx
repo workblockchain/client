@@ -1,9 +1,7 @@
-import type {Preview} from "@storybook/react"
-import {StrictMode} from "react"
-import {ThemeProvider} from "styled-components"
+import type { Preview } from "@storybook/react-vite"
+import { StrictMode } from "react"
 import "../src/i18n"
 import "../src/index.css"
-import {theme} from "../src/styles/theme"
 
 const preview: Preview = {
   parameters: {
@@ -17,9 +15,7 @@ const preview: Preview = {
   decorators: [
     (Story) => (
       <StrictMode>
-        <ThemeProvider theme={theme}>
-          <Story />
-        </ThemeProvider>
+        <Story />
       </StrictMode>
     ),
   ],

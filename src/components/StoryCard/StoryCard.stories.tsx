@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import type {Meta, StoryObj} from "@storybook/react"
+import type {Meta, StoryObj} from "@storybook/react-vite"
 import StoryCard from "."
 
 const meta: Meta<typeof StoryCard> = {

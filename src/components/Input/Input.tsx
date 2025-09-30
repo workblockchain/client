@@ -18,20 +18,17 @@
 import type {InputHTMLAttributes, ReactElement} from "react"
 import styled, {CSSProperties} from "styled-components"
 import {styledCommon} from "../../styles/common"
+import type {SizeType} from "../types"
 import {inputCommon, type InputVariantType} from "./common.styles"
 
 export const Input = styled.input<InputVariantType>`
   ${styledCommon.base}
-  ${inputCommon()}
-  height: 48px;
-  padding: 0 16px;
-  border-radius: 24px;
-  text-align: center;
+  ${(props) => inputCommon(props)}
 `
 
-export const TextInput = styled.input`
+export const TextInput = styled.input<InputVariantType>`
   ${styledCommon.base}
-  ${inputCommon({$variant: "borderless"})}
+  ${(props) => inputCommon({...props, $variant: "borderless"})}
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   border-radius: 2px;
@@ -68,18 +65,20 @@ export interface TextInputWithLabelProps
   extends InputHTMLAttributes<HTMLInputElement> {
   label: string | ReactElement
   containerStyle?: CSSProperties
+  inputSize?: SizeType
 }
 
 export function TextInputWithLabel({
   label,
   containerStyle,
+  inputSize,
   ...props
 }: TextInputWithLabelProps) {
   return (
     <Container style={containerStyle}>
       {typeof label === "string" && <label>{label}</label>}
       {typeof label !== "string" && label}
-      <TextInput {...props} />
+      <TextInput $size={inputSize} {...props} />
     </Container>
   )
 }

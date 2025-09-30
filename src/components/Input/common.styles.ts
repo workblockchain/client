@@ -18,10 +18,27 @@
 import {css} from "styled-components"
 import {colors} from "../../styles"
 import {styledCommon} from "../../styles/common"
+import {AlignType, SizeType} from "../types"
 
-export type InputVariantType = {$variant?: "primary" | "borderless"}
+export type InputVariantType = {
+  $variant?: "primary" | "borderless"
+  $size?: SizeType
+  $align?: AlignType
+}
+
+const sizeConfig = {
+  "x-small": {height: 24, fontSize: 12, padding: 6, borderRadius: 12},
+  small: {height: 32, fontSize: 14, padding: 8, borderRadius: 16},
+  medium: {height: 48, fontSize: 16, padding: 16, borderRadius: 24},
+  large: {height: 64, fontSize: 18, padding: 20, borderRadius: 32},
+} as const
+
 export const inputCommon = (props?: InputVariantType) => css`
-  font-size: 16px;
+  font-size: ${sizeConfig[props?.$size || "medium"].fontSize}px;
+  height: ${sizeConfig[props?.$size || "medium"].height}px;
+  padding: 0 ${sizeConfig[props?.$size || "medium"].padding}px;
+  border-radius: ${sizeConfig[props?.$size || "medium"].borderRadius}px;
+  text-align: ${props?.$align || "center"};
   ${props?.$variant === "borderless" &&
   css`
     box-shadow: none;

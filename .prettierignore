@@ -1,2 +1,8 @@
 # Auto generated pnpm lockfile.
 pnpm-lock.yaml
+
+# Ignore Storybook files
+.storybook/
+
+# Ignore markdown files
+*.md
