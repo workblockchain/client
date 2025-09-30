@@ -15,11 +15,16 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import ReactSelect, {SingleValue, StylesConfig} from "react-select"
-import makeAnimated from "react-select/animated"
+import ReactSelect, {
+  components,
+  OptionProps,
+  SingleValue,
+  StylesConfig,
+} from "react-select"
 import styled, {CSSProperties} from "styled-components"
 import {colors} from "../../styles"
 import {zIndex} from "../../styles/zIndex"
+import {svgIcons} from "../Icons"
 
 interface SelectOption {
   value: string
@@ -39,7 +44,26 @@ interface SelectProps {
   align?: "start" | "center" | "end"
 }
 
-const animatedComponents = makeAnimated()
+// 自定义Option组件，在多选模式下显示对勾图标
+const CustomOption = (props: OptionProps<SelectOption>) => {
+  const {children, isSelected, selectProps} = props
+  const size = (selectProps as any).size || "medium"
+  const {height, fontSize} = sizeConfig[size as keyof typeof sizeConfig]
+  const padding = height / 6
+
+  return (
+    <components.Option {...props}>
+      <OptionContainer
+        $isSelected={isSelected}
+        $padding={padding}
+        $fontSize={fontSize}
+      >
+        <span>{children}</span>
+        {isSelected && <CheckIcon />}
+      </OptionContainer>
+    </components.Option>
+  )
+}
 
 const sizeConfig = {
   "x-small": {width: 120, height: 24, fontSize: 12, padding: 6, arrowSize: 12},
@@ -90,14 +114,12 @@ export const Select = ({
         isDisabled={disabled}
         isSearchable={isSearchable}
         isMulti={isMulti}
+        hideSelectedOptions={false}
         styles={customStyles({
           ...sizeConfig[size],
           align,
         })}
-        components={{
-          IndicatorSeparator: () => null,
-          ...animatedComponents,
-        }}
+        components={{Option: CustomOption}}
         placeholder={placeholder}
         aria-label="选择框"
       />
@@ -128,11 +150,11 @@ const customStyles: (config: {
     return {
       ...base,
       backgroundColor: "#f5f5f5",
-      padding: `0 ${padding}px`,
+      padding: `0 ${padding * 4}px 0 ${padding}px`,
       border: "none",
       outline: "none",
       boxShadow: "0 0 0 1px rgba(0, 0, 0, 0.1)",
-      width: `fit-content`,
+      width: `${width}px`,
       minWidth: `${width}px`,
       height: `${height}px`,
       minHeight: `${height}px`,
@@ -141,6 +163,8 @@ const customStyles: (config: {
       opacity: isDisabled ? 0.6 : 1,
       alignItems: "center",
       fontSize: `${fontSize}px`,
+      position: "relative",
+      overflow: "hidden",
     }
   },
   singleValue: (base) => ({
@@ -154,11 +178,17 @@ const customStyles: (config: {
     ...base,
     padding: 0,
     flexWrap: "nowrap",
+    flex: `0 0 auto`,
   }),
   indicatorsContainer: (base) => ({
     ...base,
     height: `${height}px`,
     padding: `0 ${padding / 2}px`,
+    borderRadius: `0px ${height / 2}px  ${height / 2}px 0px `,
+    backgroundColor: "#f5f5f5",
+    position: "absolute",
+    right: 0,
+    top: 0,
   }),
   dropdownIndicator: (base) => ({
     ...base,
@@ -187,15 +217,38 @@ const customStyles: (config: {
   menuList: (base) => ({
     ...base,
   }),
-  option: (base, {isSelected}) => ({
+  option: (base) => ({
     ...base,
-    cursor: "pointer",
-    color: isSelected ? colors.Red700 : colors.Neutral700,
-    backgroundColor: isSelected ? colors.Yellow100 : "transparent",
-    padding: `${height / 6}px 16px`,
-    fontSize: `${fontSize}px`,
-    "&:hover": {
-      backgroundColor: "#f5f5f5",
-    },
+    padding: 0,
   }),
 })
+
+const CheckIcon = styled(svgIcons.Check)`
+  width: 16px;
+  height: 16px;
+  color: ${colors.Red700};
+  flex-shrink: 0;
+`
+
+const OptionContainer = styled.div<{
+  $isSelected: boolean
+  $padding: number
+  $fontSize: number
+}>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: ${({$padding}) => $padding}px 16px;
+  font-size: ${({$fontSize}) => $fontSize}px;
+  cursor: pointer;
+  color: ${({$isSelected}) =>
+    $isSelected ? colors.Neutral500 : colors.Neutral700};
+  background-color: ${({$isSelected}) =>
+    $isSelected ? colors.Neutral100 : "transparent"};
+
+  &:hover {
+    background-color: ${({$isSelected}) =>
+      $isSelected ? colors.Neutral200 : colors.Blue100};
+  }
+`

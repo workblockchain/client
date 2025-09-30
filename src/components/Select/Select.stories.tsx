@@ -29,7 +29,8 @@ const meta: Meta<typeof Select> = {
       {value: "2", label: "选项 2"},
       {
         value: "3",
-        label: "长长长长长长长长长长长长长长长长长长长长长长长长选项 3",
+        label:
+          "长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长选项 3",
       },
     ],
   },
@@ -133,5 +134,39 @@ export const CustomPlaceholder: Story = {
   },
   args: {
     placeholder: "请选择选项...",
+  },
+}
+
+export const MultipleInRow: Story = {
+  render: function Render(args) {
+    const [value1, setValue1] = useState<string | string[] | undefined>([])
+    const [value2, setValue2] = useState<string | string[] | undefined>([])
+    const [value3, setValue3] = useState<string | string[] | undefined>([])
+
+    return (
+      <div style={{display: "flex", gap: "8px", maxWidth: "500px"}}>
+        <Select
+          {...args}
+          value={value1}
+          onChange={setValue1}
+          placeholder="选择1"
+          isMulti
+        />
+        <Select
+          {...args}
+          value={value2}
+          onChange={setValue2}
+          placeholder="选择2"
+          isMulti
+        />
+        <Select
+          {...args}
+          value={value3}
+          onChange={setValue3}
+          placeholder="选择3"
+          isMulti
+        />
+      </div>
+    )
   },
 }
