@@ -78,6 +78,7 @@ export function Table<TData extends Record<string, unknown>>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getGroupedRowModel: getGroupedRowModel(),
+    autoResetPageIndex: false,
   })
 
   return (

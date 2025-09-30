@@ -97,7 +97,7 @@ export function WorkContainer() {
   }, [workRecords, signedRecords])
 
   const handleRowClick = (row: any) => {
-    console.log("Record clicked:", row.original)
+    console.log("Record clicked:", row)
   }
 
   return (
