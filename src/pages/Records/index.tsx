@@ -15,12 +15,12 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {Title} from "@/components/CommonLayout"
+import {RecordGroupByDay} from "@/components/History/RecordGroup"
+import {useSignedRecord} from "@/stores/useSignedRecord"
 import dayjs from "dayjs"
 import {useMemo} from "react"
 import styled from "styled-components"
-import {Title} from "."
-import {useSignedRecord} from "../../stores/useSignedRecord"
-import {RecordGroupByDay} from "../History/RecordGroup"
 
 export const RecordsLayout = () => {
   const {workRecords} = useSignedRecord()

@@ -38,7 +38,7 @@ export const inputCommon = (props?: InputVariantType) => css`
   height: ${sizeConfig[props?.$size || "medium"].height}px;
   padding: 0 ${sizeConfig[props?.$size || "medium"].padding}px;
   border-radius: ${sizeConfig[props?.$size || "medium"].borderRadius}px;
-  text-align: ${props?.$align || "center"};
+  text-align: ${props?.$align || "left"};
   ${props?.$variant === "borderless" &&
   css`
     box-shadow: none;

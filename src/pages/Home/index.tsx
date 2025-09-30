@@ -15,26 +15,23 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {svgIcons} from "@/components/Icons"
+import {Navigation} from "@/components/Navigation/Navigation"
+import {Portal} from "@/components/Portal"
 import {WorkData} from "@/interfaces"
 import {paths} from "@/router"
 import {useConditionalNavigation} from "@/router/useConditionalNavigation"
 import {useConfig} from "@/stores/useConfig"
+import {type TimerPhaseType, usePomodoroTimer} from "@/stores/usePomodoroTimer"
+import {useSignedRecord} from "@/stores/useSignedRecord"
 import {useUserProfile} from "@/stores/useUserProfile"
+import {colors} from "@/styles"
+import {secondToHMS} from "@/utils"
 import {POMODORO_BREAK, POMODORO_WORK} from "@/utils/supportTags"
 import {useState} from "react"
 import {toast} from "react-toastify"
 import styled from "styled-components"
 import {v4} from "uuid"
-import {
-  type TimerPhaseType,
-  usePomodoroTimer,
-} from "../../stores/usePomodoroTimer"
-import {useSignedRecord} from "../../stores/useSignedRecord"
-import {colors} from "../../styles"
-import {secondToHMS} from "../../utils"
-import {svgIcons} from "../Icons"
-import {Navigation} from "../Layout/Navigation"
-import {Portal} from "../Portal"
 import {CommitLayout} from "./CommitLayout"
 import {TimerLayout} from "./TimerLayout"
 import usePomodoroStore from "./usePomodoroStore"

@@ -15,16 +15,6 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-// Copyright (c) 2025-present WorkBlockChain Team.
-//
-// WorkBlockChain Client is licensed under Mulan PubL v2.
-// You can use this software according to
-// the terms and conditions of the Mulan PubL v2.
-// You may obtain a copy of Mulan PubL v2 at:
-//
-//   http://license.coscl.org.cn/MulanPubL-2.0
-//
-
 import {RefObject} from "react"
 import AvatarEditor from "react-avatar-editor"
 import styled from "styled-components"

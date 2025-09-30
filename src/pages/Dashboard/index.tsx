@@ -16,8 +16,8 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import Logo from "@/assets/logo.svg?react"
-import BreadcrumbContainer from "@/components/Containers/BreadcrumbContainer"
-import MenuContainer from "@/components/Containers/MenuContainer"
+import BreadcrumbContainer from "@/pages/Dashboard/BreadcrumbContainer"
+import MenuContainer from "@/pages/Dashboard/MenuContainer"
 import {Outlet} from "react-router"
 import styled from "styled-components"
 

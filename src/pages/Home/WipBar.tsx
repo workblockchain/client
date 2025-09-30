@@ -15,14 +15,14 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {svgIcons} from "@/components/Icons"
+import StoryCard from "@/components/StoryCard"
 import {RequirementData} from "@/interfaces"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {colors} from "@/styles"
 import {t} from "i18next"
 import {useMemo, type ComponentPropsWithoutRef} from "react"
 import styled from "styled-components"
-import {svgIcons} from "../Icons"
-import StoryCard from "../StoryCard"
 import usePomodoroStore from "./usePomodoroStore"
 
 function WipBar() {
