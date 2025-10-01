@@ -46,13 +46,13 @@ export const KanbanBoard = ({
   const callback = useCallback(
     (type: "create" | "edit", data: StoryCardWithCid) => {
       if (type === "create") {
-        addCard ? addCard(state, data) : null
+        addCard?.(state, data)
       } else {
         if (!cardData) {
           console.log("cardData is null", cardData)
           return
         }
-        updateCard ? updateCard(data.cid, cardData.state, data) : null
+        updateCard?.(data.cid, cardData.state, data)
       }
       setIsOpen(false)
       setCardData(undefined)
@@ -98,11 +98,7 @@ export const KanbanBoard = ({
               }}
               initData={cardData?.content}
               callback={callback}
-              deleteCard={() =>
-                deleteCard
-                  ? deleteCard(cardData?.content.cid!)
-                  : console.log("deleteCard is null")
-              }
+              deleteCard={() => deleteCard?.(cardData?.content.cid!)}
             />
           </Drawer>
         </>

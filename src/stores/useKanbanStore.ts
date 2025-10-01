@@ -18,6 +18,8 @@
 import {BoardProps} from "@/interfaces/kanban"
 import {create} from "zustand"
 
+// FIXME: unused
+
 const KANBAN_STORAGE_KEY = "KANBAN_DATA" as const
 
 interface KanbanStore {
