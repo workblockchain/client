@@ -17,6 +17,7 @@
 
 import {createBrowserRouter, RouteObject} from "react-router"
 import {Main} from "./layout/Main"
+import {useViewPreference} from "./pages/Dashboard/useDashboardPreference"
 
 export const paths = {
   home: "/",
@@ -24,6 +25,10 @@ export const paths = {
   profile: "profile",
   records: "records",
   dashboard: "dashboard",
+  work: "work",
+  requirements: "requirements",
+  projects: "projects",
+  kanban: "kanban",
 }
 
 export const routers: RouteObject[] = [
@@ -63,18 +68,30 @@ export const routers: RouteObject[] = [
         children: [
           {
             index: true,
+            loader: () => {
+              useViewPreference.getState().setPageKey(paths.kanban)
+              return null
+            },
             lazy: async () => ({
               Component: (await import("./pages/Dashboard/Kanban")).default,
             }),
           },
           {
-            path: "work",
+            path: paths.work,
+            loader: () => {
+              useViewPreference.getState().setPageKey(paths.work)
+              return null
+            },
             lazy: async () => ({
               Component: (await import("./pages/Dashboard/Work")).default,
             }),
           },
           {
-            path: "kanban",
+            path: paths.kanban,
+            loader: () => {
+              useViewPreference.getState().setPageKey(paths.kanban)
+              return null
+            },
             lazy: async () => ({
               Component: (await import("./pages/Dashboard/Kanban")).default,
             }),

@@ -46,6 +46,8 @@ async function main() {
   // 3. 扫描所有ts和tsx文件
   const tsxFiles = (await getFiles(path.join(rootDir, "components"), ".tsx"))
     .concat(await getFiles(path.join(rootDir, "components"), ".ts"))
+    .concat(await getFiles(path.join(rootDir, "pages"), ".tsx"))
+    .concat(await getFiles(path.join(rootDir, "pages"), ".ts"))
     .concat(await getFiles(path.join(rootDir, "utils"), ".ts"))
   const keys = new Set<string>()
 

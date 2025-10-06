@@ -64,6 +64,8 @@ export interface TableProps<TData extends Record<string, unknown>> {
    * 分组字段
    */
   groupBy?: string[]
+  groupValueRender?: (key: string, value: unknown) => string
+  groupSort?: (key: string, a: TData, b: TData) => number
 }
 
 export function Table<TData extends Record<string, unknown>>({
@@ -72,6 +74,8 @@ export function Table<TData extends Record<string, unknown>>({
   clickRow,
   loading = false,
   groupBy = [],
+  groupValueRender,
+  groupSort,
 }: TableProps<TData>) {
   const table = useReactTable({
     data,
@@ -115,8 +119,10 @@ export function Table<TData extends Record<string, unknown>>({
       {!loading && groupBy.length > 0 && (
         <NestedGroup
           rows={table.getRowModel().rows}
+          renderer={groupValueRender}
           groupBy={groupBy}
           clickRow={clickRow}
+          groupSort={groupSort}
         />
       )}
     </TableContainer>
@@ -125,10 +131,14 @@ export function Table<TData extends Record<string, unknown>>({
 
 function NestedGroup<TData>({
   rows,
+  renderer,
+  groupSort,
   groupBy,
   clickRow,
 }: {
   rows: Row<TData>[]
+  renderer?: (key: string, value: unknown) => string
+  groupSort?: (key: string, a: TData, b: TData) => number
   groupBy: string[]
   clickRow?: (record: TData) => void
 }) {
@@ -145,8 +155,22 @@ function NestedGroup<TData>({
       }
       res[key].push(row)
     })
-    return Object.entries(res)
-  }, [rows, groupBy])
+
+    // 应用排序
+    const sortedEntries = Object.entries(res)
+    if (groupSort) {
+      sortedEntries.sort(([keyA], [keyB]) => {
+        const rowA = res[keyA][0]?.original
+        const rowB = res[keyB][0]?.original
+        if (rowA && rowB) {
+          return groupSort(cur, rowA, rowB)
+        }
+        return 0
+      })
+    }
+
+    return sortedEntries
+  }, [rows, groupBy, groupSort])
 
   if (groupBy?.length === 0) {
     return <TableGroup rows={rows} clickRow={clickRow} />
@@ -157,9 +181,10 @@ function NestedGroup<TData>({
         ([key, rows]) =>
           rows.length > 0 && (
             <GroupContainer key={key}>
-              <GroupHeaderRow>{key}</GroupHeaderRow>
+              <GroupHeaderRow>{renderer?.(groupBy[0], key)}</GroupHeaderRow>
               <NestedGroup
                 rows={rows}
+                renderer={renderer}
                 groupBy={groupBy.slice(1)}
                 clickRow={clickRow}
               />
