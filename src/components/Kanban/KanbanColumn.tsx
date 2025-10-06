@@ -46,10 +46,7 @@ export const KanbanColumn = memo(
 
         // 如果被其他可拖拽的元素覆盖
         if (!monitor.isOver({shallow: true})) return
-
-        moveCard
-          ? moveCard(item.content.cid, id)
-          : console.log("moveCard is undefined")
+        moveCard?.(item.content.cid, id)
       },
     })
 

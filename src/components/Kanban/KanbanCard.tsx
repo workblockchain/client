@@ -42,9 +42,7 @@ export const KanbanCard = memo((props: CardProps) => {
         (item.index === props.index && item.state === props.state)
       )
         return
-      props.moveCard
-        ? props.moveCard(item.content.cid)
-        : console.log("moveCard is not defined")
+      props.moveCard?.(item.content.cid)
     },
   })
 

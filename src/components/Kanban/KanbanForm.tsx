@@ -115,7 +115,7 @@ export const KanbanForm = React.memo(
             type="button"
             onClick={() => {
               onCancel()
-              deleteCard ? deleteCard() : null
+              deleteCard?.()
             }}
           >
             删除
