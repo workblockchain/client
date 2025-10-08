@@ -15,36 +15,53 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
 import {Input} from "../Input"
 import {Ratio} from "../Ratio"
 import {Select} from "../Select"
 import {ConditionContainer, RemoveButton} from "./ConditionRow.styles"
-import {ConditionRowProps} from "./types"
+import {BaseCondition, ConditionRowProps} from "./types"
 
-const getConditionOptions = (mode: string) => {
-  switch (mode) {
-    case "filter":
-      return [
-        {value: "equal", label: "等于"},
-        {value: "notEqual", label: "不等于"},
-        {value: "contains", label: "包含"},
-        {value: "notContains", label: "不包含"},
-        {value: "empty", label: "为空"},
-        {value: "notEmpty", label: "不为空"},
-      ]
-    case "sort":
-      return [
-        {value: "asc", label: "升序"},
-        {value: "desc", label: "降序"},
-      ]
-    case "group":
-      return [
-        {value: "asc", label: "A-Z"},
-        {value: "desc", label: "Z-A"},
-      ]
-    default:
-      return []
+const getConditionOptions = (mode: string, fieldType?: string) => {
+  if (mode === "sort" || mode === "group") {
+    return [
+      {value: "asc", label: "A-Z"},
+      {value: "desc", label: "Z-A"},
+    ]
   }
+
+  if (mode === "filter") {
+    let mid = []
+    switch (fieldType) {
+      case "number":
+        mid = [
+          {value: "greaterThan", label: "大于"},
+          {value: "lessThan", label: "小于"},
+        ]
+        break
+      case "date":
+        mid = [
+          {value: "greaterThan", label: "晚于"},
+          {value: "lessThan", label: "早于"},
+        ]
+        break
+      default: // text select multi-select boolean
+        mid = [
+          {value: "contains", label: "包含"},
+          {value: "notContains", label: "不包含"},
+        ]
+    }
+    return [
+      {value: "equal", label: "等于"},
+      {value: "notEqual", label: "不等于"},
+      ...mid,
+      {value: "empty", label: "为空"},
+      {value: "notEmpty", label: "不为空"},
+    ]
+  }
+
+  return []
 }
 
 export const ConditionRow = ({
@@ -54,26 +71,39 @@ export const ConditionRow = ({
   onRemove,
   mode,
 }: ConditionRowProps) => {
-  const fieldOptions = [
-    {value: "", label: "选择字段"},
-    ...availableFields.map((field) => ({
-      value: field.key,
-      label: field.label,
-    })),
-  ]
+  const fieldOptions = availableFields.map((field) => ({
+    value: field.key,
+    label: field.label,
+  }))
 
-  const conditionOptions = getConditionOptions(mode)
+  // 获取当前选中字段的类型
+  const selectedField = availableFields.find(
+    (field) => field.key === condition.field
+  )
+  const fieldType = selectedField?.type
+
+  const conditionOptions = getConditionOptions(mode, fieldType)
 
   return (
     <ConditionContainer>
       <Select
         options={fieldOptions}
         value={condition.field}
-        onChange={(value: string | string[] | undefined) =>
-          onUpdate(condition.id, {
-            field: Array.isArray(value) ? value[0] || "" : value || "",
-          })
-        }
+        onChange={(value: string | string[] | undefined) => {
+          const newField = Array.isArray(value) ? value[0] || "" : value || ""
+          // 获取新字段的类型
+          const newSelectedField = availableFields.find(
+            (field) => field.key === newField
+          )
+          const newFieldType = newSelectedField?.type
+
+          // 如果字段类型发生变化，清空value值
+          const updates: Partial<BaseCondition> = {field: newField}
+          if (fieldType !== newFieldType) {
+            updates.value = ""
+          }
+          onUpdate(condition.id, updates)
+        }}
         size="small"
         placeholder="选择字段"
       />
@@ -93,26 +123,60 @@ export const ConditionRow = ({
         <Select
           options={conditionOptions}
           value={condition.condition}
-          onChange={(value: string | string[] | undefined) =>
-            onUpdate(condition.id, {
-              condition: Array.isArray(value) ? value[0] || "" : value || "",
-            })
-          }
+          onChange={(value: string | string[] | undefined) => {
+            const newCondition = Array.isArray(value)
+              ? value[0] || ""
+              : value || ""
+            // 当选择为空或不为空条件时，自动清空value值
+            const updates: Partial<BaseCondition> = {condition: newCondition}
+            if (newCondition === "empty" || newCondition === "notEmpty") {
+              updates.value = ""
+            }
+            onUpdate(condition.id, updates)
+          }}
           size="small"
           placeholder="选择条件"
         />
       )}
 
-      {mode === "filter" && (
-        <Input
-          value={condition.value || ""}
-          onChange={(e) => onUpdate(condition.id, {value: e.target.value})}
-          placeholder="值"
-          style={{width: "100px"}}
-          $size="small"
-          $align="start"
-        />
-      )}
+      {mode === "filter" &&
+        condition.condition !== "empty" &&
+        condition.condition !== "notEmpty" && (
+          <>
+            {fieldType === "date" ? (
+              <DatePicker
+                selected={
+                  condition.value ? new Date(Number(condition.value)) : null
+                }
+                onChange={(date: Date | null) => {
+                  onUpdate(condition.id, {
+                    value: date ? date.getTime().toString() : "",
+                  })
+                }}
+                placeholderText="选择日期"
+                dateFormat="yyyy-MM-dd"
+                customInput={
+                  <Input
+                    style={{width: "100px"}}
+                    $size="small"
+                    $align="start"
+                  />
+                }
+              />
+            ) : (
+              <Input
+                value={condition.value || ""}
+                onChange={(e) =>
+                  onUpdate(condition.id, {value: e.target.value})
+                }
+                placeholder="值"
+                style={{width: "100px"}}
+                $size="small"
+                $align="start"
+              />
+            )}
+          </>
+        )}
 
       <RemoveButton onClick={() => onRemove(condition.id)}>×</RemoveButton>
     </ConditionContainer>

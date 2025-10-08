@@ -18,52 +18,22 @@
 import {Drawer} from "@/components/Drawer"
 import {Table} from "@/components/Table/Table"
 import {WorkData} from "@/interfaces/records"
-import {WorkRecord} from "@/pages/Dashboard/interfaces"
+import {
+  WorkRecord,
+  workRecordFieldDefinitions,
+} from "@/pages/Dashboard/interfaces"
+import {workRecordFieldsToColumnDefs} from "@/pages/Dashboard/workRecordUtils"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {ColumnDef} from "@tanstack/react-table"
-import {t} from "i18next"
 import {useMemo} from "react"
+import DataConditionRow from "../DataConditionRow"
 import {WorkRecordForm} from "../Kanban/WorkRecordForm"
+import {useViewPreference} from "../useDashboardPreference"
 
-const getDate = (value?: number) =>
-  value ? new Date(value).toLocaleString() : "-"
-const isSigned = (value?: boolean) =>
-  value ? t`work.signed` : t`work.unsigned`
-
-const columns: ColumnDef<WorkRecord>[] = [
-  {
-    accessorKey: "wid",
-    header: t`work.id`,
-  },
-  {
-    accessorKey: "userId",
-    header: t`work.user`,
-    size: 120,
-  },
-  {
-    accessorKey: "startTime",
-    header: t`work.startTime`,
-    cell: ({getValue}) => getDate(getValue() as number),
-    size: 136,
-  },
-  {
-    accessorKey: "endTime",
-    header: t`work.endTime`,
-    cell: ({getValue}) => getDate(getValue() as number),
-    size: 120,
-  },
-  {
-    accessorKey: "isSigned",
-    header: t`work.status`,
-    cell: ({getValue}) => isSigned(getValue() as boolean),
-    size: 80,
-  },
-  {
-    accessorKey: "description",
-    header: t`work.description`,
-    cell: ({getValue}) => (getValue() ? String(getValue()) : "-"),
-  },
-]
+// 使用新的字段定义系统生成 columns
+const columns: ColumnDef<WorkRecord>[] = workRecordFieldsToColumnDefs(
+  workRecordFieldDefinitions
+)
 
 export function WorkContainer() {
   const workRecords = useSignedRecord((state) => state.workRecords)
@@ -96,17 +66,143 @@ export function WorkContainer() {
     return uniqueRecords
   }, [workRecords, signedRecords])
 
+  const filterConditions = useViewPreference((state) => state.filterConditions)
+  const groupConditions = useViewPreference((state) => state.groupConditions)
+  const sortConditions = useViewPreference((state) => state.sortConditions)
+
+  // 应用筛选条件
+  const conditionedRecords = useMemo(() => {
+    const filtered =
+      filterConditions.length === 0
+        ? combinedRecords
+        : combinedRecords.filter((record) => {
+            return filterConditions.every((condition) => {
+              const value = record[condition.field as keyof WorkRecord]
+
+              switch (condition.condition) {
+                case "equal":
+                  // 当value为空字符串时，默认返回true（所有值都放行）
+                  return condition.value === ""
+                    ? true
+                    : String(value) === condition.value
+                case "notEqual":
+                  // 当value为空字符串时，默认返回true（所有值都放行）
+                  return condition.value === ""
+                    ? true
+                    : String(value) !== condition.value
+                case "contains":
+                  // 当value为空字符串时，默认返回true（所有值都放行）
+                  return condition.value === ""
+                    ? true
+                    : String(value).includes(condition.value as string)
+                case "notContains":
+                  // 当value为空字符串时，默认返回true（所有值都放行）
+                  return condition.value === ""
+                    ? true
+                    : !String(value).includes(condition.value as string)
+                case "empty":
+                  return value === "" || value === null || value === undefined
+                case "notEmpty":
+                  return value !== "" && value !== null && value !== undefined
+                case "greaterThan":
+                  return Number(value) > Number(condition.value)
+                case "lessThan":
+                  return Number(value) < Number(condition.value)
+                case "between":
+                  if (
+                    Array.isArray(condition.value) &&
+                    condition.value.length === 2
+                  ) {
+                    const [min, max] = condition.value
+                    return (
+                      Number(value) >= Number(min) &&
+                      Number(value) <= Number(max)
+                    )
+                  }
+                  return true
+                default:
+                  return true
+              }
+            })
+          })
+
+    const sortedRecords =
+      sortConditions.length === 0
+        ? filtered
+        : filtered.sort((a, b) => {
+            for (const condition of sortConditions) {
+              const valueA = a[condition.field as keyof WorkRecord]
+              const valueB = b[condition.field as keyof WorkRecord]
+
+              // 处理undefined或null值
+              if (valueA === undefined || valueA === null) return 1
+              if (valueB === undefined || valueB === null) return -1
+
+              let comparison = 0
+              if (valueA < valueB) comparison = -1
+              if (valueA > valueB) comparison = 1
+
+              // 如果当前条件可以决定顺序，返回结果
+              if (comparison !== 0) {
+                return condition.value === "desc" ? -comparison : comparison
+              }
+            }
+            return 0
+          })
+    return sortedRecords
+  }, [combinedRecords, filterConditions, sortConditions])
+
   const handleRowClick = (row: any) => {
     console.log("Record clicked:", row)
   }
 
   return (
     <>
-      <Table<WorkRecord>
+      <DataConditionRow fieldDefinitions={workRecordFieldDefinitions} />
+      <Table
         columns={columns}
-        data={combinedRecords}
+        data={conditionedRecords}
         clickRow={handleRowClick}
+        groupBy={groupConditions.map((c) => c.field)}
+        groupValueRender={(key, value) => {
+          const res = workRecordFieldDefinitions
+            .find((f) => f.key === key)
+            ?.cellRenderer?.(value == "true")
+          return res ?? (value as string)
+        }}
+        groupSort={(key, a, b) => {
+          const def = workRecordFieldDefinitions.find((f) => f.key === key)
+          if (!def) return 0
+          const valueA = a[def.key as keyof WorkRecord]
+          const valueB = b[def.key as keyof WorkRecord]
+          console.log(key, def.type, valueA, valueB)
+          let res = 0
+          switch (def.type) {
+            case "text":
+              res = String(valueA).localeCompare(String(valueB))
+              break
+            case "number":
+              res = Number(valueA) - Number(valueB)
+              break
+            case "date":
+              res = new Date(valueA).getTime() - new Date(valueB).getTime()
+              break
+            case "select":
+              res = String(valueA).localeCompare(String(valueB))
+              break
+            case "multi-select":
+              res = String(valueA).localeCompare(String(valueB))
+              break
+            case "boolean":
+              const a = valueA ? 1 : 0
+              const b = valueB ? 1 : 0
+              res = a - b
+          }
+          const sort = groupConditions.find((c) => c.field === key)
+          return sort?.condition === "desc" ? -res : res
+        }}
       />
+
       <Drawer isOpen={false} onClose={() => {}} title={"Drawer 标题"}>
         <WorkRecordForm submit={() => {}} />
       </Drawer>

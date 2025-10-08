@@ -31,12 +31,12 @@ const MODE_CONFIG: Record<string, ModeConfig> = {
   },
   group: {
     defaultCondition: "asc",
-    allowMultiple: false,
+    allowMultiple: true,
     valueRequired: false,
   },
   sort: {
     defaultCondition: "asc",
-    allowMultiple: false,
+    allowMultiple: true,
     valueRequired: false,
   },
 }
