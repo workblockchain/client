@@ -82,7 +82,7 @@ async function main() {
       if (!keys.has(key)) {
         langRemovedKeys.add(key)
         removedKeys.add(key)
-        delete data[key]
+        // delete data[key]
       }
     }
 
@@ -108,7 +108,7 @@ async function main() {
       console.log(
         `[${path.basename(langFile)}] 操作完成：` +
           `新增 ${langAddedKeys.size} 个键，` +
-          `移除 ${langRemovedKeys.size} 个未使用键`
+          `${langRemovedKeys.size} 个未使用键`
       )
     }
   }
@@ -119,7 +119,7 @@ async function main() {
  - 共扫描文件：${tsxFiles.length} 个
  - 发现i18n键：${keys.size} 个
  - 新增键总数：${addedKeys.size} 个
- - 移除未使用键：${removedKeys.size} 个
+ - 未使用键：${removedKeys.size} 个
  - 已检查语言文件：${langFiles.join(", ")}
    `)
 
@@ -129,7 +129,7 @@ async function main() {
     addedKeys.forEach((key) => console.log(`- ${key}`))
   }
   if (removedKeys.size > 0) {
-    console.log("\n以下未使用键已被移除：")
+    console.log("\n以下键未静态使用：")
     removedKeys.forEach((key) => console.log(`- ${key}`))
   }
 }

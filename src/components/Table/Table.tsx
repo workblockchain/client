@@ -231,7 +231,6 @@ const TableContainer = styled.div`
   gap: 8px;
   width: 100%;
   display: flex;
-  padding: 8px;
   border-radius: 8px;
   flex-direction: column;
   background-color: #f6f8f9;

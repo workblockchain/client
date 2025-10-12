@@ -25,7 +25,7 @@ interface FormFieldProps {
   /** 字段定义 */
   field: FormFieldDefinition
   /** 字段值 */
-  value: string | string[] | number | boolean
+  value: unknown
   /** 字段变更回调 */
   onChange: (value: string | string[] | number | boolean) => void
   /** 字段错误信息 */
@@ -64,7 +64,11 @@ export const FormField = ({
             {field.label}
             {field.required && <span style={{color: "red"}}>*</span>}
           </S.FieldLabel>
-          <Input {...commonProps} onChange={(e) => onChange(e.target.value)} />
+          <Input
+            {...commonProps}
+            value={String(value)}
+            onChange={(e) => onChange(e.target.value)}
+          />
           {error && <S.FieldError>{error}</S.FieldError>}
         </S.FieldGroup>
       )

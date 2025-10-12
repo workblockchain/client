@@ -15,17 +15,24 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {Drawer} from "@/components/Drawer"
+import {Button} from "@/components"
+import {Flex} from "@/components/CommonLayout"
+import {svgIcons} from "@/components/Icons"
 import {Table} from "@/components/Table/Table"
 import {WorkData} from "@/interfaces/records"
 import {
   WorkRecord,
   workRecordFieldDefinitions,
 } from "@/pages/Dashboard/interfaces"
-import {workRecordFieldsToColumnDefs} from "@/pages/Dashboard/workRecordUtils"
+import {
+  createGroupSort,
+  workRecordFieldsToColumnDefs,
+} from "@/pages/Dashboard/workRecordUtils"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {ColumnDef} from "@tanstack/react-table"
-import {useMemo} from "react"
+import {t} from "i18next"
+import {useMemo, useState} from "react"
+import styled from "styled-components"
 import DataConditionRow from "../DataConditionRow"
 import {WorkRecordForm} from "../Kanban/WorkRecordForm"
 import {useViewPreference} from "../useDashboardPreference"
@@ -35,9 +42,10 @@ const columns: ColumnDef<WorkRecord>[] = workRecordFieldsToColumnDefs(
   workRecordFieldDefinitions
 )
 
-export function WorkContainer() {
+function WorkContainer() {
   const workRecords = useSignedRecord((state) => state.workRecords)
   const signedRecords = useSignedRecord((state) => state.signedRecords)
+  const [isFormOpen, setIsFormOpen] = useState(false)
 
   const combinedRecords = useMemo(() => {
     const ids = new Set<string>()
@@ -156,9 +164,29 @@ export function WorkContainer() {
     console.log("Record clicked:", row)
   }
 
+  const handleFormSubmit = (data: WorkRecord) => {
+    console.log("Form submitted:", data)
+    // TODO: 实现实际的提交逻辑
+    setIsFormOpen(false)
+  }
+
+  const handleOpenForm = () => {
+    setIsFormOpen(true)
+  }
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false)
+  }
+
   return (
-    <>
-      <DataConditionRow fieldDefinitions={workRecordFieldDefinitions} />
+    <Container>
+      <Flex>
+        <DataConditionRow fieldDefinitions={workRecordFieldDefinitions} />
+        <Button $variant="text" onClick={handleOpenForm}>
+          <svgIcons.Plus />
+          <span>{t`work.create`}</span>
+        </Button>
+      </Flex>
       <Table
         columns={columns}
         data={conditionedRecords}
@@ -170,44 +198,22 @@ export function WorkContainer() {
             ?.cellRenderer?.(value == "true")
           return res ?? (value as string)
         }}
-        groupSort={(key, a, b) => {
-          const def = workRecordFieldDefinitions.find((f) => f.key === key)
-          if (!def) return 0
-          const valueA = a[def.key as keyof WorkRecord]
-          const valueB = b[def.key as keyof WorkRecord]
-          console.log(key, def.type, valueA, valueB)
-          let res = 0
-          switch (def.type) {
-            case "text":
-              res = String(valueA).localeCompare(String(valueB))
-              break
-            case "number":
-              res = Number(valueA) - Number(valueB)
-              break
-            case "date":
-              res = new Date(valueA).getTime() - new Date(valueB).getTime()
-              break
-            case "select":
-              res = String(valueA).localeCompare(String(valueB))
-              break
-            case "multi-select":
-              res = String(valueA).localeCompare(String(valueB))
-              break
-            case "boolean":
-              const a = valueA ? 1 : 0
-              const b = valueB ? 1 : 0
-              res = a - b
-          }
-          const sort = groupConditions.find((c) => c.field === key)
-          return sort?.condition === "desc" ? -res : res
-        }}
+        groupSort={createGroupSort(workRecordFieldDefinitions, groupConditions)}
       />
 
-      <Drawer isOpen={false} onClose={() => {}} title={"Drawer 标题"}>
-        <WorkRecordForm submit={() => {}} />
-      </Drawer>
-    </>
+      <WorkRecordForm
+        submit={handleFormSubmit}
+        isOpen={isFormOpen}
+        onClose={handleCloseForm}
+      />
+    </Container>
   )
 }
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`
 
 export default WorkContainer

@@ -16,13 +16,11 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {Drawer} from "@/components/Drawer"
-import {useEffect} from "react"
 import {Controller, useForm} from "react-hook-form"
 import {Button} from "../Button"
 import * as S from "./DataFormDrawer.styles"
 import {FormField} from "./FormField"
 import type {DataFormDrawerProps, FormFieldDefinition} from "./types"
-import {initializeFormData} from "./utils"
 
 /**
  * 数据表单抽屉组件 - 使用 react-hook-form 重构
@@ -30,34 +28,29 @@ import {initializeFormData} from "./utils"
  */
 export function DataFormDrawer({
   isOpen,
+  mode,
+  fields,
+  initialData,
+  onSubmit,
   onClose,
   title,
-  formConfig,
   loading = false,
   width = "400px",
+  submitText,
 }: DataFormDrawerProps) {
-  const {fields, mode, initialData, onSubmit, submitText} = formConfig
-
   const {control, handleSubmit, reset} = useForm({
-    defaultValues: initializeFormData(fields, initialData),
+    defaultValues: initialData as Record<string, unknown>,
   })
 
-  // 重置表单数据
-  useEffect(() => {
-    if (isOpen) {
-      reset(initializeFormData(fields, initialData))
-    }
-  }, [isOpen, fields, initialData, reset])
-
-  // 处理表单提交
-  const onSubmitForm = (data: Record<string, string | number | boolean>) => {
+  function submit(data: unknown) {
+    reset()
     onSubmit(data)
   }
 
   return (
     <Drawer isOpen={isOpen} onClose={onClose} title={title} width={width}>
       <S.Container>
-        <S.Form onSubmit={handleSubmit(onSubmitForm)}>
+        <S.Form onSubmit={handleSubmit(submit)}>
           {fields.map((field) => (
             <Controller
               key={field.key}
@@ -83,7 +76,7 @@ export function DataFormDrawer({
 
         <S.Actions>
           <Button
-            onClick={handleSubmit(onSubmitForm)}
+            onClick={handleSubmit(onSubmit)}
             disabled={loading}
             type="button"
           >

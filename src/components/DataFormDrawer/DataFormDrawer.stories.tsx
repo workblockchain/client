@@ -335,3 +335,115 @@ export const LoadingState: Story = {
     )
   },
 }
+
+export const TableColumnsIntegration: Story = {
+  render: () => {
+    const [isOpen, setIsOpen] = useState(false)
+
+    // 模拟基于表格列生成的表单字段
+    const tableBasedFormFields = [
+      {
+        key: "name",
+        label: "姓名",
+        type: "text" as const,
+        required: true,
+        placeholder: "请输入姓名",
+        description: "基于表格列 'name' 字段自动生成的文本输入框",
+      },
+      {
+        key: "age",
+        label: "年龄",
+        type: "number" as const,
+        required: true,
+        validation: {min: 0, max: 150},
+        description: "基于表格列 'age' 字段自动生成的数字输入框",
+      },
+      {
+        key: "email",
+        label: "邮箱",
+        type: "text" as const,
+        placeholder: "请输入邮箱地址",
+        description: "基于表格列 'email' 字段自动生成的邮箱输入框",
+      },
+      {
+        key: "description",
+        label: "描述",
+        type: "textarea" as const,
+        placeholder: "请输入描述信息",
+        description: "基于表格列 'description' 字段自动生成的文本域",
+      },
+      {
+        key: "status",
+        label: "状态",
+        type: "select" as const,
+        options: [
+          {value: "active", label: "活跃"},
+          {value: "inactive", label: "非活跃"},
+          {value: "pending", label: "待处理"},
+        ],
+        description: "基于表格列 'status' 字段自动生成的选择器",
+      },
+      {
+        key: "birthDate",
+        label: "出生日期",
+        type: "date" as const,
+        description: "基于表格列 'birthDate' 字段自动生成的日期选择器",
+      },
+      {
+        key: "isActive",
+        label: "是否激活",
+        type: "checkbox" as const,
+        defaultValue: false,
+        description: "基于表格列 'isActive' 字段自动生成的复选框",
+      },
+    ]
+
+    const tableColumnsFormConfig: FormConfig = {
+      fields: tableBasedFormFields,
+      mode: "create",
+      onSubmit: (data) => {
+        console.log("基于表格列的表单提交:", data)
+        alert(`创建成功: ${JSON.stringify(data, null, 2)}`)
+        setIsOpen(false)
+      },
+      onCancel: () => {
+        console.log("基于表格列的表单取消")
+        setIsOpen(false)
+      },
+      title: "基于表格列的表单示例",
+      submitText: "创建",
+    }
+
+    return (
+      <div style={{padding: "20px"}}>
+        <div style={{marginBottom: "20px"}}>
+          <h3>基于表格列自动生成表单字段的示例</h3>
+          <p>
+            此示例展示了如何基于表格列定义自动生成表单字段。在实际应用中，可以通过分析表格列的元数据（如字段名、类型、验证规则等）来自动创建相应的表单字段。
+          </p>
+        </div>
+
+        <button
+          onClick={() => setIsOpen(true)}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: "#28a745",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          打开基于表格列的表单
+        </button>
+
+        <DataFormDrawer
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          title={tableColumnsFormConfig.title || "基于表格列的表单"}
+          formConfig={tableColumnsFormConfig}
+        />
+      </div>
+    )
+  },
+}

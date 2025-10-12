@@ -45,3 +45,9 @@ export const Title = styled.h2`
   padding: 0;
   margin: 0;
 `
+
+export const Flex = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
+`

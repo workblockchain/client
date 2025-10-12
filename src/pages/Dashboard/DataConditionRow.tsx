@@ -16,17 +16,17 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {DataConditionBuilder} from "@/components/DataConditionBuilder"
-import {WorkRecordFieldDefinition} from "@/pages/Dashboard/interfaces"
-import {workRecordFieldsToConditionDefinitions} from "@/pages/Dashboard/workRecordUtils"
+import {fieldDefinitionsToConditionDefinitions} from "@/pages/Dashboard/workRecordUtils"
 import {colors} from "@/styles"
 import {useMemo} from "react"
 import styled from "styled-components"
+import {FieldDefinition} from "./interfaces"
 import {useViewPreference} from "./useDashboardPreference"
 
 export function DataConditionRow({
   fieldDefinitions,
 }: {
-  fieldDefinitions: WorkRecordFieldDefinition[]
+  fieldDefinitions: FieldDefinition[]
 }) {
   const filter = useViewPreference((state) => state.filterConditions)
   const setFilter = useViewPreference((state) => state.setFilterConditions)
@@ -36,7 +36,7 @@ export function DataConditionRow({
   const setSort = useViewPreference((state) => state.setSortConditions)
 
   const fields = useMemo(
-    () => workRecordFieldsToConditionDefinitions(fieldDefinitions),
+    () => fieldDefinitionsToConditionDefinitions(fieldDefinitions),
     [fieldDefinitions]
   )
 

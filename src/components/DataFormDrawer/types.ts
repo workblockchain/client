@@ -53,41 +53,27 @@ export interface FormFieldDefinition {
 }
 
 /**
- * 表单配置
- */
-export interface FormConfig {
-  /** 表单字段定义 */
-  fields: FormFieldDefinition[]
-  /** 表单模式：创建或编辑 */
-  mode: "create" | "edit"
-  /** 初始数据（编辑模式使用） */
-  initialData?: Record<string, string | number | boolean>
-  /** 提交回调函数 */
-  onSubmit: (data: Record<string, string | number | boolean>) => void
-  /** 取消回调函数 */
-  onCancel: () => void
-  /** 表单标题 */
-  title?: string
-  /** 提交按钮文本 */
-  submitText?: string
-  /** 取消按钮文本 */
-  cancelText?: string
-}
-
-/**
  * 数据表单抽屉组件属性
  */
 export interface DataFormDrawerProps {
   /** 是否打开抽屉 */
   isOpen: boolean
+  /** 表单模式：创建或编辑 */
+  mode: "create" | "edit"
+  /** 表单字段定义 */
+  fields: FormFieldDefinition[]
+  /** 表单初始数据 */
+  initialData?: unknown
+  /** 提交回调函数 */
+  onSubmit: (data: unknown) => void
   /** 关闭抽屉回调 */
   onClose: () => void
   /** 抽屉标题 */
   title: string
-  /** 表单配置 */
-  formConfig: FormConfig
   /** 加载状态 */
   loading?: boolean
   /** 抽屉宽度 */
   width?: string
+  /** 提交按钮文本 */
+  submitText?: string
 }
