@@ -19,11 +19,11 @@ import {Button} from "@/components"
 import {Flex} from "@/components/CommonLayout"
 import {svgIcons} from "@/components/Icons"
 import {Table} from "@/components/Table/Table"
-import type {RequirementData} from "@/interfaces/records"
 import {
   RequirementRecord,
   requirementRecordFieldDefinitions,
 } from "@/pages/Dashboard/interfaces"
+import {applyConditions} from "@/pages/Dashboard/recordUtils"
 import {
   createGroupSort,
   fieldDefinitionsToColumnDefs,
@@ -53,86 +53,8 @@ function RequirementsContainer() {
   const groupConditions = useViewPreference((state) => state.groupConditions)
   const sortConditions = useViewPreference((state) => state.sortConditions)
 
-  // 应用筛选条件
   const conditionedRecords = useMemo(() => {
-    const filtered =
-      filterConditions.length === 0
-        ? requirementRecords
-        : requirementRecords.filter((record) => {
-            return filterConditions.every((condition) => {
-              const value = record[condition.field as keyof RequirementData]
-
-              switch (condition.condition) {
-                case "equal":
-                  // 当value为空字符串时，默认返回true（所有值都放行）
-                  return condition.value === ""
-                    ? true
-                    : String(value) === condition.value
-                case "notEqual":
-                  // 当value为空字符串时，默认返回true（所有值都放行）
-                  return condition.value === ""
-                    ? true
-                    : String(value) !== condition.value
-                case "contains":
-                  // 当value为空字符串时，默认返回true（所有值都放行）
-                  return condition.value === ""
-                    ? true
-                    : String(value).includes(condition.value as string)
-                case "notContains":
-                  // 当value为空字符串时，默认返回true（所有值都放行）
-                  return condition.value === ""
-                    ? true
-                    : !String(value).includes(condition.value as string)
-                case "empty":
-                  return value === "" || value === null || value === undefined
-                case "notEmpty":
-                  return value !== "" && value !== null && value !== undefined
-                case "greaterThan":
-                  return Number(value) > Number(condition.value)
-                case "lessThan":
-                  return Number(value) < Number(condition.value)
-                case "between":
-                  if (
-                    Array.isArray(condition.value) &&
-                    condition.value.length === 2
-                  ) {
-                    const [min, max] = condition.value
-                    return (
-                      Number(value) >= Number(min) &&
-                      Number(value) <= Number(max)
-                    )
-                  }
-                  return true
-                default:
-                  return true
-              }
-            })
-          })
-
-    const sortedRecords =
-      sortConditions.length === 0
-        ? filtered
-        : filtered.sort((a, b) => {
-            for (const condition of sortConditions) {
-              const valueA = a[condition.field as keyof RequirementData]
-              const valueB = b[condition.field as keyof RequirementData]
-
-              // 处理undefined或null值
-              if (valueA === undefined || valueA === null) return 1
-              if (valueB === undefined || valueB === null) return -1
-
-              let comparison = 0
-              if (valueA < valueB) comparison = -1
-              if (valueA > valueB) comparison = 1
-
-              // 如果当前条件可以决定顺序，返回结果
-              if (comparison !== 0) {
-                return condition.value === "desc" ? -comparison : comparison
-              }
-            }
-            return 0
-          })
-    return sortedRecords
+    return applyConditions(requirementRecords, filterConditions, sortConditions)
   }, [requirementRecords, filterConditions, sortConditions])
 
   const handleRowClick = (row: any) => {
