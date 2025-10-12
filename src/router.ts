@@ -96,6 +96,17 @@ export const routers: RouteObject[] = [
               Component: (await import("./pages/Dashboard/Kanban")).default,
             }),
           },
+          {
+            path: paths.requirements,
+            loader: () => {
+              useViewPreference.getState().setPageKey(paths.requirements)
+              return null
+            },
+            lazy: async () => ({
+              Component: (await import("./pages/Dashboard/Requirements"))
+                .default,
+            }),
+          },
         ],
       },
     ],

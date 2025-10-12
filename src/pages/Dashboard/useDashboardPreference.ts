@@ -45,7 +45,12 @@ export const useViewPreference = create<ViewPreferenceStore>()(
       setGroupConditions: (conditions) => set({groupConditions: conditions}),
       setSortConditions: (conditions) => set({sortConditions: conditions}),
       setPageKey: (pageKey) => {
-        usePrefConfig.getState().setPref(pageKey, get())
+        if (pageKey === get().pageKey) return
+        usePrefConfig.getState().setPref(pageKey, {
+          filterConditions: get().filterConditions,
+          groupConditions: get().groupConditions,
+          sortConditions: get().sortConditions,
+        })
         set({pageKey, ...usePrefConfig.getState().history[pageKey]})
       },
     }),

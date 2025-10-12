@@ -31,24 +31,16 @@ interface CardProps extends StoryCard {
 }
 
 export function KanbanContainer() {
-  const requirementRecords = useSignedRecord(
-    (state) => state.requirementRecords
-  )
-  const updateRequirementRecord = useSignedRecord(
-    (state) => state.updateRequirementRecord
-  )
-  const addRequirementRecord = useSignedRecord(
-    (state) => state.addRequirementRecord
-  )
-  const deleteRequirementRecord = useSignedRecord(
-    (state) => state.deleteRequirementRecord
-  )
+  const records = useSignedRecord((state) => state.requirementRecords)
+  const update = useSignedRecord((state) => state.updateRequirementRecord)
+  const add = useSignedRecord((state) => state.addRequirementRecord)
+  const remove = useSignedRecord((state) => state.deleteRequirementRecord)
   const save = useSignedRecord((state) => state.save)
 
   // 处理添加卡片
   const handleAddCard = (state: RequirementStatusType, cardData: StoryCard) => {
     const newReq = convertToRequirementData(state, cardData)
-    addRequirementRecord(newReq)
+    add(newReq)
     save()
   }
 
@@ -58,17 +50,17 @@ export function KanbanContainer() {
     state: RequirementStatusType,
     cardData: StoryCard
   ) => {
-    updateRequirementRecord(cardId, convertToRequirementData(state, cardData))
+    update(cardId, convertToRequirementData(state, cardData))
     save()
   }
 
   const handleDelete = (id: string) => {
-    deleteRequirementRecord(id)
+    remove(id)
     save()
   }
 
   const handleMoveCard = (cardId: string, state: RequirementStatusType) => {
-    updateRequirementRecord(cardId, {status: state})
+    update(cardId, {status: state})
     save()
   }
 
@@ -77,7 +69,7 @@ export function KanbanContainer() {
     id: status,
     title: status,
     columnTitle: t(status),
-    cards: requirementRecords
+    cards: records
       .filter((req) => req.status === status)
       .map((req) => convertToCardProps(req)),
   }))

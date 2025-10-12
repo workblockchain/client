@@ -229,21 +229,6 @@ export function fieldDefinitionsToFormFieldDefinitions(
 }
 
 /**
- * 将 WorkRecord 转换为 DataFormDrawer 期望的初始数据格式
- */
-export function workRecordToInitialData(
-  workRecord: WorkRecord
-): Record<string, string | number | boolean> {
-  const result: Record<string, string | number | boolean> = {}
-  for (const [key, value] of Object.entries(workRecord)) {
-    if (value !== undefined) {
-      result[key] = value
-    }
-  }
-  return result
-}
-
-/**
  * 通用的分组排序函数
  */
 export function createGroupSort<T>(
@@ -256,7 +241,6 @@ export function createGroupSort<T>(
     // TODO: handle any
     const valueA = (a as any)[def.key]
     const valueB = (b as any)[def.key]
-    console.log(key, def.type, valueA, valueB)
     let res = 0
     switch (def.type) {
       case "text":
