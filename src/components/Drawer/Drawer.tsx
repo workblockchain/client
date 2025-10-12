@@ -103,7 +103,7 @@ export const Drawer = ({
               <CrossIcon />
             </CloseButton>
           </DrawerHeader>
-          <div>{children}</div>
+          {children}
         </DrawerContent>
       </DrawerOverlay>
     </Portal>
@@ -214,13 +214,13 @@ const DrawerContent = styled.div<{
   padding: 20px;
   display: flex;
   flex-direction: column;
+  gap: 12px;
 `
 
 const DrawerHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
 `
 
 const DrawerTitle = styled.div`
