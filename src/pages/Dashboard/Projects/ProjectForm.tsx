@@ -17,50 +17,58 @@
 
 import {DataFormDrawer} from "@/components/DataFormDrawer"
 import {
-  WorkRecord,
-  workRecordFieldDefinitions,
+  ProjectRecord,
+  projectRecordFieldDefinitions,
 } from "@/pages/Dashboard/interfaces"
 import {fieldDefinitionsToFormFieldDefinitions} from "@/pages/Dashboard/workRecordUtils"
 import {t} from "i18next"
 import {useMemo} from "react"
 
-export function WorkRecordForm({
+export function ProjectForm({
   submit,
   isOpen,
-  initialData,
   onClose,
 }: {
-  submit: (data: WorkRecord) => void
+  submit: (data: ProjectRecord) => void
   isOpen: boolean
-  initialData?: WorkRecord
   onClose: () => void
 }) {
   // 使用工具函数转换字段定义
   const formFields = useMemo(() => {
-    return fieldDefinitionsToFormFieldDefinitions(workRecordFieldDefinitions)
+    return fieldDefinitionsToFormFieldDefinitions(projectRecordFieldDefinitions)
   }, [])
 
-  const defaultValues = useMemo(() => {
-    const workRecord: WorkRecord = {
-      wid: "",
-      outcome: "",
-      duration: 0,
-      ...initialData,
-    }
-    return workRecord
-  }, [])
+  const defaultValues: ProjectRecord = {
+    pid: "",
+    name: "",
+    description: "",
+    projectType: "",
+    status: "active",
+    assignedTo: "",
+    progress: 0,
+    contributors: [],
+    requirementIds: [],
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  }
 
   // 处理表单提交
-  const handleSubmit = (data: unknown) => {
-    const value = data as Partial<WorkRecord>
-    const workRecord: WorkRecord = {
-      wid: defaultValues.wid,
-      userId: defaultValues.userId,
-      ...initialData,
-      outcome: value.outcome,
-      duration: value.duration,
+  const handleSubmit = (value: unknown) => {
+    const data = value as Partial<ProjectRecord>
+    const projectRecord: ProjectRecord = {
+      pid: defaultValues.pid as string,
+      name: data.name as string,
+      description: data.description as string,
+      projectType: data.projectType as string,
+      status: data.status as string,
+      assignedTo: data.assignedTo as string,
+      progress: data.progress as number,
+      contributors: data.contributors as string[],
+      requirementIds: data.requirementIds as string[],
+      createdAt: defaultValues.createdAt as number,
+      updatedAt: Date.now(),
     }
-    submit(workRecord)
+    submit(projectRecord)
   }
 
   return (
@@ -68,11 +76,11 @@ export function WorkRecordForm({
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
-      title={t`work.create`}
+      title={t`project.create`}
       mode="create"
       fields={formFields}
       initialData={defaultValues}
-      submitText={t`work.create`}
+      submitText={t`project.create`}
     />
   )
 }

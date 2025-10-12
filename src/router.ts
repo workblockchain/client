@@ -107,6 +107,16 @@ export const routers: RouteObject[] = [
                 .default,
             }),
           },
+          {
+            path: paths.projects,
+            loader: () => {
+              useViewPreference.getState().setPageKey(paths.projects)
+              return null
+            },
+            lazy: async () => ({
+              Component: (await import("./pages/Dashboard/Projects")).default,
+            }),
+          },
         ],
       },
     ],

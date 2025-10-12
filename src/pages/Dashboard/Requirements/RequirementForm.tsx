@@ -21,6 +21,7 @@ import {
   requirementRecordFieldDefinitions,
 } from "@/pages/Dashboard/interfaces"
 import {fieldDefinitionsToFormFieldDefinitions} from "@/pages/Dashboard/workRecordUtils"
+import {t} from "i18next"
 import {useMemo} from "react"
 
 export function RequirementForm({
@@ -87,11 +88,11 @@ export function RequirementForm({
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
-      title="创建需求"
+      title={t`requirement.create`}
       mode="create"
       fields={formFields}
       initialData={defaultValues}
-      submitText="创建"
+      submitText={t`requirement.create`}
     />
   )
 }

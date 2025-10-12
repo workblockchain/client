@@ -77,7 +77,7 @@ export function KanbanContainer() {
   return (
     <KanbanBoard
       id="kanban-container"
-      title="需求看板"
+      title={t`dashboard.kanban`}
       column={kanbanColumns}
       addCard={handleAddCard}
       deleteCard={handleDelete}
