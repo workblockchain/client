@@ -18,7 +18,10 @@
 import type {Meta, StoryObj} from "@storybook/react-vite"
 import {useState} from "react"
 import {DataFormDrawer} from "./DataFormDrawer"
-import type {FormConfig} from "./types"
+import type {DataFormDrawerProps} from "./types"
+
+// 用于story的配置类型，不包含isOpen和onClose
+type DataFormDrawerConfig = Omit<DataFormDrawerProps, "isOpen" | "onClose">
 
 const meta: Meta<typeof DataFormDrawer> = {
   title: "Components/DataFormDrawer",
@@ -109,23 +112,19 @@ const fullFormFields = [
 ]
 
 // 创建模式表单配置
-const createFormConfig: FormConfig = {
+const createFormConfig: DataFormDrawerConfig = {
   fields: basicFormFields,
   mode: "create",
   onSubmit: (data) => {
     console.log("创建表单提交:", data)
     alert(`创建成功: ${JSON.stringify(data, null, 2)}`)
   },
-  onCancel: () => {
-    console.log("创建表单取消")
-  },
   title: "创建新记录",
   submitText: "创建",
-  cancelText: "取消",
 }
 
 // 编辑模式表单配置
-const editFormConfig: FormConfig = {
+const editFormConfig: DataFormDrawerConfig = {
   fields: basicFormFields,
   mode: "edit",
   initialData: {
@@ -138,32 +137,24 @@ const editFormConfig: FormConfig = {
     console.log("编辑表单提交:", data)
     alert(`保存成功: ${JSON.stringify(data, null, 2)}`)
   },
-  onCancel: () => {
-    console.log("编辑表单取消")
-  },
   title: "编辑记录",
   submitText: "保存",
-  cancelText: "取消",
 }
 
 // 完整表单配置
-const fullFormConfig: FormConfig = {
+const fullFormConfig: DataFormDrawerConfig = {
   fields: fullFormFields,
   mode: "create",
   onSubmit: (data) => {
     console.log("完整表单提交:", data)
     alert(`提交成功: ${JSON.stringify(data, null, 2)}`)
   },
-  onCancel: () => {
-    console.log("完整表单取消")
-  },
   title: "完整表单示例",
   submitText: "提交",
-  cancelText: "取消",
 }
 
 // 基础示例组件
-const DataFormDrawerExample = ({config}: {config: FormConfig}) => {
+const DataFormDrawerExample = ({config}: {config: DataFormDrawerConfig}) => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -183,16 +174,9 @@ const DataFormDrawerExample = ({config}: {config: FormConfig}) => {
       </button>
 
       <DataFormDrawer
+        {...config}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        title={config.title || "表单抽屉"}
-        formConfig={{
-          ...config,
-          onCancel: () => {
-            config.onCancel()
-            setIsOpen(false)
-          },
-        }}
       />
     </div>
   )
@@ -214,7 +198,7 @@ export const WithValidation: Story = {
   render: () => {
     const [isOpen, setIsOpen] = useState(false)
 
-    const validationFormConfig: FormConfig = {
+    const validationFormConfig: DataFormDrawerConfig = {
       fields: [
         {
           key: "requiredField",
@@ -248,10 +232,6 @@ export const WithValidation: Story = {
         alert(`验证通过: ${JSON.stringify(data, null, 2)}`)
         setIsOpen(false)
       },
-      onCancel: () => {
-        console.log("验证表单取消")
-        setIsOpen(false)
-      },
       title: "表单验证示例",
     }
 
@@ -272,10 +252,9 @@ export const WithValidation: Story = {
         </button>
 
         <DataFormDrawer
+          {...validationFormConfig}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
-          title={validationFormConfig.title || "表单验证示例"}
-          formConfig={validationFormConfig}
         />
       </div>
     )
@@ -287,7 +266,7 @@ export const LoadingState: Story = {
     const [isOpen, setIsOpen] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    const loadingFormConfig: FormConfig = {
+    const loadingFormConfig: DataFormDrawerConfig = {
       fields: basicFormFields,
       mode: "create",
       onSubmit: async (data) => {
@@ -299,10 +278,6 @@ export const LoadingState: Story = {
 
         alert(`提交成功: ${JSON.stringify(data, null, 2)}`)
         setLoading(false)
-        setIsOpen(false)
-      },
-      onCancel: () => {
-        console.log("加载中表单取消")
         setIsOpen(false)
       },
       title: "加载状态示例",
@@ -325,10 +300,9 @@ export const LoadingState: Story = {
         </button>
 
         <DataFormDrawer
+          {...loadingFormConfig}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
-          title={loadingFormConfig.title || "加载状态示例"}
-          formConfig={loadingFormConfig}
           loading={loading}
         />
       </div>
@@ -398,16 +372,12 @@ export const TableColumnsIntegration: Story = {
       },
     ]
 
-    const tableColumnsFormConfig: FormConfig = {
+    const tableColumnsFormConfig: DataFormDrawerConfig = {
       fields: tableBasedFormFields,
       mode: "create",
       onSubmit: (data) => {
         console.log("基于表格列的表单提交:", data)
         alert(`创建成功: ${JSON.stringify(data, null, 2)}`)
-        setIsOpen(false)
-      },
-      onCancel: () => {
-        console.log("基于表格列的表单取消")
         setIsOpen(false)
       },
       title: "基于表格列的表单示例",
@@ -438,10 +408,9 @@ export const TableColumnsIntegration: Story = {
         </button>
 
         <DataFormDrawer
+          {...tableColumnsFormConfig}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
-          title={tableColumnsFormConfig.title || "基于表格列的表单"}
-          formConfig={tableColumnsFormConfig}
         />
       </div>
     )
