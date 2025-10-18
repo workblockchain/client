@@ -15,6 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {t} from "i18next"
 import {useLocation} from "react-router"
 import {
   Breadcrumb,
@@ -23,13 +24,15 @@ import {
 import {paths} from "../../router"
 
 const routeTitles: Record<string, string> = {
-  [paths.home]: "首页",
-  [paths.config]: "设置",
-  [paths.profile]: "个人资料",
-  [paths.records]: "记录",
-  [paths.dashboard]: "工作台",
-  work: "工作区",
-  kanban: "看板",
+  [paths.home]: t`breadcrumb.home`,
+  [paths.config]: t`breadcrumb.config`,
+  [paths.profile]: t`breadcrumb.profile`,
+  [paths.records]: t`breadcrumb.records`,
+  [paths.dashboard]: t`breadcrumb.dashboard`,
+  work: t`breadcrumb.work`,
+  kanban: t`breadcrumb.kanban`,
+  requirements: t`breadcrumb.requirements`,
+  projects: t`breadcrumb.projects`,
 }
 
 export function BreadcrumbContainer() {

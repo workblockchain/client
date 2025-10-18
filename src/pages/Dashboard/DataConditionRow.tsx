@@ -16,17 +16,18 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {DataConditionBuilder} from "@/components/DataConditionBuilder"
-import {WorkRecordFieldDefinition} from "@/pages/Dashboard/interfaces"
-import {workRecordFieldsToConditionDefinitions} from "@/pages/Dashboard/workRecordUtils"
+import {fieldDefinitionsToConditionDefinitions} from "@/pages/Dashboard/workRecordUtils"
 import {colors} from "@/styles"
+import {t} from "i18next"
 import {useMemo} from "react"
 import styled from "styled-components"
+import {FieldDefinition} from "./interfaces"
 import {useViewPreference} from "./useDashboardPreference"
 
 export function DataConditionRow({
   fieldDefinitions,
 }: {
-  fieldDefinitions: WorkRecordFieldDefinition[]
+  fieldDefinitions: FieldDefinition[]
 }) {
   const filter = useViewPreference((state) => state.filterConditions)
   const setFilter = useViewPreference((state) => state.setFilterConditions)
@@ -36,7 +37,7 @@ export function DataConditionRow({
   const setSort = useViewPreference((state) => state.setSortConditions)
 
   const fields = useMemo(
-    () => workRecordFieldsToConditionDefinitions(fieldDefinitions),
+    () => fieldDefinitionsToConditionDefinitions(fieldDefinitions),
     [fieldDefinitions]
   )
 
@@ -47,24 +48,24 @@ export function DataConditionRow({
         availableFields={fields}
         onConditionsChange={setFilter}
         mode="filter"
-        buttonLabel="筛选"
-        flyoutTitle="筛选条件"
+        buttonLabel={t`dashboard.filter`}
+        flyoutTitle={t`dashboard.filterConditions`}
       />
       <DataConditionBuilder
         conditions={group}
         availableFields={fields}
         onConditionsChange={setGroup}
         mode="group"
-        buttonLabel="分组"
-        flyoutTitle="分组设置"
+        buttonLabel={t`dashboard.group`}
+        flyoutTitle={t`dashboard.groupSettings`}
       />
       <DataConditionBuilder
         conditions={sort}
         availableFields={fields}
         onConditionsChange={setSort}
         mode="sort"
-        buttonLabel="排序"
-        flyoutTitle="排序设置"
+        buttonLabel={t`dashboard.sort`}
+        flyoutTitle={t`dashboard.sortSettings`}
       />
     </Container>
   )

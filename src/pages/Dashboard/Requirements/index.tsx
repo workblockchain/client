@@ -19,15 +19,14 @@ import {Button} from "@/components"
 import {Flex} from "@/components/CommonLayout"
 import {svgIcons} from "@/components/Icons"
 import {Table} from "@/components/Table/Table"
-import {WorkData} from "@/interfaces/records"
 import {
-  WorkRecord,
-  workRecordFieldDefinitions,
+  RequirementRecord,
+  requirementRecordFieldDefinitions,
 } from "@/pages/Dashboard/interfaces"
 import {applyConditions} from "@/pages/Dashboard/recordUtils"
 import {
   createGroupSort,
-  workRecordFieldsToColumnDefs,
+  fieldDefinitionsToColumnDefs,
 } from "@/pages/Dashboard/workRecordUtils"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {ColumnDef} from "@tanstack/react-table"
@@ -36,58 +35,33 @@ import {useMemo, useState} from "react"
 import styled from "styled-components"
 import DataConditionRow from "../DataConditionRow"
 import {useViewPreference} from "../useDashboardPreference"
-import {WorkRecordForm} from "./WorkRecordForm"
+import {RequirementForm} from "./RequirementForm"
 
 // 使用新的字段定义系统生成 columns
-const columns: ColumnDef<WorkRecord>[] = workRecordFieldsToColumnDefs(
-  workRecordFieldDefinitions
-)
+const columns: ColumnDef<RequirementRecord>[] =
+  fieldDefinitionsToColumnDefs<RequirementRecord>(
+    requirementRecordFieldDefinitions
+  )
 
-function WorkContainer() {
-  const workRecords = useSignedRecord((state) => state.workRecords)
-  const signedRecords = useSignedRecord((state) => state.signedRecords)
+function RequirementsContainer() {
+  const requirementRecords = useSignedRecord(
+    (state) => state.requirementRecords
+  )
   const [isFormOpen, setIsFormOpen] = useState(false)
-
-  const combinedRecords = useMemo(() => {
-    const ids = new Set<string>()
-    const uniqueRecords: WorkRecord[] = []
-    workRecords.forEach((r) => {
-      if (!ids.has(r.wid)) {
-        uniqueRecords.push({...r})
-        ids.add(r.wid)
-      }
-    })
-    signedRecords.forEach((r) => {
-      const data = JSON.parse(r.data) as Partial<WorkData>
-      if (data.wid && !ids.has(data.wid)) {
-        uniqueRecords.push({
-          wid: data.wid,
-          userId: data.userId ?? r.createdBy,
-          startTime: data.startTime,
-          endTime: data.endTime,
-          description: data.description,
-          isSigned: true,
-          ...data,
-        })
-        ids.add(data.wid)
-      }
-    })
-    return uniqueRecords
-  }, [workRecords, signedRecords])
 
   const filterConditions = useViewPreference((state) => state.filterConditions)
   const groupConditions = useViewPreference((state) => state.groupConditions)
   const sortConditions = useViewPreference((state) => state.sortConditions)
 
   const conditionedRecords = useMemo(() => {
-    return applyConditions(combinedRecords, filterConditions, sortConditions)
-  }, [combinedRecords, filterConditions, sortConditions])
+    return applyConditions(requirementRecords, filterConditions, sortConditions)
+  }, [requirementRecords, filterConditions, sortConditions])
 
   const handleRowClick = (row: any) => {
-    console.log("Record clicked:", row)
+    console.log("Requirement clicked:", row)
   }
 
-  const handleFormSubmit = (data: WorkRecord) => {
+  const handleFormSubmit = (data: RequirementRecord) => {
     console.log("Form submitted:", data)
     // TODO: 实现实际的提交逻辑
     setIsFormOpen(false)
@@ -104,10 +78,12 @@ function WorkContainer() {
   return (
     <Container>
       <Flex>
-        <DataConditionRow fieldDefinitions={workRecordFieldDefinitions} />
+        <DataConditionRow
+          fieldDefinitions={requirementRecordFieldDefinitions}
+        />
         <Button $variant="text" onClick={handleOpenForm}>
           <svgIcons.Plus />
-          <span>{t`work.create`}</span>
+          <span>{t`requirement.create`}</span>
         </Button>
       </Flex>
       <Table
@@ -116,15 +92,18 @@ function WorkContainer() {
         clickRow={handleRowClick}
         groupBy={groupConditions.map((c) => c.field)}
         groupValueRender={(key, value) => {
-          const res = workRecordFieldDefinitions
+          const res = requirementRecordFieldDefinitions
             .find((f) => f.key === key)
             ?.cellRenderer?.(value == "true")
           return res ?? (value as string)
         }}
-        groupSort={createGroupSort(workRecordFieldDefinitions, groupConditions)}
+        groupSort={createGroupSort(
+          requirementRecordFieldDefinitions,
+          groupConditions
+        )}
       />
 
-      <WorkRecordForm
+      <RequirementForm
         submit={handleFormSubmit}
         isOpen={isFormOpen}
         onClose={handleCloseForm}
@@ -139,4 +118,4 @@ const Container = styled.div`
   gap: 12px;
 `
 
-export default WorkContainer
+export default RequirementsContainer
