@@ -16,19 +16,29 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import CrossIcon from "@/assets/cross.svg?react"
-import {ReactNode, useCallback} from "react"
+import {zIndex} from "@/styles/zIndex"
+import {ReactElement, ReactNode, useCallback} from "react"
 import styled from "styled-components"
 import {Button} from "../Button"
 import {Portal} from "../Portal"
 
-interface ModalProps {
+export interface ModalProps {
   isOpen: boolean
   onClose: () => void
   children: ReactNode
   title?: string
+  style?: React.CSSProperties
+  bodyComponent?: (children?: ReactNode) => ReactElement
 }
 
-export const Modal = ({isOpen, onClose, children, title}: ModalProps) => {
+export const Modal = ({
+  isOpen,
+  onClose,
+  children,
+  title,
+  style,
+  bodyComponent,
+}: ModalProps) => {
   const handleOverlayClick = useCallback(
     (e: React.MouseEvent) => {
       if (e.target === e.currentTarget) onClose()
@@ -41,14 +51,15 @@ export const Modal = ({isOpen, onClose, children, title}: ModalProps) => {
   return (
     <Portal>
       <ModalOverlay onClick={handleOverlayClick}>
-        <ModalContent>
+        <ModalContent style={style}>
           <ModalHeader>
             {title && <ModalTitle>{title}</ModalTitle>}
             <CloseButton onClick={onClose}>
               <CrossIcon />
             </CloseButton>
           </ModalHeader>
-          <div>{children}</div>
+          {bodyComponent && bodyComponent(children)}
+          {!bodyComponent && <div>{children}</div>}
         </ModalContent>
       </ModalOverlay>
     </Portal>
@@ -65,6 +76,7 @@ const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: ${zIndex.modal};
 `
 
 const ModalContent = styled.div`

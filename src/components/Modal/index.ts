@@ -15,4 +15,5 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+export * from "./FixedModal"
 export * from "./Modal"

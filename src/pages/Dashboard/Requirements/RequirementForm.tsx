@@ -23,15 +23,18 @@ import {
 import {fieldDefinitionsToFormFieldDefinitions} from "@/pages/Dashboard/workRecordUtils"
 import {t} from "i18next"
 import {useMemo} from "react"
+import {RequirementFormModal} from "./RequirementFormModal"
 
 export function RequirementForm({
   submit,
   isOpen,
   onClose,
+  useDrawer,
 }: {
   submit: (data: RequirementRecord) => void
   isOpen: boolean
   onClose: () => void
+  useDrawer?: boolean
 }) {
   // 使用工具函数转换字段定义
   const formFields = useMemo(() => {
@@ -83,16 +86,22 @@ export function RequirementForm({
     submit(requirementRecord)
   }
 
+  if (useDrawer) {
+    return (
+      <DataFormDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        onSubmit={handleSubmit}
+        title={t`requirement.create`}
+        mode="create"
+        fields={formFields}
+        initialData={defaultValues}
+        submitText={t`requirement.create`}
+      />
+    )
+  }
+
   return (
-    <DataFormDrawer
-      isOpen={isOpen}
-      onClose={onClose}
-      onSubmit={handleSubmit}
-      title={t`requirement.create`}
-      mode="create"
-      fields={formFields}
-      initialData={defaultValues}
-      submitText={t`requirement.create`}
-    />
+    <RequirementFormModal submit={submit} isOpen={isOpen} onClose={onClose} />
   )
 }
