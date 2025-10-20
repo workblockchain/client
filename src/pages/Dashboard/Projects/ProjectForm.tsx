@@ -23,15 +23,18 @@ import {
 import {fieldDefinitionsToFormFieldDefinitions} from "@/pages/Dashboard/workRecordUtils"
 import {t} from "i18next"
 import {useMemo} from "react"
+import {ProjectFormModal} from "./ProjectFormModal"
 
 export function ProjectForm({
   submit,
   isOpen,
   onClose,
+  useDrawer,
 }: {
   submit: (data: ProjectRecord) => void
   isOpen: boolean
   onClose: () => void
+  useDrawer?: boolean
 }) {
   // 使用工具函数转换字段定义
   const formFields = useMemo(() => {
@@ -71,16 +74,20 @@ export function ProjectForm({
     submit(projectRecord)
   }
 
-  return (
-    <DataFormDrawer
-      isOpen={isOpen}
-      onClose={onClose}
-      onSubmit={handleSubmit}
-      title={t`project.create`}
-      mode="create"
-      fields={formFields}
-      initialData={defaultValues}
-      submitText={t`project.create`}
-    />
-  )
+  if (useDrawer) {
+    return (
+      <DataFormDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        onSubmit={handleSubmit}
+        title={t`project.create`}
+        mode="create"
+        fields={formFields}
+        initialData={defaultValues}
+        submitText={t`project.create`}
+      />
+    )
+  }
+
+  return <ProjectFormModal submit={submit} isOpen={isOpen} onClose={onClose} />
 }

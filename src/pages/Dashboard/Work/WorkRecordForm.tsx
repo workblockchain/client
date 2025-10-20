@@ -23,17 +23,20 @@ import {
 import {fieldDefinitionsToFormFieldDefinitions} from "@/pages/Dashboard/workRecordUtils"
 import {t} from "i18next"
 import {useMemo} from "react"
+import {WorkRecordFormModal} from "./WorkRecordFormModal"
 
 export function WorkRecordForm({
   submit,
   isOpen,
   initialData,
   onClose,
+  useDrawer,
 }: {
   submit: (data: WorkRecord) => void
   isOpen: boolean
   initialData?: WorkRecord
   onClose: () => void
+  useDrawer?: boolean
 }) {
   // 使用工具函数转换字段定义
   const formFields = useMemo(() => {
@@ -63,16 +66,27 @@ export function WorkRecordForm({
     submit(workRecord)
   }
 
+  if (useDrawer) {
+    return (
+      <DataFormDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        onSubmit={handleSubmit}
+        title={t`work.create`}
+        mode="create"
+        fields={formFields}
+        initialData={defaultValues}
+        submitText={t`work.create`}
+      />
+    )
+  }
+
   return (
-    <DataFormDrawer
+    <WorkRecordFormModal
+      submit={submit}
       isOpen={isOpen}
+      initialData={initialData}
       onClose={onClose}
-      onSubmit={handleSubmit}
-      title={t`work.create`}
-      mode="create"
-      fields={formFields}
-      initialData={defaultValues}
-      submitText={t`work.create`}
     />
   )
 }

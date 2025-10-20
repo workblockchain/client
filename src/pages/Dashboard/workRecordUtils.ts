@@ -222,9 +222,7 @@ export function fieldDefinitionsToFormFieldDefinitions(
   fieldDefs: FieldDefinition[]
 ): FormFieldDefinition[] {
   return fieldDefs
-    .filter(
-      (field) => !field.hidden && ["outcome", "duration"].includes(field.key)
-    )
+    .filter((field) => !field.hidden)
     .map(fieldDefinitionToFormFieldDefinition)
 }
 

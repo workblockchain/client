@@ -1,0 +1,228 @@
+// Copyright (c) 2025-present WorkBlockChain Team.
+//
+// WorkBlockChain Client is licensed under Mulan PubL v2.
+// You can use this software according to
+// the terms and conditions of the Mulan PubL v2.
+// You may obtain a copy of Mulan PubL v2 at:
+//
+//   http://license.coscl.org.cn/MulanPubL-2.0
+//
+// THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS,
+// WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+// INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+// MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+// See the Mulan PubL v2 for more details.
+//
+// === Auto generated, DO NOT EDIT ABOVE ===
+
+import {Button} from "@/components/Button"
+import {FormField} from "@/components/DataFormDrawer/FormField"
+import {FixedModal} from "@/components/Modal"
+import {
+  RequirementRecord,
+  requirementRecordFieldDefinitions,
+} from "@/pages/Dashboard/interfaces"
+import {fieldDefinitionsToFormFieldDefinitions} from "@/pages/Dashboard/workRecordUtils"
+import {t} from "i18next"
+import {useMemo} from "react"
+import {Controller, useForm} from "react-hook-form"
+import styled from "styled-components"
+
+interface RequirementFormModalProps {
+  submit: (data: RequirementRecord) => void
+  isOpen: boolean
+  initialData?: RequirementRecord
+  onClose: () => void
+}
+
+export function RequirementFormModal({
+  submit,
+  isOpen,
+  initialData,
+  onClose,
+}: RequirementFormModalProps) {
+  // 使用工具函数转换字段定义
+  const formFields = useMemo(() => {
+    return fieldDefinitionsToFormFieldDefinitions(
+      requirementRecordFieldDefinitions
+    )
+  }, [])
+  console.log("formFields")
+
+  const defaultValues = useMemo(() => {
+    const requirementRecord: RequirementRecord = {
+      rid: "",
+      title: "",
+      description: "",
+      priority: "medium",
+      status: "todo",
+      assignedTo: "",
+      estimated: 0,
+      tags: [],
+      requirementType: "",
+      projectIds: [],
+      workRecordIds: [],
+      progress: 0,
+      contributors: [],
+      relatedOutcomes: [],
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      ...initialData,
+    }
+    return requirementRecord
+  }, [initialData])
+
+  const {control, handleSubmit, reset} = useForm({
+    defaultValues: defaultValues as unknown as Record<string, unknown>,
+  })
+
+  // 处理表单提交
+  const handleFormSubmit = (value: unknown) => {
+    const data = value as Partial<RequirementRecord>
+    const requirementRecord: RequirementRecord = {
+      rid: defaultValues.rid,
+      ...initialData,
+      title: data.title as string,
+      description: data.description as string,
+      priority: data.priority as string,
+      status: data.status as string,
+      assignedTo: data.assignedTo as string,
+      estimated: data.estimated as number,
+      tags: data.tags as string[],
+      requirementType: data.requirementType as string,
+      projectIds: data.projectIds as string[],
+      workRecordIds: data.workRecordIds as string[],
+      progress: data.progress as number,
+      contributors: data.contributors as string[],
+      relatedOutcomes: data.relatedOutcomes as string[],
+      createdAt: defaultValues.createdAt,
+      updatedAt: Date.now(),
+    }
+    submit(requirementRecord)
+    reset()
+  }
+
+  return (
+    <FixedModal isOpen={isOpen} onClose={onClose} title={t`requirement.create`}>
+      <Container>
+        <Form onSubmit={handleSubmit(handleFormSubmit)}>
+          {formFields.map((field) => (
+            <Controller
+              key={field.key}
+              name={field.key}
+              control={control}
+              rules={getValidationRules(field)}
+              render={({
+                field: {value, onChange, onBlur},
+                fieldState: {error},
+              }) => (
+                <FormField
+                  field={field}
+                  value={value ?? getDefaultValueForField(field)}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  error={error?.message}
+                  loading={false}
+                />
+              )}
+            />
+          ))}
+        </Form>
+
+        <Actions>
+          <Button onClick={handleSubmit(handleFormSubmit)} type="button">
+            {t`requirement.create`}
+          </Button>
+        </Actions>
+      </Container>
+    </FixedModal>
+  )
+}
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 500px;
+  margin: 0 auto;
+`
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`
+
+const Actions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+`
+
+/**
+ * 获取字段的默认值
+ */
+function getDefaultValueForField(
+  field: any
+): string | number | boolean | string[] {
+  if (field.defaultValue !== undefined) {
+    return field.defaultValue
+  }
+
+  switch (field.type) {
+    case "number":
+      return 0
+    case "checkbox":
+      return false
+    case "text":
+    case "textarea":
+    case "date":
+    case "select":
+    default:
+      return ""
+  }
+}
+
+/**
+ * 将字段验证规则转换为 react-hook-form 验证规则
+ */
+function getValidationRules(field: any) {
+  const rules: Record<string, unknown> = {}
+
+  if (field.required) {
+    rules.required = `${field.label}是必填项`
+  }
+
+  if (field.validation) {
+    const {validation} = field
+
+    if (validation.min !== undefined) {
+      rules.min = {
+        value: validation.min,
+        message: `${field.label}不能小于${validation.min}`,
+      }
+    }
+
+    if (validation.max !== undefined) {
+      rules.max = {
+        value: validation.max,
+        message: `${field.label}不能大于${validation.max}`,
+      }
+    }
+
+    if (validation.pattern) {
+      rules.pattern = {
+        value: validation.pattern,
+        message: `${field.label}格式不正确`,
+      }
+    }
+
+    if (validation.custom) {
+      rules.validate = {
+        custom: (value: string | number | boolean) => validation.custom!(value),
+      }
+    }
+  }
+
+  return rules
+}
