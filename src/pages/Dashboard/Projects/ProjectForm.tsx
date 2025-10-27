@@ -28,11 +28,13 @@ import {ProjectFormModal} from "./ProjectFormModal"
 export function ProjectForm({
   submit,
   isOpen,
+  initialData,
   onClose,
   useDrawer,
 }: {
   submit: (data: ProjectRecord) => void
   isOpen: boolean
+  initialData?: ProjectRecord
   onClose: () => void
   useDrawer?: boolean
 }) {
@@ -41,34 +43,36 @@ export function ProjectForm({
     return fieldDefinitionsToFormFieldDefinitions(projectRecordFieldDefinitions)
   }, [])
 
-  const defaultValues: ProjectRecord = {
-    pid: "",
-    name: "",
-    description: "",
-    projectType: "",
-    status: "active",
-    assignedTo: "",
-    progress: 0,
-    contributors: [],
-    requirementIds: [],
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
-  }
+  const defaultValues = useMemo(() => {
+    const projectRecord: ProjectRecord = {
+      pid: "",
+      name: "",
+      description: "",
+      projectType: "",
+      status: "active",
+      assignedTo: "",
+      progress: 0,
+      contributors: [],
+      requirementIds: [],
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      ...initialData,
+    }
+    return projectRecord
+  }, [initialData])
+
+  // 判断是创建还是编辑模式
+  const isEditMode = Boolean(initialData?.pid)
 
   // 处理表单提交
   const handleSubmit = (value: unknown) => {
     const data = value as Partial<ProjectRecord>
     const projectRecord: ProjectRecord = {
-      pid: defaultValues.pid as string,
-      name: data.name as string,
-      description: data.description as string,
-      projectType: data.projectType as string,
-      status: data.status as string,
-      assignedTo: data.assignedTo as string,
-      progress: data.progress as number,
-      contributors: data.contributors as string[],
-      requirementIds: data.requirementIds as string[],
-      createdAt: defaultValues.createdAt as number,
+      ...defaultValues,
+      ...data,
+      // 确保在编辑模式下保留原始ID
+      pid: isEditMode ? defaultValues.pid : data.pid || defaultValues.pid,
+      // 更新时间戳
       updatedAt: Date.now(),
     }
     submit(projectRecord)
@@ -80,14 +84,21 @@ export function ProjectForm({
         isOpen={isOpen}
         onClose={onClose}
         onSubmit={handleSubmit}
-        title={t`project.create`}
-        mode="create"
+        title={isEditMode ? t`project.edit` : t`project.create`}
+        mode={isEditMode ? "edit" : "create"}
         fields={formFields}
         initialData={defaultValues}
-        submitText={t`project.create`}
+        submitText={isEditMode ? t`project.update` : t`project.create`}
       />
     )
   }
 
-  return <ProjectFormModal submit={submit} isOpen={isOpen} onClose={onClose} />
+  return (
+    <ProjectFormModal
+      submit={submit}
+      isOpen={isOpen}
+      onClose={onClose}
+      initialData={initialData}
+    />
+  )
 }

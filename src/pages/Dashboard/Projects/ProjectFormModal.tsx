@@ -24,7 +24,7 @@ import {
 } from "@/pages/Dashboard/interfaces"
 import {fieldDefinitionsToFormFieldDefinitions} from "@/pages/Dashboard/workRecordUtils"
 import {t} from "i18next"
-import {useMemo} from "react"
+import {useEffect, useMemo} from "react"
 import {Controller, useForm} from "react-hook-form"
 import styled from "styled-components"
 
@@ -35,54 +35,53 @@ interface ProjectFormModalProps {
   onClose: () => void
 }
 
+const empty: Partial<ProjectRecord> = {
+  pid: "",
+  name: "",
+  description: "",
+  projectType: "",
+  status: "active",
+  assignedTo: "",
+  progress: 0,
+  contributors: [],
+  requirementIds: [],
+  createdAt: Date.now(),
+  updatedAt: Date.now(),
+}
+
 export function ProjectFormModal({
   submit,
   isOpen,
   initialData,
   onClose,
 }: ProjectFormModalProps) {
+  // 判断是创建还是编辑模式
+  const isEditMode = Boolean(initialData?.pid)
+
   // 使用工具函数转换字段定义
   const formFields = useMemo(() => {
     return fieldDefinitionsToFormFieldDefinitions(projectRecordFieldDefinitions)
   }, [])
 
-  const defaultValues = useMemo(() => {
-    const projectRecord: ProjectRecord = {
-      pid: "",
-      name: "",
-      description: "",
-      projectType: "",
-      status: "active",
-      assignedTo: "",
-      progress: 0,
-      contributors: [],
-      requirementIds: [],
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      ...initialData,
-    }
-    return projectRecord
-  }, [initialData])
-
   const {control, handleSubmit, reset} = useForm({
-    defaultValues: defaultValues as unknown as Record<string, unknown>,
+    defaultValues: empty,
   })
 
+  // 当 initialData 变化时，重置表单值
+  useEffect(() => {
+    if (initialData) {
+      reset(initialData)
+    }
+  }, [initialData, reset])
+
   // 处理表单提交
-  const handleFormSubmit = (value: unknown) => {
-    const data = value as Partial<ProjectRecord>
+  const handleFormSubmit = (data: unknown) => {
+    const value = data as Partial<ProjectRecord>
     const projectRecord: ProjectRecord = {
-      pid: defaultValues.pid,
-      ...initialData,
-      name: data.name as string,
-      description: data.description as string,
-      projectType: data.projectType as string,
-      status: data.status as string,
-      assignedTo: data.assignedTo as string,
-      progress: data.progress as number,
-      contributors: data.contributors as string[],
-      requirementIds: data.requirementIds as string[],
-      createdAt: defaultValues.createdAt,
+      ...value,
+      // 确保在编辑模式下保留原始ID
+      pid: isEditMode ? initialData!.pid : value.pid || empty.pid,
+      // 更新时间戳
       updatedAt: Date.now(),
     }
     submit(projectRecord)
@@ -90,7 +89,11 @@ export function ProjectFormModal({
   }
 
   return (
-    <FixedModal isOpen={isOpen} onClose={onClose} title={t`project.create`}>
+    <FixedModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={isEditMode ? t`project.edit` : t`project.create`}
+    >
       <Container>
         <Form onSubmit={handleSubmit(handleFormSubmit)}>
           {formFields.map((field) => (
@@ -118,7 +121,7 @@ export function ProjectFormModal({
 
         <Actions>
           <Button onClick={handleSubmit(handleFormSubmit)} type="button">
-            {t`project.create`}
+            {isEditMode ? t`project.update` : t`project.create`}
           </Button>
         </Actions>
       </Container>

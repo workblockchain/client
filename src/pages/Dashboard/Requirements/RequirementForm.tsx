@@ -28,11 +28,13 @@ import {RequirementFormModal} from "./RequirementFormModal"
 export function RequirementForm({
   submit,
   isOpen,
+  initialData,
   onClose,
   useDrawer,
 }: {
   submit: (data: RequirementRecord) => void
   isOpen: boolean
+  initialData?: RequirementRecord
   onClose: () => void
   useDrawer?: boolean
 }) {
@@ -43,44 +45,41 @@ export function RequirementForm({
     )
   }, [])
 
-  const defaultValues: RequirementRecord = {
-    rid: "",
-    title: "",
-    description: "",
-    priority: "medium",
-    status: "todo",
-    assignedTo: "",
-    estimated: 0,
-    tags: [],
-    requirementType: "",
-    projectIds: [],
-    workRecordIds: [],
-    progress: 0,
-    contributors: [],
-    relatedOutcomes: [],
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
-  }
+  const defaultValues = useMemo(() => {
+    const requirementRecord: RequirementRecord = {
+      rid: "",
+      title: "",
+      description: "",
+      priority: "medium",
+      status: "todo",
+      assignedTo: "",
+      estimated: 0,
+      tags: [],
+      requirementType: "",
+      projectIds: [],
+      workRecordIds: [],
+      progress: 0,
+      contributors: [],
+      relatedOutcomes: [],
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      ...initialData,
+    }
+    return requirementRecord
+  }, [initialData])
+
+  // 判断是创建还是编辑模式
+  const isEditMode = Boolean(initialData?.rid)
 
   // 处理表单提交
   const handleSubmit = (value: unknown) => {
     const data = value as Partial<RequirementRecord>
     const requirementRecord: RequirementRecord = {
-      rid: defaultValues.rid as string,
-      title: data.title as string,
-      description: data.description as string,
-      priority: data.priority as string,
-      status: data.status as string,
-      assignedTo: data.assignedTo as string,
-      estimated: data.estimated as number,
-      tags: data.tags as string[],
-      requirementType: data.requirementType as string,
-      projectIds: data.projectIds as string[],
-      workRecordIds: data.workRecordIds as string[],
-      progress: data.progress as number,
-      contributors: data.contributors as string[],
-      relatedOutcomes: data.relatedOutcomes as string[],
-      createdAt: defaultValues.createdAt as number,
+      ...defaultValues,
+      ...data,
+      // 确保在编辑模式下保留原始ID
+      rid: isEditMode ? defaultValues.rid : data.rid || defaultValues.rid,
+      // 更新时间戳
       updatedAt: Date.now(),
     }
     submit(requirementRecord)
@@ -92,16 +91,21 @@ export function RequirementForm({
         isOpen={isOpen}
         onClose={onClose}
         onSubmit={handleSubmit}
-        title={t`requirement.create`}
-        mode="create"
+        title={isEditMode ? t`requirement.edit` : t`requirement.create`}
+        mode={isEditMode ? "edit" : "create"}
         fields={formFields}
         initialData={defaultValues}
-        submitText={t`requirement.create`}
+        submitText={isEditMode ? t`requirement.update` : t`requirement.create`}
       />
     )
   }
 
   return (
-    <RequirementFormModal submit={submit} isOpen={isOpen} onClose={onClose} />
+    <RequirementFormModal
+      submit={submit}
+      isOpen={isOpen}
+      onClose={onClose}
+      initialData={initialData}
+    />
   )
 }

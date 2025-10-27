@@ -83,6 +83,7 @@ export interface RequirementData {
   tags: string[] // 标签
   requirementType: string // 需求类型
 
+  title: string
   description?: string // 描述
 
   projectIds: string[] // 关联的项目ID

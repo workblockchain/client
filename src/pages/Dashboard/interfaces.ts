@@ -32,6 +32,7 @@ export interface FieldDefinition {
 export interface WorkRecord extends Partial<WorkData> {
   data?: string
   createdAt?: number
+  [key: string]: unknown
 }
 
 export const workRecordFieldDefinitions: FieldDefinition[] = [
@@ -129,9 +130,9 @@ export const workRecordFieldDefinitions: FieldDefinition[] = [
 ]
 
 export interface RequirementRecord extends Partial<RequirementData> {
-  title: string
   createdAt?: number
   updatedAt?: number
+  [key: string]: unknown
 }
 
 export const requirementRecordFieldDefinitions: FieldDefinition[] = [
@@ -251,6 +252,7 @@ export interface ProjectRecord extends Partial<ProjectData> {
   name: string
   createdAt?: number
   updatedAt?: number
+  [key: string]: unknown
 }
 
 export const projectRecordFieldDefinitions: FieldDefinition[] = [
