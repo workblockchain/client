@@ -47,6 +47,7 @@ function WorkContainer() {
   const workRecords = useSignedRecord((state) => state.workRecords)
   const signedRecords = useSignedRecord((state) => state.signedRecords)
   const [isFormOpen, setIsFormOpen] = useState(false)
+  const [editingRecord, setEditingRecord] = useState<WorkRecord>()
 
   const combinedRecords = useMemo(() => {
     const ids = new Set<string>()
@@ -83,29 +84,50 @@ function WorkContainer() {
     return applyConditions(combinedRecords, filterConditions, sortConditions)
   }, [combinedRecords, filterConditions, sortConditions])
 
-  const handleRowClick = (row: any) => {
+  const handleRowClick = (row: WorkRecord) => {
     console.log("Record clicked:", row)
+    setEditingRecord(row)
+    setIsFormOpen(true)
   }
 
   const handleFormSubmit = (data: WorkRecord) => {
-    console.log("Form submitted:", data)
-    // TODO: 实现实际的提交逻辑
+    const isEditMode = Boolean(editingRecord?.wid)
+
+    if (isEditMode) {
+      // 编辑模式：更新现有记录
+      if (data.wid) {
+        useSignedRecord.getState().updateWorkRecord(data.wid, data)
+      }
+    } else {
+      // 创建模式：添加新记录
+      // 生成唯一的wid
+      const wid = `work-${Date.now()}`
+      const workData = {
+        ...data,
+        wid,
+        createdAt: Date.now(),
+      } as WorkData
+      useSignedRecord.getState().addWorkRecord(workData)
+    }
+
     setIsFormOpen(false)
   }
 
-  const handleOpenForm = () => {
+  const handleOpenCreateForm = () => {
+    setEditingRecord(undefined)
     setIsFormOpen(true)
   }
 
   const handleCloseForm = () => {
     setIsFormOpen(false)
+    setEditingRecord(undefined)
   }
 
   return (
     <Container>
       <Flex>
         <DataConditionRow fieldDefinitions={workRecordFieldDefinitions} />
-        <Button $variant="text" onClick={handleOpenForm}>
+        <Button $variant="text" onClick={handleOpenCreateForm}>
           <svgIcons.Plus />
           <span>{t`work.create`}</span>
         </Button>
@@ -128,6 +150,7 @@ function WorkContainer() {
         submit={handleFormSubmit}
         isOpen={isFormOpen}
         onClose={handleCloseForm}
+        initialData={editingRecord}
       />
     </Container>
   )

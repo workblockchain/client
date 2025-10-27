@@ -19,6 +19,7 @@ import {Button} from "@/components"
 import {Flex} from "@/components/CommonLayout"
 import {svgIcons} from "@/components/Icons"
 import {Table} from "@/components/Table/Table"
+import {RequirementData} from "@/interfaces"
 import {
   RequirementRecord,
   requirementRecordFieldDefinitions,
@@ -48,31 +49,57 @@ function RequirementsContainer() {
     (state) => state.requirementRecords
   )
   const [isFormOpen, setIsFormOpen] = useState(false)
+  const [editingRecord, setEditingRecord] = useState<RequirementRecord>()
 
   const filterConditions = useViewPreference((state) => state.filterConditions)
   const groupConditions = useViewPreference((state) => state.groupConditions)
   const sortConditions = useViewPreference((state) => state.sortConditions)
 
   const conditionedRecords = useMemo(() => {
-    return applyConditions(requirementRecords, filterConditions, sortConditions)
+    return applyConditions(
+      requirementRecords,
+      filterConditions,
+      sortConditions
+    ) as RequirementRecord[]
   }, [requirementRecords, filterConditions, sortConditions])
 
-  const handleRowClick = (row: any) => {
+  const handleRowClick = (row: RequirementRecord) => {
     console.log("Requirement clicked:", row)
+    setEditingRecord(row)
+    setIsFormOpen(true)
   }
 
   const handleFormSubmit = (data: RequirementRecord) => {
-    console.log("Form submitted:", data)
-    // TODO: 实现实际的提交逻辑
+    const isEditMode = Boolean(editingRecord?.rid)
+
+    if (isEditMode) {
+      // 编辑模式：更新现有记录
+      if (data.rid) {
+        useSignedRecord.getState().updateRequirementRecord(data.rid, data)
+      }
+    } else {
+      // 创建模式：添加新记录
+      // 生成唯一的rid
+      const rid = `requirement-${Date.now()}`
+      const requirementData = {
+        ...data,
+        rid,
+        createdAt: Date.now(),
+      } as RequirementData
+      useSignedRecord.getState().addRequirementRecord(requirementData)
+    }
+
     setIsFormOpen(false)
   }
 
-  const handleOpenForm = () => {
+  const handleOpenCreateForm = () => {
+    setEditingRecord(undefined)
     setIsFormOpen(true)
   }
 
   const handleCloseForm = () => {
     setIsFormOpen(false)
+    setEditingRecord(undefined)
   }
 
   return (
@@ -81,7 +108,7 @@ function RequirementsContainer() {
         <DataConditionRow
           fieldDefinitions={requirementRecordFieldDefinitions}
         />
-        <Button $variant="text" onClick={handleOpenForm}>
+        <Button $variant="text" onClick={handleOpenCreateForm}>
           <svgIcons.Plus />
           <span>{t`requirement.create`}</span>
         </Button>
@@ -107,6 +134,7 @@ function RequirementsContainer() {
         submit={handleFormSubmit}
         isOpen={isFormOpen}
         onClose={handleCloseForm}
+        initialData={editingRecord}
       />
     </Container>
   )

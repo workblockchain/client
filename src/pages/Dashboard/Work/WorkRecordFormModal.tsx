@@ -41,6 +41,9 @@ export function WorkRecordFormModal({
   initialData,
   onClose,
 }: WorkRecordFormModalProps) {
+  // 判断是创建还是编辑模式
+  const isEditMode = Boolean(initialData?.wid)
+
   // 使用工具函数转换字段定义
   const formFields = useMemo(() => {
     return fieldDefinitionsToFormFieldDefinitions(workRecordFieldDefinitions)
@@ -64,18 +67,21 @@ export function WorkRecordFormModal({
   const handleFormSubmit = (data: unknown) => {
     const value = data as Partial<WorkRecord>
     const workRecord: WorkRecord = {
-      wid: defaultValues.wid,
-      userId: defaultValues.userId,
-      ...initialData,
-      outcome: value.outcome,
-      duration: value.duration,
+      ...defaultValues,
+      ...value,
+      // 确保在编辑模式下保留原始ID
+      wid: isEditMode ? defaultValues.wid : value.wid || defaultValues.wid,
     }
     submit(workRecord)
     reset()
   }
 
   return (
-    <FixedModal isOpen={isOpen} onClose={onClose} title={t`work.create`}>
+    <FixedModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={isEditMode ? t`work.edit` : t`work.create`}
+    >
       <Container>
         <Form onSubmit={handleSubmit(handleFormSubmit)}>
           {formFields.map((field) => (
@@ -103,7 +109,7 @@ export function WorkRecordFormModal({
 
         <Actions>
           <Button onClick={handleSubmit(handleFormSubmit)} type="button">
-            {t`work.create`}
+            {isEditMode ? t`work.update` : t`work.create`}
           </Button>
         </Actions>
       </Container>
