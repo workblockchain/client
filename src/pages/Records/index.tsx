@@ -27,7 +27,7 @@ export const RecordsLayout = () => {
   const allWorkDays = useMemo(() => {
     const days = new Set<number>()
     workRecords.forEach((record) => {
-      const day = dayjs(record.startTime).startOf("day")
+      const day = dayjs(record.data.startTime).startOf("day")
       days.add(day.valueOf())
     })
     const res = Array.from(days).sort((a, b) => b.valueOf() - a.valueOf())

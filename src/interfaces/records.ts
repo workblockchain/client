@@ -22,6 +22,14 @@ export interface Record {
   createdAt: number // 创建时间 timestamp in milliseconds
 }
 
+export interface RuntimeRecord<T> {
+  id: string // 默认ID
+  data: T
+  isSigned?: boolean // 是否已签名
+  createdBy: string // 创建人/组ID
+  createdAt: number // 创建时间 timestamp in milliseconds
+}
+
 export interface SignedRecord extends Record {
   signature: string
 }
@@ -45,10 +53,6 @@ export interface WorkData {
 
   description?: string // optional description in natural language of the work record
   cover?: string // optional cover image
-
-  // client runtime fields
-  usedBy?: string[] // 可选，关联到后续产出链
-  isSigned?: boolean // 是否已签名
 }
 
 export type CompressedWorkData = Omit<WorkData, "nextWorkId">
@@ -103,6 +107,7 @@ export interface ProjectData {
   status: string // 状态
   assignedTo: string // 被分配人ID
 
+  title: string
   description?: string // 描述
 
   progress?: number // 进度百分比，0-100, 根据workRecord计算得来

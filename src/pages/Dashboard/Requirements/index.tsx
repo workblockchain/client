@@ -56,11 +56,11 @@ function RequirementsContainer() {
   const sortConditions = useViewPreference((state) => state.sortConditions)
 
   const conditionedRecords = useMemo(() => {
-    return applyConditions(
-      requirementRecords,
-      filterConditions,
-      sortConditions
-    ) as RequirementRecord[]
+    const records = requirementRecords.map((r) => ({
+      ...r.data,
+      createdAt: r.createdAt,
+    })) as RequirementRecord[]
+    return applyConditions(records, filterConditions, sortConditions)
   }, [requirementRecords, filterConditions, sortConditions])
 
   const handleRowClick = (row: RequirementRecord) => {
