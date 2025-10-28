@@ -32,7 +32,7 @@ export interface FieldDefinition {
 export interface WorkRecord extends Partial<WorkData> {
   data?: string
   createdAt?: number
-  [key: string]: unknown
+  [key: string]: unknown // type signature for TableComponent usage
 }
 
 export const workRecordFieldDefinitions: FieldDefinition[] = [
@@ -249,7 +249,6 @@ export const requirementRecordFieldDefinitions: FieldDefinition[] = [
 ]
 
 export interface ProjectRecord extends Partial<ProjectData> {
-  name: string
   createdAt?: number
   updatedAt?: number
   [key: string]: unknown

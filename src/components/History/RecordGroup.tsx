@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {WorkData} from "@/interfaces/records"
+import {RuntimeRecord, WorkData} from "@/interfaces/records"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {colors} from "@/styles"
 import {formatRelativeDate} from "@/utils"
@@ -25,10 +25,10 @@ import styled from "styled-components"
 import {RecordItemUnsigned} from "./RecordItem"
 
 export function RecordGroupByDay({day}: {day: number}) {
-  const {workRecords} = useSignedRecord()
+  const workRecords = useSignedRecord((state) => state.workRecords)
   const group = useMemo(() => {
     return workRecords.filter((work) => {
-      return dayjs(work.startTime).isSame(dayjs(day), "day")
+      return dayjs(work.data.startTime).isSame(dayjs(day), "day")
     })
   }, [workRecords, day])
   return <RecordGroup title={formatRelativeDate(day)} group={group} />
@@ -36,7 +36,7 @@ export function RecordGroupByDay({day}: {day: number}) {
 
 interface RecordGroupProps {
   title: string
-  group: WorkData[]
+  group: RuntimeRecord<WorkData>[]
 }
 
 function RecordGroup({title, group}: RecordGroupProps) {
@@ -44,7 +44,7 @@ function RecordGroup({title, group}: RecordGroupProps) {
     <Container>
       <GroupTitle>{title}</GroupTitle>
       {group.map((work) => (
-        <RecordItemUnsigned key={work.wid} wid={work.wid} />
+        <RecordItemUnsigned key={work.id} id={work.id} />
       ))}
     </Container>
   )

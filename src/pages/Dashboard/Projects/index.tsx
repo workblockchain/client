@@ -53,11 +53,11 @@ function ProjectsContainer() {
 
   // 应用筛选和排序条件
   const conditionedRecords = useMemo(() => {
-    return applyConditions(
-      projectRecords,
-      filterConditions,
-      sortConditions
-    ) as ProjectRecord[]
+    const records = projectRecords.map((r) => ({
+      ...r.data,
+      createdAt: r.createdAt,
+    })) as ProjectRecord[]
+    return applyConditions(records, filterConditions, sortConditions)
   }, [projectRecords, filterConditions, sortConditions])
 
   const handleRowClick = (row: ProjectRecord) => {
