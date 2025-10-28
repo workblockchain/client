@@ -16,7 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {ConditionDefinition} from "@/components/DataConditionBuilder/types"
-import type {FormFieldDefinition} from "@/components/DataFormDrawer/types"
+import type {HookFormFieldDefinition} from "@/components/DataFormDrawer/types"
 import {ColumnDef} from "@tanstack/react-table"
 import {t} from "i18next"
 import {FieldDefinition, WorkRecord} from "./interfaces"
@@ -184,9 +184,9 @@ export function fieldDefinitionsToConditionDefinitions(
  */
 function fieldDefinitionToFormFieldDefinition(
   fieldDef: FieldDefinition
-): FormFieldDefinition {
+): HookFormFieldDefinition {
   // 处理类型映射
-  let mappedType: FormFieldDefinition["type"]
+  let mappedType: HookFormFieldDefinition["type"]
   switch (fieldDef.type) {
     case "multi-select":
       mappedType = "select"
@@ -198,7 +198,7 @@ function fieldDefinitionToFormFieldDefinition(
       mappedType = fieldDef.type
   }
 
-  const baseField: FormFieldDefinition = {
+  const baseField: HookFormFieldDefinition = {
     key: fieldDef.key,
     label: fieldDef.label,
     type: mappedType,
@@ -216,11 +216,11 @@ function fieldDefinitionToFormFieldDefinition(
 }
 
 /**
- * 将 FieldDefinition 数组转换为 FormFieldDefinition 数组
+ * 将 FieldDefinition 数组转换为 react-hook-form 可用的 FormFieldDefinition 数组
  */
-export function fieldDefinitionsToFormFieldDefinitions(
+export function fieldDefinitionsToHookFormDefinitions(
   fieldDefs: FieldDefinition[]
-): FormFieldDefinition[] {
+): HookFormFieldDefinition[] {
   return fieldDefs
     .filter((field) => !field.hidden)
     .map(fieldDefinitionToFormFieldDefinition)

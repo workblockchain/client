@@ -19,11 +19,11 @@ import {Checkbox} from "@/components/Checkbox"
 import {Input, Textarea} from "@/components/Input"
 import {Select} from "@/components/Select"
 import * as S from "./DataFormDrawer.styles"
-import type {FormFieldDefinition} from "./types"
+import type {HookFormFieldDefinition} from "./types"
 
 interface FormFieldProps {
   /** 字段定义 */
-  field: FormFieldDefinition
+  field: HookFormFieldDefinition
   /** 字段值 */
   value: unknown
   /** 字段变更回调 */

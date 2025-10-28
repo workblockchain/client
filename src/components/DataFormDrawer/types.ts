@@ -29,7 +29,7 @@ export interface FieldValidation {
 /**
  * 表单字段定义
  */
-export interface FormFieldDefinition {
+export interface HookFormFieldDefinition {
   /** 字段键名 */
   key: string
   /** 字段标签 */
@@ -61,7 +61,7 @@ export interface DataFormDrawerProps {
   /** 表单模式：创建或编辑 */
   mode: "create" | "edit"
   /** 表单字段定义 */
-  fields: FormFieldDefinition[]
+  fields: HookFormFieldDefinition[]
   /** 表单初始数据 */
   initialData?: unknown
   /** 提交回调函数 */
