@@ -70,8 +70,8 @@ export function KanbanContainer() {
     title: status,
     columnTitle: t(status),
     cards: records
-      .filter((req) => req.status === status)
-      .map((req) => convertToCardProps(req)),
+      .filter((req) => req.data.status === status)
+      .map((req) => convertToCardProps(req.data)),
   }))
 
   return (
@@ -104,6 +104,7 @@ const convertToRequirementData = (
   estimated: 0,
   tags: card.tags || [],
   requirementType: "requirement",
+  title: card.children?.toString() || "Untitled",
   description: card.children?.toString() || "",
   projectIds: [],
   workRecordIds: [],

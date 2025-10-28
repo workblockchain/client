@@ -24,7 +24,7 @@ import {
 } from "@/pages/Dashboard/interfaces"
 import {fieldDefinitionsToFormFieldDefinitions} from "@/pages/Dashboard/workRecordUtils"
 import {t} from "i18next"
-import {useMemo} from "react"
+import {useEffect, useMemo} from "react"
 import {Controller, useForm} from "react-hook-form"
 import styled from "styled-components"
 
@@ -33,6 +33,13 @@ interface WorkRecordFormModalProps {
   isOpen: boolean
   initialData?: WorkRecord
   onClose: () => void
+}
+
+const empty: Partial<WorkRecord> = {
+  wid: "",
+  description: "",
+  outcome: "",
+  duration: 0,
 }
 
 export function WorkRecordFormModal({
@@ -49,29 +56,28 @@ export function WorkRecordFormModal({
     return fieldDefinitionsToFormFieldDefinitions(workRecordFieldDefinitions)
   }, [])
 
-  const defaultValues = useMemo(() => {
-    const workRecord: WorkRecord = {
-      wid: "",
-      outcome: "",
-      duration: 0,
-      ...initialData,
-    }
-    return workRecord
-  }, [initialData])
-
   const {control, handleSubmit, reset} = useForm({
-    defaultValues: defaultValues as unknown as Record<string, unknown>,
+    defaultValues: empty,
   })
+
+  // 当 initialData 变化时，重置表单值
+  useEffect(() => {
+    if (initialData) {
+      reset(initialData)
+    }
+  }, [initialData, reset])
 
   // 处理表单提交
   const handleFormSubmit = (data: unknown) => {
     const value = data as Partial<WorkRecord>
     const workRecord: WorkRecord = {
-      ...defaultValues,
       ...value,
       // 确保在编辑模式下保留原始ID
-      wid: isEditMode ? defaultValues.wid : value.wid || defaultValues.wid,
+      wid: isEditMode ? initialData!.wid : value.wid,
+      // 确保在编辑模式下保留原始创建时间
+      createdAt: isEditMode ? initialData!.createdAt : Date.now(),
     }
+    console.log("初始数据：", initialData, "表单提交:", workRecord)
     submit(workRecord)
     reset()
   }

@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {WorkData} from "@/interfaces"
+import {RuntimeRecord, WorkData} from "@/interfaces"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {colors} from "@/styles"
 import {secondToTime} from "@/utils"
@@ -27,20 +27,23 @@ import {Button} from "../Button"
 import {svgIcons} from "../Icons"
 
 interface RecordItemProps {
-  wid: string
+  id: string
 }
 
-export const RecordItemUnsigned = ({wid}: RecordItemProps) => {
-  const {getWorkRecord} = useSignedRecord()
-  const work = getWorkRecord(wid)
+export const RecordItemUnsigned = ({id}: RecordItemProps) => {
+  const getWorkRecord = useSignedRecord((state) => state.getWorkRecord)
+  const work = getWorkRecord(id)
   if (!work) return null
-  return <RecordItem wid={wid} work={work} />
+  return <RecordItem id={id} rec={work} />
 }
 
-export const RecordItem = ({work}: RecordItemProps & {work: WorkData}) => {
+export const RecordItem = ({
+  rec,
+}: RecordItemProps & {rec: RuntimeRecord<WorkData>}) => {
+  const work = rec.data
   const datetime = dayjs(work.startTime)
   const isBreak = work.workTags.includes(POMODORO_BREAK)
-  const isSigned = !!work.isSigned
+  const isSigned = !!rec.isSigned
   return (
     <StyledRecordItem $isSigned={isSigned} $isNarrow={isBreak}>
       <DateTime>
@@ -53,7 +56,7 @@ export const RecordItem = ({work}: RecordItemProps & {work: WorkData}) => {
         <Tags>{work.outcome}</Tags>
       </RecordContent>
       {!isSigned ? (
-        <Button $size="small" onClick={() => handleSign(work.wid)}>
+        <Button $size="small" onClick={() => handleSign(rec.id)}>
           签名
         </Button>
       ) : (
@@ -65,9 +68,10 @@ export const RecordItem = ({work}: RecordItemProps & {work: WorkData}) => {
   )
 }
 
-async function handleSign(workId: string) {
-  const {workRecords, createRecord, setWorkSigned} = useSignedRecord.getState()
-  const work = workRecords.find((w) => w.wid === workId)
+async function handleSign(id: string) {
+  const recs = useSignedRecord((state) => state.workRecords)
+  const sign = useSignedRecord((state) => state.signWorkRecord)
+  const work = recs.find((w) => w.id === id)
 
   if (!work) {
     toast.error("签名失败, 未找到对应的记录")
@@ -75,8 +79,7 @@ async function handleSign(workId: string) {
   }
 
   try {
-    await createRecord(workId, JSON.stringify(work))
-    setWorkSigned(workId, true)
+    await sign(id)
     toast.success("签名成功")
   } catch (error) {
     toast.error("签名失败")

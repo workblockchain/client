@@ -45,44 +45,20 @@ const columns: ColumnDef<WorkRecord>[] = workRecordFieldsToColumnDefs(
 
 function WorkContainer() {
   const workRecords = useSignedRecord((state) => state.workRecords)
-  const signedRecords = useSignedRecord((state) => state.signedRecords)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingRecord, setEditingRecord] = useState<WorkRecord>()
-
-  const combinedRecords = useMemo(() => {
-    const ids = new Set<string>()
-    const uniqueRecords: WorkRecord[] = []
-    workRecords.forEach((r) => {
-      if (!ids.has(r.wid)) {
-        uniqueRecords.push({...r})
-        ids.add(r.wid)
-      }
-    })
-    signedRecords.forEach((r) => {
-      const data = JSON.parse(r.data) as Partial<WorkData>
-      if (data.wid && !ids.has(data.wid)) {
-        uniqueRecords.push({
-          wid: data.wid,
-          userId: data.userId ?? r.createdBy,
-          startTime: data.startTime,
-          endTime: data.endTime,
-          description: data.description,
-          isSigned: true,
-          ...data,
-        })
-        ids.add(data.wid)
-      }
-    })
-    return uniqueRecords
-  }, [workRecords, signedRecords])
 
   const filterConditions = useViewPreference((state) => state.filterConditions)
   const groupConditions = useViewPreference((state) => state.groupConditions)
   const sortConditions = useViewPreference((state) => state.sortConditions)
 
   const conditionedRecords = useMemo(() => {
-    return applyConditions(combinedRecords, filterConditions, sortConditions)
-  }, [combinedRecords, filterConditions, sortConditions])
+    const records = workRecords.map((r) => ({
+      ...r.data,
+      createdAt: r.createdAt,
+    })) as WorkRecord[]
+    return applyConditions(records, filterConditions, sortConditions)
+  }, [workRecords, filterConditions, sortConditions])
 
   const handleRowClick = (row: WorkRecord) => {
     console.log("Record clicked:", row)
@@ -100,14 +76,7 @@ function WorkContainer() {
       }
     } else {
       // 创建模式：添加新记录
-      // 生成唯一的wid
-      const wid = `work-${Date.now()}`
-      const workData = {
-        ...data,
-        wid,
-        createdAt: Date.now(),
-      } as WorkData
-      useSignedRecord.getState().addWorkRecord(workData)
+      useSignedRecord.getState().addWorkRecord(data as WorkData)
     }
 
     setIsFormOpen(false)
