@@ -16,7 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import type {ColumnDef} from "@tanstack/react-table"
-import type {FormFieldDefinition} from "./types"
+import type {HookFormFieldDefinition} from "./types"
 
 /**
  * 获取字段的默认值
@@ -24,7 +24,7 @@ import type {FormFieldDefinition} from "./types"
  * @returns 默认值
  */
 export function getFieldDefaultValue(
-  field: FormFieldDefinition
+  field: HookFormFieldDefinition
 ): string | number | boolean {
   if (field.defaultValue !== undefined) {
     return field.defaultValue
@@ -54,7 +54,7 @@ export function getFieldDefaultValue(
  * @returns 初始化后的表单数据
  */
 export function initializeFormData(
-  fields: FormFieldDefinition[],
+  fields: HookFormFieldDefinition[],
   initialData: Record<string, string | number | boolean> = {}
 ): Record<string, string | number | boolean> {
   const data: Record<string, string | number | boolean> = {}
@@ -81,8 +81,8 @@ export function initializeFormData(
 export function generateFormFieldsFromColumns<TData>(
   columns: ColumnDef<TData>[],
   excludedKeys: string[] = []
-): FormFieldDefinition[] {
-  const formFields: FormFieldDefinition[] = []
+): HookFormFieldDefinition[] {
+  const formFields: HookFormFieldDefinition[] = []
 
   columns.forEach((column) => {
     const accessorKey = (column as any).accessorKey as string
@@ -101,7 +101,7 @@ export function generateFormFieldsFromColumns<TData>(
     // 根据列类型推断表单字段类型
     const fieldType = inferFieldTypeFromColumn(column)
 
-    const formField: FormFieldDefinition = {
+    const formField: HookFormFieldDefinition = {
       key,
       label,
       type: fieldType,
@@ -126,7 +126,7 @@ export function generateFormFieldsFromColumns<TData>(
  */
 function inferFieldTypeFromColumn<TData>(
   column: ColumnDef<TData>
-): FormFieldDefinition["type"] {
+): HookFormFieldDefinition["type"] {
   // 检查列元数据中是否有明确的表单类型
   if ((column as any).meta?.formType) {
     return (column as any).meta.formType

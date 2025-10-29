@@ -17,62 +17,32 @@
 
 import {Button} from "@/components/Button"
 import {FormField} from "@/components/DataFormDrawer/FormField"
+import {HookFormFieldDefinition} from "@/components/DataFormDrawer/types"
 import {FixedModal} from "@/components/Modal"
-import {
-  RequirementRecord,
-  requirementRecordFieldDefinitions,
-} from "@/pages/Dashboard/interfaces"
-import {fieldDefinitionsToFormFieldDefinitions} from "@/pages/Dashboard/workRecordUtils"
+import {RequirementRecord} from "@/pages/Dashboard/interfaces"
 import {t} from "i18next"
-import {useEffect, useMemo} from "react"
+import {useEffect} from "react"
 import {Controller, useForm} from "react-hook-form"
 import styled from "styled-components"
 
 interface RequirementFormModalProps {
   submit: (data: RequirementRecord) => void
   isOpen: boolean
+  isEditMode: boolean
+  fields: HookFormFieldDefinition[]
   initialData?: RequirementRecord
   onClose: () => void
-}
-
-const empty: Partial<RequirementRecord> = {
-  rid: "",
-  title: "",
-  description: "",
-  priority: "medium",
-  status: "todo",
-  assignedTo: "",
-  estimated: 0,
-  tags: [],
-  requirementType: "",
-  projectIds: [],
-  workRecordIds: [],
-  progress: 0,
-  contributors: [],
-  relatedOutcomes: [],
-  createdAt: Date.now(),
-  updatedAt: Date.now(),
 }
 
 export function RequirementFormModal({
   submit,
   isOpen,
+  isEditMode,
+  fields,
   initialData,
   onClose,
 }: RequirementFormModalProps) {
-  // 判断是创建还是编辑模式
-  const isEditMode = Boolean(initialData?.rid)
-
-  // 使用工具函数转换字段定义
-  const formFields = useMemo(() => {
-    return fieldDefinitionsToFormFieldDefinitions(
-      requirementRecordFieldDefinitions
-    )
-  }, [])
-
-  const {control, handleSubmit, reset} = useForm({
-    defaultValues: empty,
-  })
+  const {control, handleSubmit, reset} = useForm()
 
   // 当 initialData 变化时，重置表单值
   useEffect(() => {
@@ -81,20 +51,6 @@ export function RequirementFormModal({
     }
   }, [initialData, reset])
 
-  // 处理表单提交
-  const handleFormSubmit = (data: unknown) => {
-    const value = data as Partial<RequirementRecord>
-    const requirementRecord: RequirementRecord = {
-      ...value,
-      // 确保在编辑模式下保留原始ID
-      rid: isEditMode ? initialData!.rid : value.rid,
-      // 更新时间戳
-      updatedAt: Date.now(),
-    }
-    submit(requirementRecord)
-    reset()
-  }
-
   return (
     <FixedModal
       isOpen={isOpen}
@@ -102,8 +58,8 @@ export function RequirementFormModal({
       title={isEditMode ? t`requirement.edit` : t`requirement.create`}
     >
       <Container>
-        <Form onSubmit={handleSubmit(handleFormSubmit)}>
-          {formFields.map((field) => (
+        <Form onSubmit={handleSubmit(submit)}>
+          {fields.map((field) => (
             <Controller
               key={field.key}
               name={field.key}
@@ -127,7 +83,7 @@ export function RequirementFormModal({
         </Form>
 
         <Actions>
-          <Button onClick={handleSubmit(handleFormSubmit)} type="button">
+          <Button onClick={handleSubmit(submit)} type="button">
             {isEditMode ? t`requirement.update` : t`requirement.create`}
           </Button>
         </Actions>

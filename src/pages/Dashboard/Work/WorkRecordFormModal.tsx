@@ -17,48 +17,32 @@
 
 import {Button} from "@/components/Button"
 import {FormField} from "@/components/DataFormDrawer/FormField"
+import {HookFormFieldDefinition} from "@/components/DataFormDrawer/types"
 import {FixedModal} from "@/components/Modal"
-import {
-  WorkRecord,
-  workRecordFieldDefinitions,
-} from "@/pages/Dashboard/interfaces"
-import {fieldDefinitionsToFormFieldDefinitions} from "@/pages/Dashboard/workRecordUtils"
+import {WorkRecord} from "@/pages/Dashboard/interfaces"
 import {t} from "i18next"
-import {useEffect, useMemo} from "react"
+import {useEffect} from "react"
 import {Controller, useForm} from "react-hook-form"
 import styled from "styled-components"
 
 interface WorkRecordFormModalProps {
   submit: (data: WorkRecord) => void
   isOpen: boolean
+  isEditMode: boolean
+  fields: HookFormFieldDefinition[]
   initialData?: WorkRecord
   onClose: () => void
-}
-
-const empty: Partial<WorkRecord> = {
-  wid: "",
-  description: "",
-  outcome: "",
-  duration: 0,
 }
 
 export function WorkRecordFormModal({
   submit,
   isOpen,
+  isEditMode,
   initialData,
+  fields,
   onClose,
 }: WorkRecordFormModalProps) {
-  // 判断是创建还是编辑模式
-  const isEditMode = Boolean(initialData?.wid)
-
-  // 使用工具函数转换字段定义
-  const formFields = useMemo(() => {
-    return fieldDefinitionsToFormFieldDefinitions(workRecordFieldDefinitions)
-  }, [])
-
-  const {control, handleSubmit, reset} = useForm({
-    defaultValues: empty,
-  })
+  const {control, handleSubmit, reset} = useForm()
 
   // 当 initialData 变化时，重置表单值
   useEffect(() => {
@@ -67,21 +51,6 @@ export function WorkRecordFormModal({
     }
   }, [initialData, reset])
 
-  // 处理表单提交
-  const handleFormSubmit = (data: unknown) => {
-    const value = data as Partial<WorkRecord>
-    const workRecord: WorkRecord = {
-      ...value,
-      // 确保在编辑模式下保留原始ID
-      wid: isEditMode ? initialData!.wid : value.wid,
-      // 确保在编辑模式下保留原始创建时间
-      createdAt: isEditMode ? initialData!.createdAt : Date.now(),
-    }
-    console.log("初始数据：", initialData, "表单提交:", workRecord)
-    submit(workRecord)
-    reset()
-  }
-
   return (
     <FixedModal
       isOpen={isOpen}
@@ -89,8 +58,8 @@ export function WorkRecordFormModal({
       title={isEditMode ? t`work.edit` : t`work.create`}
     >
       <Container>
-        <Form onSubmit={handleSubmit(handleFormSubmit)}>
-          {formFields.map((field) => (
+        <Form onSubmit={handleSubmit(submit)}>
+          {fields.map((field) => (
             <Controller
               key={field.key}
               name={field.key}
@@ -114,7 +83,7 @@ export function WorkRecordFormModal({
         </Form>
 
         <Actions>
-          <Button onClick={handleSubmit(handleFormSubmit)} type="button">
+          <Button onClick={handleSubmit(submit)} type="button">
             {isEditMode ? t`work.update` : t`work.create`}
           </Button>
         </Actions>

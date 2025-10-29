@@ -20,7 +20,7 @@ import {Controller, useForm} from "react-hook-form"
 import {Button} from "../Button"
 import * as S from "./DataFormDrawer.styles"
 import {FormField} from "./FormField"
-import type {DataFormDrawerProps, FormFieldDefinition} from "./types"
+import type {DataFormDrawerProps, HookFormFieldDefinition} from "./types"
 
 /**
  * 数据表单抽屉组件 - 使用 react-hook-form 重构
@@ -94,7 +94,7 @@ export function DataFormDrawer({
  * 获取字段的默认值
  */
 function getDefaultValueForField(
-  field: FormFieldDefinition
+  field: HookFormFieldDefinition
 ): string | number | boolean | string[] {
   if (field.defaultValue !== undefined) {
     return field.defaultValue
@@ -117,7 +117,7 @@ function getDefaultValueForField(
 /**
  * 将字段验证规则转换为 react-hook-form 验证规则
  */
-function getValidationRules(field: FormFieldDefinition) {
+function getValidationRules(field: HookFormFieldDefinition) {
   const rules: Record<string, unknown> = {}
 
   if (field.required) {
