@@ -20,22 +20,16 @@ import {Flex} from "@/components/CommonLayout"
 import {svgIcons} from "@/components/Icons"
 import {Table} from "@/components/Table/Table"
 import {WorkData} from "@/interfaces/records"
-import {
-  WorkRecord,
-  workRecordFieldDefinitions,
-} from "@/pages/Dashboard/interfaces"
-import {applyConditions} from "@/pages/Dashboard/recordUtils"
-import {
-  createGroupSort,
-  workRecordFieldsToColumnDefs,
-} from "@/pages/Dashboard/workRecordUtils"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {ColumnDef} from "@tanstack/react-table"
 import {t} from "i18next"
 import {useMemo, useState} from "react"
 import styled from "styled-components"
 import DataConditionRow from "../DataConditionRow"
+import {WorkRecord, workRecordFieldDefinitions} from "../interfaces"
+import {applyConditions} from "../recordUtils"
 import {useViewPreference} from "../useDashboardPreference"
+import {createGroupSort, workRecordFieldsToColumnDefs} from "../workRecordUtils"
 import {WorkRecordForm} from "./WorkRecordForm"
 
 // 使用新的字段定义系统生成 columns

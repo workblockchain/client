@@ -16,11 +16,11 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {DataFormDrawer} from "@/components/DataFormDrawer"
+import {t} from "i18next"
 import {
   RequirementRecord,
   requirementRecordFormFields as fields,
-} from "@/pages/Dashboard/interfaces"
-import {t} from "i18next"
+} from "../interfaces"
 import {RequirementFormModal} from "./RequirementFormModal"
 
 export function RequirementForm({

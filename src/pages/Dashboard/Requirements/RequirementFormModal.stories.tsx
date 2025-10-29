@@ -15,12 +15,12 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import type {Meta, StoryObj} from "@storybook/react-vite"
+import {useState} from "react"
 import {
   RequirementRecord,
   requirementRecordFormFields as fields,
-} from "@/pages/Dashboard/interfaces"
-import type {Meta, StoryObj} from "@storybook/react-vite"
-import {useState} from "react"
+} from "../interfaces"
 import {RequirementFormModal} from "./RequirementFormModal"
 
 const meta: Meta<typeof RequirementFormModal> = {
