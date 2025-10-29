@@ -15,9 +15,9 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {WorkRecord} from "@/pages/Dashboard/interfaces"
 import type {Meta, StoryObj} from "@storybook/react-vite"
 import {useState} from "react"
+import {WorkRecord, workRecordFormFields as fields} from "../interfaces"
 import {WorkRecordFormModal} from "./WorkRecordFormModal"
 
 const meta: Meta<typeof WorkRecordFormModal> = {
@@ -62,6 +62,8 @@ const WorkRecordFormModalExample = () => {
       <WorkRecordFormModal
         submit={handleSubmit}
         isOpen={isOpen}
+        isEditMode={false}
+        fields={fields}
         onClose={() => setIsOpen(false)}
       />
     </div>
@@ -108,6 +110,8 @@ export const WithInitialData: Story = {
         <WorkRecordFormModal
           submit={handleSubmit}
           isOpen={isOpen}
+          isEditMode
+          fields={fields}
           initialData={initialData}
           onClose={() => setIsOpen(false)}
         />

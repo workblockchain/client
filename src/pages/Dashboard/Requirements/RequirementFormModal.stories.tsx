@@ -15,7 +15,10 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {RequirementRecord} from "@/pages/Dashboard/interfaces"
+import {
+  RequirementRecord,
+  requirementRecordFormFields as fields,
+} from "@/pages/Dashboard/interfaces"
 import type {Meta, StoryObj} from "@storybook/react-vite"
 import {useState} from "react"
 import {RequirementFormModal} from "./RequirementFormModal"
@@ -62,6 +65,8 @@ const RequirementFormModalExample = () => {
       <RequirementFormModal
         submit={handleSubmit}
         isOpen={isOpen}
+        isEditMode={false}
+        fields={fields}
         onClose={() => setIsOpen(false)}
       />
     </div>
@@ -120,6 +125,8 @@ export const WithInitialData: Story = {
         <RequirementFormModal
           submit={handleSubmit}
           isOpen={isOpen}
+          isEditMode
+          fields={fields}
           initialData={initialData}
           onClose={() => setIsOpen(false)}
         />

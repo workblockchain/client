@@ -15,7 +15,10 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {ProjectRecord} from "@/pages/Dashboard/interfaces"
+import {
+  ProjectRecord,
+  projectRecordFormFields as fields,
+} from "@/pages/Dashboard/interfaces"
 import type {Meta, StoryObj} from "@storybook/react-vite"
 import {useState} from "react"
 import {ProjectFormModal} from "./ProjectFormModal"
@@ -62,6 +65,8 @@ const ProjectFormModalExample = () => {
       <ProjectFormModal
         submit={handleSubmit}
         isOpen={isOpen}
+        isEditMode={false}
+        fields={fields}
         onClose={() => setIsOpen(false)}
       />
     </div>
@@ -115,6 +120,8 @@ export const WithInitialData: Story = {
         <ProjectFormModal
           submit={handleSubmit}
           isOpen={isOpen}
+          isEditMode
+          fields={fields}
           initialData={initialData}
           onClose={() => setIsOpen(false)}
         />

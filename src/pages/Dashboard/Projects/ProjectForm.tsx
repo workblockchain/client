@@ -18,11 +18,9 @@
 import {DataFormDrawer} from "@/components/DataFormDrawer"
 import {
   ProjectRecord,
-  projectRecordFieldDefinitions,
+  projectRecordFormFields as fields,
 } from "@/pages/Dashboard/interfaces"
-import {fieldDefinitionsToFormFieldDefinitions} from "@/pages/Dashboard/workRecordUtils"
 import {t} from "i18next"
-import {useMemo} from "react"
 import {ProjectFormModal} from "./ProjectFormModal"
 
 export function ProjectForm({
@@ -38,41 +36,15 @@ export function ProjectForm({
   onClose: () => void
   useDrawer?: boolean
 }) {
-  // 使用工具函数转换字段定义
-  const formFields = useMemo(() => {
-    return fieldDefinitionsToFormFieldDefinitions(projectRecordFieldDefinitions)
-  }, [])
-
-  const defaultValues = useMemo(() => {
-    const projectRecord: ProjectRecord = {
-      pid: "",
-      name: "",
-      description: "",
-      projectType: "",
-      status: "active",
-      assignedTo: "",
-      progress: 0,
-      contributors: [],
-      requirementIds: [],
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      ...initialData,
-    }
-    return projectRecord
-  }, [initialData])
-
-  // 判断是创建还是编辑模式
   const isEditMode = Boolean(initialData?.pid)
 
   // 处理表单提交
-  const handleSubmit = (value: unknown) => {
-    const data = value as Partial<ProjectRecord>
+  const handleSubmit = (data: unknown) => {
+    const value = data as Partial<ProjectRecord>
     const projectRecord: ProjectRecord = {
-      ...defaultValues,
-      ...data,
-      // 确保在编辑模式下保留原始ID
-      pid: isEditMode ? defaultValues.pid : data.pid || defaultValues.pid,
-      // 更新时间戳
+      ...initialData,
+      ...value,
+      createdAt: isEditMode ? initialData?.createdAt : Date.now(),
       updatedAt: Date.now(),
     }
     submit(projectRecord)
@@ -86,8 +58,8 @@ export function ProjectForm({
         onSubmit={handleSubmit}
         title={isEditMode ? t`project.edit` : t`project.create`}
         mode={isEditMode ? "edit" : "create"}
-        fields={formFields}
-        initialData={defaultValues}
+        fields={fields}
+        initialData={initialData}
         submitText={isEditMode ? t`project.update` : t`project.create`}
       />
     )
@@ -97,8 +69,10 @@ export function ProjectForm({
     <ProjectFormModal
       submit={submit}
       isOpen={isOpen}
-      onClose={onClose}
+      fields={fields}
+      isEditMode={isEditMode}
       initialData={initialData}
+      onClose={onClose}
     />
   )
 }
