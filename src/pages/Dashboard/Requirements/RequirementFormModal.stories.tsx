@@ -19,7 +19,7 @@ import type {Meta, StoryObj} from "@storybook/react-vite"
 import {useState} from "react"
 import {
   RequirementRecord,
-  requirementRecordFormFields as fields,
+  requirementRecordFieldDefinitions as fields,
 } from "../interfaces"
 import {RequirementFormModal} from "./RequirementFormModal"
 

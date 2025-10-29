@@ -17,7 +17,11 @@
 
 import {DataFormDrawer} from "@/components/DataFormDrawer"
 import {t} from "i18next"
-import {ProjectRecord, projectRecordFormFields as fields} from "../interfaces"
+import {
+  ProjectRecord,
+  projectRecordFieldDefinitions as fields,
+} from "../interfaces"
+import {fieldDefinitionToHookFormDefinition} from "../workRecordUtils"
 import {ProjectFormModal} from "./ProjectFormModal"
 
 export function ProjectForm({
@@ -55,7 +59,7 @@ export function ProjectForm({
         onSubmit={handleSubmit}
         title={isEditMode ? t`project.edit` : t`project.create`}
         mode={isEditMode ? "edit" : "create"}
-        fields={fields}
+        fields={fields.map(fieldDefinitionToHookFormDefinition)}
         initialData={initialData}
         submitText={isEditMode ? t`project.update` : t`project.create`}
       />

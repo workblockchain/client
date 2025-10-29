@@ -182,7 +182,7 @@ export function fieldDefinitionsToConditionDefinitions(
 /**
  * 将 FieldDefinition 转换为 FormFieldDefinition
  */
-function fieldDefinitionToFormFieldDefinition(
+export function fieldDefinitionToHookFormDefinition(
   fieldDef: FieldDefinition
 ): HookFormFieldDefinition {
   // 处理类型映射
@@ -213,17 +213,6 @@ function fieldDefinitionToFormFieldDefinition(
   }
 
   return baseField
-}
-
-/**
- * 将 FieldDefinition 数组转换为 react-hook-form 可用的 FormFieldDefinition 数组
- */
-export function fieldDefinitionsToHookFormDefinitions(
-  fieldDefs: FieldDefinition[]
-): HookFormFieldDefinition[] {
-  return fieldDefs
-    .filter((field) => !field.hidden)
-    .map(fieldDefinitionToFormFieldDefinition)
 }
 
 /**

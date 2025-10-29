@@ -17,19 +17,19 @@
 
 import {Button} from "@/components/Button"
 import {FormField} from "@/components/DataFormDrawer/FormField"
-import {HookFormFieldDefinition} from "@/components/DataFormDrawer/types"
 import {FixedModal} from "@/components/Modal"
 import {t} from "i18next"
 import {useEffect} from "react"
 import {Controller, useForm} from "react-hook-form"
 import styled from "styled-components"
-import {RequirementRecord} from "../interfaces"
+import {FieldDefinition, RequirementRecord} from "../interfaces"
+import {fieldDefinitionToHookFormDefinition} from "../workRecordUtils"
 
 interface RequirementFormModalProps {
   submit: (data: RequirementRecord) => void
   isOpen: boolean
   isEditMode: boolean
-  fields: HookFormFieldDefinition[]
+  fields: FieldDefinition[]
   initialData?: RequirementRecord
   onClose: () => void
 }
@@ -70,7 +70,7 @@ export function RequirementFormModal({
                 fieldState: {error},
               }) => (
                 <FormField
-                  field={field}
+                  field={fieldDefinitionToHookFormDefinition(field)}
                   value={value ?? getDefaultValueForField(field)}
                   onChange={onChange}
                   onBlur={onBlur}
