@@ -20,22 +20,19 @@ import {Flex} from "@/components/CommonLayout"
 import {svgIcons} from "@/components/Icons"
 import {Table} from "@/components/Table/Table"
 import {RequirementData} from "@/interfaces"
-import {
-  RequirementRecord,
-  requirementRecordFieldDefinitions,
-} from "@/pages/Dashboard/interfaces"
-import {applyConditions} from "@/pages/Dashboard/recordUtils"
-import {
-  createGroupSort,
-  fieldDefinitionsToColumnDefs,
-} from "@/pages/Dashboard/workRecordUtils"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {ColumnDef} from "@tanstack/react-table"
 import {t} from "i18next"
 import {useMemo, useState} from "react"
 import styled from "styled-components"
 import DataConditionRow from "../DataConditionRow"
+import {
+  RequirementRecord,
+  requirementRecordFieldDefinitions,
+} from "../interfaces"
+import {applyConditions} from "../recordUtils"
 import {useViewPreference} from "../useDashboardPreference"
+import {createGroupSort, fieldDefinitionsToColumnDefs} from "../workRecordUtils"
 import {RequirementForm} from "./RequirementForm"
 
 // 使用新的字段定义系统生成 columns

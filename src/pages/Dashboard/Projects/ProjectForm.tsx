@@ -16,11 +16,8 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {DataFormDrawer} from "@/components/DataFormDrawer"
-import {
-  ProjectRecord,
-  projectRecordFormFields as fields,
-} from "@/pages/Dashboard/interfaces"
 import {t} from "i18next"
+import {ProjectRecord, projectRecordFormFields as fields} from "../interfaces"
 import {ProjectFormModal} from "./ProjectFormModal"
 
 export function ProjectForm({

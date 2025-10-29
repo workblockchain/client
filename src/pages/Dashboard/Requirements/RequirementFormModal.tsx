@@ -19,11 +19,11 @@ import {Button} from "@/components/Button"
 import {FormField} from "@/components/DataFormDrawer/FormField"
 import {HookFormFieldDefinition} from "@/components/DataFormDrawer/types"
 import {FixedModal} from "@/components/Modal"
-import {RequirementRecord} from "@/pages/Dashboard/interfaces"
 import {t} from "i18next"
 import {useEffect} from "react"
 import {Controller, useForm} from "react-hook-form"
 import styled from "styled-components"
+import {RequirementRecord} from "../interfaces"
 
 interface RequirementFormModalProps {
   submit: (data: RequirementRecord) => void

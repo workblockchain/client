@@ -15,12 +15,9 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {
-  ProjectRecord,
-  projectRecordFormFields as fields,
-} from "@/pages/Dashboard/interfaces"
 import type {Meta, StoryObj} from "@storybook/react-vite"
 import {useState} from "react"
+import {ProjectRecord, projectRecordFormFields as fields} from "../interfaces"
 import {ProjectFormModal} from "./ProjectFormModal"
 
 const meta: Meta<typeof ProjectFormModal> = {
