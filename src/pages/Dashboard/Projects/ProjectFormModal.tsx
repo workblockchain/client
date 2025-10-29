@@ -17,55 +17,32 @@
 
 import {Button} from "@/components/Button"
 import {FormField} from "@/components/DataFormDrawer/FormField"
+import {HookFormFieldDefinition} from "@/components/DataFormDrawer/types"
 import {FixedModal} from "@/components/Modal"
-import {
-  ProjectRecord,
-  projectRecordFieldDefinitions,
-} from "@/pages/Dashboard/interfaces"
-import {fieldDefinitionsToFormFieldDefinitions} from "@/pages/Dashboard/workRecordUtils"
+import {ProjectRecord} from "@/pages/Dashboard/interfaces"
 import {t} from "i18next"
-import {useEffect, useMemo} from "react"
+import {useEffect} from "react"
 import {Controller, useForm} from "react-hook-form"
 import styled from "styled-components"
 
 interface ProjectFormModalProps {
   submit: (data: ProjectRecord) => void
   isOpen: boolean
+  isEditMode: boolean
+  fields: HookFormFieldDefinition[]
   initialData?: ProjectRecord
   onClose: () => void
-}
-
-const empty: Partial<ProjectRecord> = {
-  pid: "",
-  name: "",
-  description: "",
-  projectType: "",
-  status: "active",
-  assignedTo: "",
-  progress: 0,
-  contributors: [],
-  requirementIds: [],
-  createdAt: Date.now(),
-  updatedAt: Date.now(),
 }
 
 export function ProjectFormModal({
   submit,
   isOpen,
+  isEditMode,
+  fields,
   initialData,
   onClose,
 }: ProjectFormModalProps) {
-  // 判断是创建还是编辑模式
-  const isEditMode = Boolean(initialData?.pid)
-
-  // 使用工具函数转换字段定义
-  const formFields = useMemo(() => {
-    return fieldDefinitionsToFormFieldDefinitions(projectRecordFieldDefinitions)
-  }, [])
-
-  const {control, handleSubmit, reset} = useForm({
-    defaultValues: empty,
-  })
+  const {control, handleSubmit, reset} = useForm()
 
   // 当 initialData 变化时，重置表单值
   useEffect(() => {
@@ -74,20 +51,6 @@ export function ProjectFormModal({
     }
   }, [initialData, reset])
 
-  // 处理表单提交
-  const handleFormSubmit = (data: unknown) => {
-    const value = data as Partial<ProjectRecord>
-    const projectRecord: ProjectRecord = {
-      ...value,
-      // 确保在编辑模式下保留原始ID
-      pid: isEditMode ? initialData!.pid : value.pid || empty.pid,
-      // 更新时间戳
-      updatedAt: Date.now(),
-    }
-    submit(projectRecord)
-    reset()
-  }
-
   return (
     <FixedModal
       isOpen={isOpen}
@@ -95,8 +58,8 @@ export function ProjectFormModal({
       title={isEditMode ? t`project.edit` : t`project.create`}
     >
       <Container>
-        <Form onSubmit={handleSubmit(handleFormSubmit)}>
-          {formFields.map((field) => (
+        <Form onSubmit={handleSubmit(submit)}>
+          {fields.map((field) => (
             <Controller
               key={field.key}
               name={field.key}
@@ -120,7 +83,7 @@ export function ProjectFormModal({
         </Form>
 
         <Actions>
-          <Button onClick={handleSubmit(handleFormSubmit)} type="button">
+          <Button onClick={handleSubmit(submit)} type="button">
             {isEditMode ? t`project.update` : t`project.create`}
           </Button>
         </Actions>
