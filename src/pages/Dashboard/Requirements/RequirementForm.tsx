@@ -19,8 +19,9 @@ import {DataFormDrawer} from "@/components/DataFormDrawer"
 import {t} from "i18next"
 import {
   RequirementRecord,
-  requirementRecordFormFields as fields,
+  requirementRecordFieldDefinitions as fields,
 } from "../interfaces"
+import {fieldDefinitionToHookFormDefinition} from "../workRecordUtils"
 import {RequirementFormModal} from "./RequirementFormModal"
 
 export function RequirementForm({
@@ -58,7 +59,7 @@ export function RequirementForm({
         onSubmit={handleSubmit}
         title={isEditMode ? t`requirement.edit` : t`requirement.create`}
         mode={isEditMode ? "edit" : "create"}
-        fields={fields}
+        fields={fields.map(fieldDefinitionToHookFormDefinition)}
         initialData={initialData}
         submitText={isEditMode ? t`requirement.update` : t`requirement.create`}
       />

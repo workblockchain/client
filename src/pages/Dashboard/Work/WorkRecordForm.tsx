@@ -18,7 +18,8 @@
 import {DataFormDrawer} from "@/components/DataFormDrawer"
 import {useUserProfile} from "@/stores/useUserProfile"
 import {t} from "i18next"
-import {WorkRecord, workRecordFormFields as fields} from "../interfaces"
+import {WorkRecord, workRecordFieldDefinitions as fields} from "../interfaces"
+import {fieldDefinitionToHookFormDefinition} from "../workRecordUtils"
 import {WorkRecordFormModal} from "./WorkRecordFormModal"
 
 export function WorkRecordForm({
@@ -57,7 +58,7 @@ export function WorkRecordForm({
         onSubmit={handleSubmit}
         title={isEditMode ? t`work.edit` : t`work.create`}
         mode={isEditMode ? "edit" : "create"}
-        fields={fields}
+        fields={fields.map(fieldDefinitionToHookFormDefinition)}
         initialData={{...initialData, userId: uid}}
         submitText={isEditMode ? t`work.edit` : t`work.create`}
       />

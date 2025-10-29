@@ -17,19 +17,19 @@
 
 import {Button} from "@/components/Button"
 import {FormField} from "@/components/DataFormDrawer/FormField"
-import {HookFormFieldDefinition} from "@/components/DataFormDrawer/types"
 import {FixedModal} from "@/components/Modal"
 import {t} from "i18next"
 import {useEffect} from "react"
 import {Controller, useForm} from "react-hook-form"
 import styled from "styled-components"
-import {WorkRecord} from "../interfaces"
+import {FieldDefinition, WorkRecord} from "../interfaces"
+import {fieldDefinitionToHookFormDefinition} from "../workRecordUtils"
 
 interface WorkRecordFormModalProps {
   submit: (data: WorkRecord) => void
   isOpen: boolean
   isEditMode: boolean
-  fields: HookFormFieldDefinition[]
+  fields: FieldDefinition[]
   initialData?: WorkRecord
   onClose: () => void
 }
@@ -70,7 +70,7 @@ export function WorkRecordFormModal({
                 fieldState: {error},
               }) => (
                 <FormField
-                  field={field}
+                  field={fieldDefinitionToHookFormDefinition(field)}
                   value={value ?? getDefaultValueForField(field)}
                   onChange={onChange}
                   onBlur={onBlur}
