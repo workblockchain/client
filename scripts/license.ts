@@ -155,8 +155,10 @@ function main() {
     }),
   })
   const codes = ["src", "scripts"].map((path) => join(root, path))
-  argv.includes("-c")
-    ? codes.forEach((code) => generator.reviewDir(code))
-    : codes.forEach((code) => generator.updateDir(code))
+  if (argv.includes("-c")) {
+    codes.forEach((code) => generator.reviewDir(code))
+  } else {
+    codes.forEach((code) => generator.updateDir(code))
+  }
 }
 main()
