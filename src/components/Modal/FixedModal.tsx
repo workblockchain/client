@@ -15,10 +15,20 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {colors} from "@/styles/colors"
 import styled from "styled-components"
 import {Modal, ModalProps} from "./Modal"
 
-export const FixedModal = (props: ModalProps) => (
+export interface FixedModalProps extends ModalProps {
+  messageType?: "info" | "warn" | "error"
+  message?: string
+}
+
+export const FixedModal = ({
+  messageType,
+  message,
+  ...props
+}: FixedModalProps) => (
   <Modal
     style={{
       width: 600,
@@ -28,10 +38,50 @@ export const FixedModal = (props: ModalProps) => (
       flexDirection: "column",
       overflow: "hidden",
     }}
-    bodyComponent={(children) => <ModalBody>{children}</ModalBody>}
+    bodyComponent={(children) => (
+      <>
+        {message && (
+          <MessageContainer $type={messageType}>{message}</MessageContainer>
+        )}
+        <ModalBody>{children}</ModalBody>
+      </>
+    )}
     {...props}
   />
 )
+
+const MessageContainer = styled.div<{$type?: "info" | "warn" | "error"}>`
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1.4;
+
+  ${({$type}) => {
+    switch ($type) {
+      case "info":
+        return `
+          background-color: ${colors.Blue100};
+          color: ${colors.Blue900};
+        `
+      case "warn":
+        return `
+          background-color: ${colors.Yellow100};
+          color: ${colors.Yellow700};
+        `
+      case "error":
+        return `
+          background-color: ${colors.Red100};
+          color: ${colors.Red700};
+        `
+      default:
+        return `
+          background-color: ${colors.Neutral100};
+          color: ${colors.Neutral700};
+        `
+    }
+  }}
+`
 
 const ModalBody = styled.div`
   flex: 1;

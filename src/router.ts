@@ -29,6 +29,7 @@ export const paths = {
   requirements: "requirements",
   projects: "projects",
   kanban: "kanban",
+  team: "team",
 }
 
 export const routers: RouteObject[] = [
@@ -115,6 +116,16 @@ export const routers: RouteObject[] = [
             },
             lazy: async () => ({
               Component: (await import("./pages/Dashboard/Projects")).default,
+            }),
+          },
+          {
+            path: paths.team,
+            loader: () => {
+              useViewPreference.getState().setPageKey(paths.team)
+              return null
+            },
+            lazy: async () => ({
+              Component: (await import("./pages/Dashboard/Team")).default,
             }),
           },
         ],
