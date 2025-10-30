@@ -18,4 +18,5 @@
 export const PERSIST_KEYS = {
   VIEW_PREFERENCE: "view-preference",
   VIEW_PREF_CONFIG: "view-pref-config",
+  TEAM_PROFILE: "team-profile",
 } as const

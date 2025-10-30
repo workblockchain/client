@@ -17,7 +17,7 @@
 
 import type {ProjectData, RequirementData, WorkData} from "@/interfaces"
 import {t} from "i18next"
-import {fieldDefinitionsToHookFormDefinitions} from "./workRecordUtils"
+import {useTeam} from "./useTeam"
 
 export interface FieldDefinition {
   key: string
@@ -49,6 +49,11 @@ export const workRecordFieldDefinitions: FieldDefinition[] = [
     label: t("work.user"),
     type: "select",
     size: 120,
+    cellRenderer: (value?: string) => {
+      if (!value) return "-"
+      const users = useTeam.getState().users
+      return users[value]?.info.username || value
+    },
   },
   {
     key: "startTime",
@@ -129,9 +134,6 @@ export const workRecordFieldDefinitions: FieldDefinition[] = [
       value ? new Date(value).toLocaleString() : "-",
   },
 ]
-export const workRecordFormFields = fieldDefinitionsToHookFormDefinitions(
-  workRecordFieldDefinitions
-)
 
 export interface RequirementRecord extends Partial<RequirementData> {
   createdAt?: number
@@ -252,9 +254,6 @@ export const requirementRecordFieldDefinitions: FieldDefinition[] = [
   },
 ]
 
-export const requirementRecordFormFields =
-  fieldDefinitionsToHookFormDefinitions(requirementRecordFieldDefinitions)
-
 export interface ProjectRecord extends Partial<ProjectData> {
   createdAt?: number
   updatedAt?: number
@@ -343,7 +342,3 @@ export const projectRecordFieldDefinitions: FieldDefinition[] = [
       value ? new Date(value).toLocaleString() : "-",
   },
 ]
-
-export const projectRecordFormFields = fieldDefinitionsToHookFormDefinitions(
-  projectRecordFieldDefinitions
-)
