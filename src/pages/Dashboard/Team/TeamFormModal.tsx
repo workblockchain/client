@@ -22,7 +22,7 @@ import {FixedModal} from "@/components/Modal"
 import {useEffect} from "react"
 import {Controller, useForm} from "react-hook-form"
 import styled from "styled-components"
-import {TeamUser} from "../useTeam"
+import {TeamUser, useTeam} from "../useTeam"
 
 interface TeamFormModalProps {
   isOpen: boolean
@@ -49,6 +49,7 @@ export function TeamFormModal({
   initialData,
   isEditMode,
 }: TeamFormModalProps) {
+  const users = useTeam((state) => state.users)
   const {
     control,
     handleSubmit,
@@ -96,7 +97,15 @@ export function TeamFormModal({
               <Controller
                 name="uid"
                 control={control}
-                rules={{required: "用户ID是必填项"}}
+                rules={{
+                  required: "用户ID是必填项",
+                  validate: (value) => {
+                    if (users[value]) {
+                      return "用户ID已存在"
+                    }
+                    return true
+                  },
+                }}
                 render={({field}) => (
                   <TextInputWithLabel
                     label="*用户ID"
@@ -114,7 +123,18 @@ export function TeamFormModal({
             <Controller
               name="publicKey"
               control={control}
-              rules={{required: "公钥是必填项"}}
+              rules={{
+                required: "公钥是必填项",
+                validate: (value) => {
+                  const existingPublicKey = Object.values(users).find(
+                    (user) => user.publicKey === value
+                  )
+                  if (existingPublicKey) {
+                    return "公钥已存在"
+                  }
+                  return true
+                },
+              }}
               render={({field}) => (
                 <TextInputWithLabel
                   label="*公钥"
@@ -131,7 +151,18 @@ export function TeamFormModal({
             <Controller
               name="info.username"
               control={control}
-              rules={{required: "用户名是必填项"}}
+              rules={{
+                required: "用户名是必填项",
+                validate: (value) => {
+                  const existingUsername = Object.values(users).find(
+                    (user) => user.info.username === value
+                  )
+                  if (existingUsername) {
+                    return "用户名已存在"
+                  }
+                  return true
+                },
+              }}
               render={({field}) => (
                 <TextInputWithLabel
                   label="*用户名"
