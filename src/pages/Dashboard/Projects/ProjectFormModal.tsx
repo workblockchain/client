@@ -22,7 +22,8 @@ import {t} from "i18next"
 import {useEffect} from "react"
 import {Controller, useForm} from "react-hook-form"
 import styled from "styled-components"
-import {FieldDefinition, ProjectRecord} from "../interfaces"
+import {FieldDefinition} from "../fieldDefinitions"
+import {ProjectRecord} from "../interfaces"
 import {fieldDefinitionToHookFormDefinition} from "../workRecordUtils"
 
 interface ProjectFormModalProps {

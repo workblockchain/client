@@ -19,7 +19,8 @@ import {ConditionDefinition} from "@/components/DataConditionBuilder/types"
 import type {HookFormFieldDefinition} from "@/components/DataFormDrawer/types"
 import {ColumnDef} from "@tanstack/react-table"
 import {t} from "i18next"
-import {FieldDefinition, WorkRecord} from "./interfaces"
+import {FieldDefinition} from "./fieldDefinitions"
+import {WorkRecord} from "./interfaces"
 
 /**
  * 将 WorkRecordFieldDefinition 转换为 ColumnDef
