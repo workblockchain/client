@@ -21,7 +21,7 @@ import {colors} from "@/styles"
 import {t} from "i18next"
 import {useMemo} from "react"
 import styled from "styled-components"
-import {FieldDefinition} from "./interfaces"
+import {FieldDefinition} from "./fieldDefinitions"
 import {useViewPreference} from "./useDashboardPreference"
 
 export function DataConditionRow({
