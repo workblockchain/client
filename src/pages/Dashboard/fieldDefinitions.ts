@@ -15,6 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {useSignedRecord} from "@/stores/useSignedRecord"
 import {t} from "i18next"
 import {useTeam} from "./useTeam"
 
@@ -93,18 +94,42 @@ export const workRecordFieldDefinitions: FieldDefinition[] = [
     key: "workTags",
     label: t("work.tags"),
     type: "multi-select",
+    cellRenderer: (value?: string[]) => {
+      if (!value || value.length === 0) return "-"
+      return value.join(", ")
+    },
   },
   {
     key: "requirementIds",
     label: t("work.requirements"),
     type: "multi-select",
     hidden: true,
+    cellRenderer: (value?: string[]) => {
+      if (!value || value.length === 0) return "-"
+      const requirementRecords = useSignedRecord.getState().requirementRecords
+      return value
+        .map((v) => {
+          const requirement = requirementRecords.find((r) => r.id === v)
+          return `${requirement?.data.rid} - ${requirement?.data.title}`
+        })
+        .join(", ")
+    },
   },
   {
     key: "projectIds",
     label: t("work.projects"),
     type: "multi-select",
     hidden: true,
+    cellRenderer: (value?: string[]) => {
+      if (!value || value.length === 0) return "-"
+      const projectRecords = useSignedRecord.getState().projectRecords
+      return value
+        .map((v) => {
+          const project = projectRecords.find((p) => p.id === v)
+          return `${project?.data.pid} - ${project?.data.title}`
+        })
+        .join(", ")
+    },
   },
   {
     key: "cover",
@@ -174,8 +199,13 @@ export const requirementRecordFieldDefinitions: FieldDefinition[] = [
   {
     key: "assignedTo",
     label: t("requirement.assignee"),
-    type: "text",
+    type: "select",
     size: 120,
+    cellRenderer: (value?: string) => {
+      if (!value) return "-"
+      const users = useTeam.getState().users
+      return users[value]?.info.username || value
+    },
   },
   {
     key: "estimated",
@@ -222,6 +252,11 @@ export const requirementRecordFieldDefinitions: FieldDefinition[] = [
     type: "multi-select",
     size: 150,
     hidden: true,
+    cellRenderer: (value?: string[]) => {
+      if (!value || value.length === 0) return "-"
+      const users = useTeam.getState().users
+      return value.map((v) => users[v]?.info.username || v).join(", ")
+    },
   },
   {
     key: "createdAt",
@@ -283,8 +318,13 @@ export const projectRecordFieldDefinitions: FieldDefinition[] = [
   {
     key: "assignedTo",
     label: t("project.owner"),
-    type: "text",
+    type: "select",
     size: 120,
+    cellRenderer: (value?: string) => {
+      if (!value) return "-"
+      const users = useTeam.getState().users
+      return users[value]?.info.username || value
+    },
   },
   {
     key: "progress",
@@ -298,6 +338,11 @@ export const projectRecordFieldDefinitions: FieldDefinition[] = [
     label: t("project.teamMembers"),
     type: "multi-select",
     size: 150,
+    cellRenderer: (value?: string[]) => {
+      if (!value || value.length === 0) return "-"
+      const users = useTeam.getState().users
+      return value.map((v) => users[v]?.info.username || v).join(", ")
+    },
   },
   {
     key: "requirementIds",

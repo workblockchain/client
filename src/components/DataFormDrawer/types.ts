@@ -35,7 +35,14 @@ export interface HookFormFieldDefinition {
   /** 字段标签 */
   label: string
   /** 字段类型 */
-  type: "text" | "number" | "textarea" | "select" | "date" | "checkbox"
+  type:
+    | "text"
+    | "number"
+    | "textarea"
+    | "select"
+    | "multi-select"
+    | "date"
+    | "checkbox"
   /** 是否必填 */
   required?: boolean
   /** 选择器选项（仅select类型需要） */

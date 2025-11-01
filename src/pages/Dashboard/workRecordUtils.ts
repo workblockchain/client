@@ -189,9 +189,6 @@ export function fieldDefinitionToHookFormDefinition(
   // 处理类型映射
   let mappedType: HookFormFieldDefinition["type"]
   switch (fieldDef.type) {
-    case "multi-select":
-      mappedType = "select"
-      break
     case "boolean":
       mappedType = "checkbox"
       break
@@ -206,11 +203,26 @@ export function fieldDefinitionToHookFormDefinition(
     placeholder: fieldDef.placeholder,
   }
 
+  // 添加选项（对于 select 和 multi-select 类型很重要）
+  if (fieldDef.options) {
+    baseField.options = fieldDef.options
+  }
+
+  // 添加隐藏状态
+  if (fieldDef.hidden) {
+    baseField.hidden = fieldDef.hidden
+  }
+
   // 添加验证规则
   if (fieldDef.key === "duration") {
     baseField.validation = {
       min: 0,
     }
+  }
+
+  // 对于 boolean 类型，设置默认值
+  if (fieldDef.type === "boolean") {
+    baseField.defaultValue = false
   }
 
   return baseField
