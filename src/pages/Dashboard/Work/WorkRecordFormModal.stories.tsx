@@ -17,7 +17,8 @@
 
 import type {Meta, StoryObj} from "@storybook/react-vite"
 import {useState} from "react"
-import {WorkRecord, workRecordFieldDefinitions as fields} from "../interfaces"
+import {workRecordFieldDefinitions as fields} from "../fieldDefinitions"
+import {WorkRecord} from "../interfaces"
 import {WorkRecordFormModal} from "./WorkRecordFormModal"
 
 const meta: Meta<typeof WorkRecordFormModal> = {

@@ -38,11 +38,12 @@ interface TeamStore extends TeamProps {
   removeUser: (uid: string) => void
   updateUser: (uid: string, updates: Partial<TeamUser>) => void
   clearTeam: () => void
+  getOptions: () => {value: string; label: string}[]
 }
 
 export const useTeam = create<TeamStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       publicKeys: [],
       users: {},
       setPublicKeys: (publicKeys) => set({publicKeys}),
@@ -70,6 +71,13 @@ export const useTeam = create<TeamStore>()(
           },
         })),
       clearTeam: () => set({publicKeys: [], users: {}}),
+      getOptions: () => {
+        const {users} = get()
+        return Object.values(users).map((user) => ({
+          value: user.uid,
+          label: user.info.username || user.uid,
+        }))
+      },
     }),
     {
       name: PERSIST_KEYS.TEAM_PROFILE,

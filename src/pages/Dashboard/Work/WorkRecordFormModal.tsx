@@ -22,6 +22,7 @@ import {t} from "i18next"
 import {useEffect} from "react"
 import {Controller, useForm} from "react-hook-form"
 import styled from "styled-components"
+import {useDynamicFieldOptions} from "../dynamicFieldOptions"
 import {FieldDefinition} from "../fieldDefinitions"
 import {WorkRecord} from "../interfaces"
 import {fieldDefinitionToHookFormDefinition} from "../workRecordUtils"
@@ -44,6 +45,7 @@ export function WorkRecordFormModal({
   onClose,
 }: WorkRecordFormModalProps) {
   const {control, handleSubmit, reset} = useForm()
+  const dynamicFields = useDynamicFieldOptions(fields)
 
   // 当 initialData 变化时，重置表单值
   useEffect(() => {
@@ -60,7 +62,7 @@ export function WorkRecordFormModal({
     >
       <Container>
         <Form onSubmit={handleSubmit(submit)}>
-          {fields.map((field) => (
+          {dynamicFields.map((field) => (
             <Controller
               key={field.key}
               name={field.key}

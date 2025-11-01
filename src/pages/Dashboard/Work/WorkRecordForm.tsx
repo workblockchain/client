@@ -18,7 +18,8 @@
 import {DataFormDrawer} from "@/components/DataFormDrawer"
 import {useUserProfile} from "@/stores/useUserProfile"
 import {t} from "i18next"
-import {WorkRecord, workRecordFieldDefinitions as fields} from "../interfaces"
+import {workRecordFieldDefinitions as fields} from "../fieldDefinitions"
+import {WorkRecord} from "../interfaces"
 import {fieldDefinitionToHookFormDefinition} from "../workRecordUtils"
 import {WorkRecordFormModal} from "./WorkRecordFormModal"
 
