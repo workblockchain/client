@@ -1,3 +1,72 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+:root {
+  --base-size: 2px;
+
+  --space-1: calc(var(--base-size) * 2); /* 4px，小间距 */
+  --space-2: calc(var(--base-size) * 4); /* 8px，中等间距 */
+  --space-3: calc(var(--base-size) * 8); /* 16px，大间距 */
+  --space-4: calc(var(--base-size) * 16); /* 32px，超大间距 */
+
+  --space-small: var(--space-1);
+  --space-medium: var(--space-2);
+
+  --border-radius: calc(var(--base-size) * 5);
+  --border: calc(var(--base-size) * 0.5);
+
+  --size-1: calc(var(--base-size) * 4);
+  --size-2: calc(var(--base-size) * 6);
+  --size-3: calc(var(--base-size) * 8);
+  --size-4: calc(var(--base-size) * 10);
+  --size-5: calc(var(--base-size) * 12);
+  --size-6: calc(var(--base-size) * 14);
+
+  --color-l: 0.6836; /* 亮度 */
+  --color-c: 0.1148; /* 色度 */
+  --color-h: 49.63; /* 色相 */
+
+  --color-primary: oklch(var(--color-l) var(--color-c) var(--color-h));
+
+  --color-primary-light-1: oklch(
+    calc(var(--color-l) + 0.1) calc(var(--color-c) * 0.8) var(--color-h)
+  );
+  --color-primary-light-2: oklch(
+    calc(var(--color-l) + 0.2) calc(var(--color-c) * 0.6) var(--color-h)
+  );
+  --color-primary-light-3: oklch(
+    calc(var(--color-l) + 0.3) calc(var(--color-c) * 0.4) var(--color-h)
+  );
+
+  --color-primary-dark-1: oklch(
+    calc(var(--color-l) - 0.1) calc(var(--color-c) * 1.2) var(--color-h)
+  );
+  --color-primary-dark-2: oklch(
+    calc(var(--color-l) - 0.2) calc(var(--color-c) * 1.4) var(--color-h)
+  );
+  --color-primary-dark-3: oklch(
+    calc(var(--color-l) - 0.3) calc(var(--color-c) * 1.6) var(--color-h)
+  );
+
+  --gray-1: oklch(1 0 0);
+  --gray-2: oklch(0.85 0 0);
+  --gray-3: oklch(0.7 0 0);
+  --gray-4: oklch(0.55 0 0);
+  --gray-5: oklch(0.4 0 0);
+  --gray-6: oklch(0.2 0 0);
+
+  --color-bg: var(--gray-1);
+  --color-text: var(--gray-6);
+  --color-border: var(--gray-3);
+  --color-success: oklch(0.65 0.15 142);
+  --color-warning: oklch(0.7 0.18 75);
+  --color-error: oklch(0.6 0.2 25);
+
+  --font-size: calc(var(--base-size) * 12);
+}
+
 div {
   box-sizing: border-box;
 }

@@ -1,0 +1,58 @@
+& {
+  --width: 450px;
+}
+
+.base {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: space-between;
+  width: var(--width);
+  max-width: 100%;
+  overflow: hidden;
+  background-color: var(--color-bg);
+  border-radius: var(--border-radius);
+  padding: var(--space-3);
+  box-shadow: var(--border) var(--border) var(--space-medium) var(--border)
+    var(--gray-2);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.15s ease,
+    border-color 0.2s ease;
+  cursor: default; /* 默认指针，点击时可通过 props 覆盖 */
+  outline: none; /* 移除默认焦点 outline，自定义焦点样式 */
+  gap: var(--space-2);
+  color: var(--color-text);
+
+  &:hover {
+    box-shadow: var(--border) var(--border) var(--space-3) var(--border)
+      var(--gray-2);
+  }
+
+  &:active {
+    box-shadow: var(--border) var(--border) var(--space-medium) var(--border)
+      var(--gray-2);
+  }
+
+  .title {
+    font-size: var(--font-size);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--space-medium);
+  }
+}
+
+.base[onClick],
+.base[onDoubleClick] {
+  cursor: pointer;
+}
+
+.base[onDoubleClick] {
+  user-select: none;
+}
