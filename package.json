@@ -19,7 +19,8 @@
     "svg-imports": "tsx scripts/generate-svg-imports.ts",
     "svg-variant": "tsx scripts/generate-svg-variant-imports.ts",
     "format": "prettier --write . && vite-node scripts/license.ts",
-    "review": "prettier --check . && oxlint && vite-node scripts/license.ts -c"
+    "review": "prettier --check . && oxlint && node scripts/license.ts -c",
+    "license:update": "node scripts/license.ts"
   },
   "dependencies": {
     "@noble/ed25519": "^2.3.0",
