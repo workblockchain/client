@@ -268,3 +268,71 @@ export function createGroupSort<T>(
     return sort?.condition === "desc" ? -res : res
   }
 }
+
+/**
+ * 获取表单字段的默认值
+ */
+export function getDefaultValueForField(
+  field: HookFormFieldDefinition | any
+): string | number | boolean | string[] {
+  if (field.defaultValue !== undefined) {
+    return field.defaultValue
+  }
+
+  switch (field.type) {
+    case "number":
+      return 0
+    case "checkbox":
+      return false
+    case "text":
+    case "textarea":
+    case "date":
+    case "select":
+    default:
+      return ""
+  }
+}
+
+/**
+ * 将字段验证规则转换为 react-hook-form 验证规则
+ */
+export function getValidationRules(field: HookFormFieldDefinition | any) {
+  const rules: Record<string, unknown> = {}
+
+  if (field.required) {
+    rules.required = `${field.label}是必填项`
+  }
+
+  if (field.validation) {
+    const {validation} = field
+
+    if (validation.min !== undefined) {
+      rules.min = {
+        value: validation.min,
+        message: `${field.label}不能小于${validation.min}`,
+      }
+    }
+
+    if (validation.max !== undefined) {
+      rules.max = {
+        value: validation.max,
+        message: `${field.label}不能大于${validation.max}`,
+      }
+    }
+
+    if (validation.pattern) {
+      rules.pattern = {
+        value: validation.pattern,
+        message: `${field.label}格式不正确`,
+      }
+    }
+
+    if (validation.custom) {
+      rules.validate = {
+        custom: (value: string | number | boolean) => validation.custom!(value),
+      }
+    }
+  }
+
+  return rules
+}

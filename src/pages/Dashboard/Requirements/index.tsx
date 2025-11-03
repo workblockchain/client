@@ -26,10 +26,8 @@ import {t} from "i18next"
 import {useMemo, useState} from "react"
 import styled from "styled-components"
 import DataConditionRow from "../DataConditionRow"
-import {
-  RequirementRecord,
-  requirementRecordFieldDefinitions,
-} from "../interfaces"
+import {requirementRecordFieldDefinitions} from "../fieldDefinitions"
+import {RequirementRecord} from "../interfaces"
 import {applyConditions} from "../recordUtils"
 import {useViewPreference} from "../useDashboardPreference"
 import {createGroupSort, fieldDefinitionsToColumnDefs} from "../workRecordUtils"
