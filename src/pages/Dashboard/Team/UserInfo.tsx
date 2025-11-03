@@ -8,7 +8,7 @@ export function UserInfo({pubkey}: {pubkey: string}) {
   const user = users[pubkey]
   return (
     <Container>
-      <Avatar avatar={user.info.avatar} isText={!user.info.avatar} />
+      <Avatar size={36} avatar={user.info.avatar} isText={!user.info.avatar} />
       <UserName>{user.info.username}</UserName>
     </Container>
   )
@@ -16,6 +16,7 @@ export function UserInfo({pubkey}: {pubkey: string}) {
 
 const Container = styled.div`
   display: flex;
+  align-items: center;
   gap: 12px;
 `
 

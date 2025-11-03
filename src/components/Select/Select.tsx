@@ -15,10 +15,12 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {createContext, ReactNode, useContext} from "react"
 import ReactSelect, {
   components,
   OptionProps,
   SingleValue,
+  SingleValueProps,
   StylesConfig,
 } from "react-select"
 import styled, {CSSProperties} from "styled-components"
@@ -34,6 +36,8 @@ interface SelectOption {
 interface SelectProps {
   options: SelectOption[]
   value?: string | string[]
+  renderValue?: (value: string | readonly string[]) => ReactNode
+  renderOption?: (value?: string, label?: string) => ReactNode
   onChange?: (value?: string | string[]) => void
   disabled?: boolean
   containerStyle?: CSSProperties
@@ -44,12 +48,21 @@ interface SelectProps {
   align?: "start" | "center" | "end"
 }
 
+const RenderContext = createContext<SelectProps | null>(null)
+
 // 自定义Option组件，在多选模式下显示对勾图标
-const CustomOption = (props: OptionProps<SelectOption>) => {
-  const {children, isSelected, selectProps} = props
-  const size = (selectProps as any).size || "medium"
-  const {height, fontSize} = sizeConfig[size as keyof typeof sizeConfig]
+const Option = (props: OptionProps<SelectOption>) => {
+  const {children, isSelected, data} = props
+  const ctx = useContext(RenderContext)
+  if (!ctx) return null
+
+  const {size, renderOption} = ctx
+  const {height, fontSize} = sizeConfig[size ?? "medium"]
   const padding = height / 6
+
+  const optionContent = renderOption
+    ? renderOption(data.value, data.label)
+    : children
 
   return (
     <components.Option {...props}>
@@ -58,11 +71,24 @@ const CustomOption = (props: OptionProps<SelectOption>) => {
         $padding={padding}
         $fontSize={fontSize}
       >
-        <span>{children}</span>
+        <span>{optionContent}</span>
         {isSelected && <CheckIcon />}
       </OptionContainer>
     </components.Option>
   )
+}
+
+const SingleValueComponent = ({
+  children,
+  ...props
+}: SingleValueProps<SelectOption>) => {
+  const ctx = useContext(RenderContext)
+  if (!ctx) return null
+  const {renderValue} = ctx
+  const value = props.data?.value
+  const res = renderValue && value ? renderValue(props.data.value) : children
+
+  return <components.SingleValue {...props}>{res}</components.SingleValue>
 }
 
 const sizeConfig = {
@@ -72,18 +98,19 @@ const sizeConfig = {
   large: {width: 320, height: 64, fontSize: 18, padding: 20, arrowSize: 28},
 } as const
 
-export const Select = ({
-  options,
-  value,
-  onChange,
-  disabled,
-  containerStyle,
-  isSearchable = false,
-  isMulti = false,
-  size = "medium",
-  placeholder,
-  align = "start",
-}: SelectProps) => {
+export const Select = (props: SelectProps) => {
+  const {
+    options,
+    value,
+    onChange,
+    disabled,
+    containerStyle,
+    isSearchable = false,
+    isMulti = false,
+    size = "medium",
+    placeholder,
+    align = "start",
+  } = props
   const getSelectedOptions = () => {
     if (isMulti && Array.isArray(value)) {
       return options.filter((opt) => value.includes(opt.value))
@@ -96,34 +123,33 @@ export const Select = ({
   const selectedOptions = getSelectedOptions()
 
   return (
-    <SelectWrapper style={containerStyle}>
-      <ReactSelect
-        options={options}
-        value={selectedOptions}
-        onChange={(selected) => {
-          if (isMulti) {
-            const selectedValues = Array.isArray(selected)
-              ? selected.map((opt) => opt.value)
-              : []
-            onChange?.(selectedValues)
-          } else {
-            const selectedValue = selected as SingleValue<SelectOption>
-            onChange?.(selectedValue?.value)
-          }
-        }}
-        isDisabled={disabled}
-        isSearchable={isSearchable}
-        isMulti={isMulti}
-        hideSelectedOptions={false}
-        styles={customStyles({
-          ...sizeConfig[size],
-          align,
-        })}
-        components={{Option: CustomOption}}
-        placeholder={placeholder}
-        aria-label="选择框"
-      />
-    </SelectWrapper>
+    <RenderContext value={props}>
+      <SelectWrapper style={containerStyle}>
+        <ReactSelect
+          options={options}
+          value={selectedOptions}
+          onChange={(selected) => {
+            if (isMulti) {
+              const selectedValues = Array.isArray(selected)
+                ? selected.map((opt) => opt.value)
+                : []
+              onChange?.(selectedValues)
+            } else {
+              const selectedValue = selected as SingleValue<SelectOption>
+              onChange?.(selectedValue?.value)
+            }
+          }}
+          isDisabled={disabled}
+          isSearchable={isSearchable}
+          isMulti={isMulti}
+          hideSelectedOptions={false}
+          styles={customStyles({...sizeConfig[size], align})}
+          components={{Option, SingleValue: SingleValueComponent}}
+          placeholder={placeholder}
+          aria-label="选择框"
+        />
+      </SelectWrapper>
+    </RenderContext>
   )
 }
 

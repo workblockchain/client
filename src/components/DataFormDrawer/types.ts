@@ -15,6 +15,8 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {ReactNode} from "react"
+
 /**
  * 表单字段验证规则
  */
@@ -34,6 +36,8 @@ export interface HookFormFieldDefinition {
   key: string
   /** 字段标签 */
   label: string
+  /** 字段值渲染函数 */
+  render?: (value?: unknown) => ReactNode
   /** 字段类型 */
   type:
     | "text"
@@ -47,6 +51,7 @@ export interface HookFormFieldDefinition {
   required?: boolean
   /** 选择器选项（仅select类型需要） */
   options?: {value: string; label: string}[]
+  renderOption?: (value?: string, label?: string) => ReactNode
   /** 占位符文本 */
   placeholder?: string
   /** 默认值 */

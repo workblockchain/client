@@ -29,6 +29,7 @@ export interface FieldDefinition {
   placeholder?: string
   size?: number
   cellRenderer?: (value: any) => ReactNode
+  optionRenderer?: (value?: string, label?: string) => ReactNode
   hidden?: boolean
 }
 

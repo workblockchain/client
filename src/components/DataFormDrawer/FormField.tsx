@@ -58,6 +58,10 @@ export const FormField = ({
 
   switch (field.type) {
     case "text":
+      const rendered = field.render?.(value)
+      if (field.render && typeof rendered !== "string") {
+        throw new Error("render function must return string")
+      }
       return (
         <S.FieldGroup key={field.key}>
           <S.FieldLabel>
@@ -66,7 +70,7 @@ export const FormField = ({
           </S.FieldLabel>
           <Input
             {...commonProps}
-            value={String(value)}
+            value={(rendered as string) ?? String(value)}
             onChange={(e) => onChange(e.target.value)}
           />
           {error && <S.FieldError>{error}</S.FieldError>}
@@ -74,6 +78,10 @@ export const FormField = ({
       )
 
     case "number":
+      const numberRendered = field.render?.(value)
+      if (field.render && typeof numberRendered !== "number") {
+        throw new Error("render function must return number")
+      }
       return (
         <S.FieldGroup key={field.key}>
           <S.FieldLabel>
@@ -83,7 +91,7 @@ export const FormField = ({
           <Input
             {...commonProps}
             type="number"
-            value={typeof value === "number" ? value : ""}
+            value={(numberRendered as number) ?? Number(value)}
             onChange={(e) => onChange(Number(e.target.value))}
           />
           {error && <S.FieldError>{error}</S.FieldError>}
@@ -91,6 +99,10 @@ export const FormField = ({
       )
 
     case "textarea":
+      const textareaRendered = field.render?.(value)
+      if (field.render && typeof textareaRendered !== "string") {
+        throw new Error("render function must return string")
+      }
       return (
         <S.FieldGroup key={field.key}>
           <S.FieldLabel>
@@ -99,7 +111,7 @@ export const FormField = ({
           </S.FieldLabel>
           <Textarea
             {...commonProps}
-            value={typeof value === "string" ? value : ""}
+            value={(textareaRendered as string) ?? String(value)}
             onChange={(e) => onChange(e.target.value)}
           />
           {error && <S.FieldError>{error}</S.FieldError>}
@@ -107,6 +119,7 @@ export const FormField = ({
       )
 
     case "select":
+    case "multi-select":
       return (
         <S.FieldGroup key={field.key}>
           <S.FieldLabel>
@@ -116,6 +129,8 @@ export const FormField = ({
           <Select
             {...commonProps}
             options={field.options || []}
+            renderValue={field.render}
+            renderOption={field.renderOption}
             value={typeof value === "string" ? value : ""}
             onChange={(v) => onChange(v || "")}
           />
@@ -124,6 +139,10 @@ export const FormField = ({
       )
 
     case "date":
+      const dateRendered = field.render?.(value)
+      if (field.render && typeof dateRendered !== "string") {
+        throw new Error("render function must return string")
+      }
       return (
         <S.FieldGroup key={field.key}>
           <S.FieldLabel>
@@ -133,7 +152,10 @@ export const FormField = ({
           <Input
             {...commonProps}
             type="date"
-            value={typeof value === "string" ? value : ""}
+            value={
+              (dateRendered as string) ??
+              (typeof value === "string" ? value : "")
+            }
             onChange={(e) => onChange(e.target.value)}
           />
           {error && <S.FieldError>{error}</S.FieldError>}
