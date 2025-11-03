@@ -225,6 +225,16 @@ export function fieldDefinitionToHookFormDefinition(
     baseField.defaultValue = false
   }
 
+  if (fieldDef.cellRenderer) {
+    baseField.render = fieldDef.cellRenderer
+  }
+
+  if (fieldDef.optionRenderer) {
+    baseField.renderOption = fieldDef.optionRenderer
+  } else if (!fieldDef.optionRenderer && fieldDef.cellRenderer) {
+    baseField.renderOption = fieldDef.cellRenderer
+  }
+
   return baseField
 }
 
