@@ -28,6 +28,7 @@ export interface TeamUser {
 
 interface TeamProps {
   publicKeys: string[]
+  // <pubkey, user>
   users: Record<string, TeamUser>
 }
 

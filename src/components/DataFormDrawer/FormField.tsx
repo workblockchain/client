@@ -160,5 +160,3 @@ export const FormField = ({
       return null
   }
 }
-
-FormField.displayName = "FormField"

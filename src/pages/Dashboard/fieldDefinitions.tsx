@@ -17,6 +17,8 @@
 
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {t} from "i18next"
+import {ReactNode} from "react"
+import {UserInfo} from "./Team/UserInfo"
 import {useTeam} from "./useTeam"
 
 export interface FieldDefinition {
@@ -26,7 +28,7 @@ export interface FieldDefinition {
   options?: {value: string; label: string}[]
   placeholder?: string
   size?: number
-  cellRenderer?: (value: any) => string
+  cellRenderer?: (value: any) => ReactNode
   hidden?: boolean
 }
 
@@ -46,7 +48,7 @@ export const workRecordFieldDefinitions: FieldDefinition[] = [
     cellRenderer: (value?: string) => {
       if (!value) return "-"
       const users = useTeam.getState().users
-      return users[value]?.info.username || value
+      return <UserInfo pubkey={users[value].publicKey} />
     },
   },
   {
