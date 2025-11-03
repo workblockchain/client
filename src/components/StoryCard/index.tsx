@@ -121,6 +121,9 @@ export const CardContainer = styled.div`
 
 const Content = styled.div<{$size?: "full" | "small"}>`
   margin-bottom: auto;
+  overflow: hidden;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
   ${({$size}) =>
     $size === "small" &&
     css`

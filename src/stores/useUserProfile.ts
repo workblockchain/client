@@ -57,7 +57,7 @@ export const useUserProfile = create<UserProfileStore>((set, get) => ({
     })),
 
   generateSignature: async () => {
-    const privateKey = ed.utils.randomPrivateKey()
+    const privateKey = ed.utils.randomSecretKey()
     const publicKey = await ed.getPublicKeyAsync(privateKey)
     return [toBase64(publicKey), toBase64(privateKey)]
   },
