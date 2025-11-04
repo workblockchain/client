@@ -67,7 +67,7 @@ function TeamContainer() {
 
   const handleDeleteConfirm = () => {
     if (deletingUser?.uid) {
-      useTeam.getState().removeUser(deletingUser.uid)
+      useTeam.getState().removeUser(deletingUser.publicKey)
     }
     setIsDeleteConfirmOpen(false)
     setDeletingUser(undefined)

@@ -86,7 +86,6 @@ const MessageContainer = styled.div<{$type?: "info" | "warn" | "error"}>`
 const ModalBody = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding-right: 4px;
 
   &::-webkit-scrollbar {
     width: 6px;

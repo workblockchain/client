@@ -32,16 +32,6 @@ interface TeamFormModalProps {
   isEditMode: boolean
 }
 
-const defaultValues: TeamUser = {
-  uid: "",
-  publicKey: "",
-  info: {
-    username: "",
-    email: "",
-    avatar: "",
-  },
-}
-
 export function TeamFormModal({
   isOpen,
   onClose,
@@ -55,9 +45,7 @@ export function TeamFormModal({
     handleSubmit,
     reset,
     formState: {errors},
-  } = useForm<TeamUser>({
-    defaultValues,
-  })
+  } = useForm<TeamUser>()
 
   function getErrors() {
     const messages: string[] = []
@@ -78,9 +66,15 @@ export function TeamFormModal({
     if (initialData) {
       reset(initialData)
     } else {
-      reset(defaultValues)
+      reset()
     }
   }, [initialData, reset])
+
+  function submit(user: TeamUser) {
+    onSubmit(user)
+    reset()
+    onClose()
+  }
 
   return (
     <FixedModal
@@ -91,7 +85,7 @@ export function TeamFormModal({
       message={hasErrors ? err.join("；") : undefined}
     >
       <Container>
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form onSubmit={handleSubmit(submit)}>
           {!isEditMode && (
             <FormRow>
               <Controller
@@ -209,7 +203,7 @@ export function TeamFormModal({
         </Form>
 
         <Actions>
-          <Button onClick={handleSubmit(onSubmit)} type="button">
+          <Button onClick={handleSubmit(submit)} type="button">
             {isEditMode ? "更新用户" : "添加用户"}
           </Button>
           <Button $variant="text" onClick={onClose} type="button">

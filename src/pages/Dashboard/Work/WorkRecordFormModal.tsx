@@ -15,9 +15,11 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {Input, Textarea, TextInput} from "@/components"
 import {Button} from "@/components/Button"
-import {FormField} from "@/components/DataFormDrawer/FormField"
+import {DividerVertical} from "@/components/Divider"
 import {FixedModal} from "@/components/Modal"
+import {Select} from "@/components/Select"
 import {t} from "i18next"
 import {useEffect} from "react"
 import {Controller, useForm} from "react-hook-form"
@@ -25,11 +27,7 @@ import styled from "styled-components"
 import {useDynamicFieldOptions} from "../dynamicFieldOptions"
 import {FieldDefinition} from "../fieldDefinitions"
 import {WorkRecord} from "../interfaces"
-import {
-  fieldDefinitionToHookFormDefinition,
-  getDefaultValueForField,
-  getValidationRules,
-} from "../workRecordUtils"
+import {UserInfo} from "../Team/UserInfo"
 
 interface WorkRecordFormModalProps {
   submit: (data: WorkRecord) => void
@@ -58,6 +56,12 @@ export function WorkRecordFormModal({
     }
   }, [initialData, reset])
 
+  function onSubmit(user: WorkRecord) {
+    submit(user)
+    reset()
+    onClose()
+  }
+
   return (
     <FixedModal
       isOpen={isOpen}
@@ -65,32 +69,77 @@ export function WorkRecordFormModal({
       title={isEditMode ? t`work.edit` : t`work.create`}
     >
       <Container>
-        <Form onSubmit={handleSubmit(submit)}>
-          {dynamicFields.map((field) => (
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Detail>
             <Controller
-              key={field.key}
-              name={field.key}
+              key="outcome"
+              name="outcome"
               control={control}
-              rules={getValidationRules(field)}
-              render={({
-                field: {value, onChange, onBlur},
-                fieldState: {error},
-              }) => (
-                <FormField
-                  field={fieldDefinitionToHookFormDefinition(field)}
-                  value={value ?? getDefaultValueForField(field)}
+              render={({field: {value, onChange}}) => (
+                <TextInput
+                  value={value}
                   onChange={onChange}
-                  onBlur={onBlur}
-                  error={error?.message}
-                  loading={false}
+                  placeholder={fields.find((f) => f.key === "outcome")?.label}
                 />
               )}
             />
-          ))}
+            <Controller
+              key="description"
+              name="description"
+              control={control}
+              render={({field: {value, onChange}}) => (
+                <Textarea
+                  value={value}
+                  onChange={onChange}
+                  $variant="borderless"
+                  placeholder={
+                    fields.find((f) => f.key === "description")?.label
+                  }
+                />
+              )}
+            />
+          </Detail>
+          <DividerVertical style={{height: "unset", flexShrink: 0}} />
+          <Info>
+            <Controller
+              key="userId"
+              name="userId"
+              control={control}
+              render={({field: {value, onChange}}) => {
+                const users = dynamicFields.find((f) => f.key === "userId")
+                return (
+                  <Select
+                    value={value}
+                    width={156}
+                    renderValue={(val) =>
+                      val ? <UserInfo pubkey={val as string} /> : null
+                    }
+                    onChange={onChange}
+                    options={users?.options ?? []}
+                    renderOption={(option) =>
+                      option ? <UserInfo pubkey={option} /> : null
+                    }
+                  />
+                )
+              }}
+            />
+            <Controller
+              key="duration"
+              name="duration"
+              control={control}
+              render={({field: {value, onChange}}) => (
+                <Input
+                  value={value}
+                  onChange={onChange}
+                  placeholder={fields.find((f) => f.key === "duration")?.label}
+                />
+              )}
+            />
+          </Info>
         </Form>
 
         <Actions>
-          <Button onClick={handleSubmit(submit)} type="button">
+          <Button onClick={handleSubmit(onSubmit)} type="button">
             {isEditMode ? t`work.update` : t`work.create`}
           </Button>
         </Actions>
@@ -103,18 +152,35 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 500px;
-  margin: 0 auto;
+  max-width: 560px;
 `
 
 const Form = styled.form`
   display: flex;
+  height: 100%;
+  gap: 16px;
+`
+const Detail = styled.div`
+  display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
+  height: 480px;
+  padding: 4px;
+`
+const Info = styled.div`
+  width: 160px;
+  height: 480px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 16px;
+  padding: 4px 4px 0 0;
 `
 
 const Actions = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+  flex-shrink: 0;
 `

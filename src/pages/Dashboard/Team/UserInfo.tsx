@@ -8,7 +8,7 @@ export function UserInfo({pubkey}: {pubkey: string}) {
   const user = users[pubkey]
   return (
     <Container>
-      <Avatar size={36} avatar={user.info.avatar} isText={!user.info.avatar} />
+      <Avatar size={28} avatar={user.info.avatar} isText={!user.info.avatar} />
       <UserName>{user.info.username}</UserName>
     </Container>
   )
