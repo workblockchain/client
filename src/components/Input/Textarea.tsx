@@ -21,7 +21,7 @@ import {inputCommon, type InputVariantType} from "./common.styles"
 
 export const Textarea = styled.textarea<InputVariantType>`
   ${styledCommon.base}
-  ${inputCommon()}
+  ${(p) => inputCommon(p)}
   height: 108px;
   padding: 8px;
   border-radius: 8px;

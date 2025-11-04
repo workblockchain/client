@@ -51,12 +51,12 @@ export const useTeam = create<TeamStore>()(
       setUsers: (users) => set({users}),
       addUser: (user) =>
         set((state) => ({
-          users: {...state.users, [user.uid]: user},
+          users: {...state.users, [user.publicKey]: user},
           publicKeys: [...new Set([...state.publicKeys, user.publicKey])],
         })),
-      removeUser: (uid) =>
+      removeUser: (pubkey) =>
         set((state) => {
-          const {[uid]: removed, ...remainingUsers} = state.users
+          const {[pubkey]: removed, ...remainingUsers} = state.users
           return {
             users: remainingUsers,
             publicKeys: state.publicKeys.filter(

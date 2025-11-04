@@ -58,6 +58,12 @@ export function RequirementFormModal({
     }
   }, [initialData, reset])
 
+  function onSubmit(user: RequirementRecord) {
+    submit(user)
+    reset()
+    onClose()
+  }
+
   return (
     <FixedModal
       isOpen={isOpen}
@@ -65,7 +71,7 @@ export function RequirementFormModal({
       title={isEditMode ? t`requirement.edit` : t`requirement.create`}
     >
       <Container>
-        <Form onSubmit={handleSubmit(submit)}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
           {dynamicFields.map((field) => (
             <Controller
               key={field.key}
@@ -90,7 +96,7 @@ export function RequirementFormModal({
         </Form>
 
         <Actions>
-          <Button onClick={handleSubmit(submit)} type="button">
+          <Button onClick={handleSubmit(onSubmit)} type="button">
             {isEditMode ? t`requirement.update` : t`requirement.create`}
           </Button>
         </Actions>

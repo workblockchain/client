@@ -58,6 +58,12 @@ export function ProjectFormModal({
     }
   }, [initialData, reset])
 
+  function onSubmit(user: ProjectRecord) {
+    submit(user)
+    reset()
+    onClose()
+  }
+
   return (
     <FixedModal
       isOpen={isOpen}
@@ -65,7 +71,7 @@ export function ProjectFormModal({
       title={isEditMode ? t`project.edit` : t`project.create`}
     >
       <Container>
-        <Form onSubmit={handleSubmit(submit)}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
           {dynamicFields.map((field) => (
             <Controller
               key={field.key}
@@ -90,7 +96,7 @@ export function ProjectFormModal({
         </Form>
 
         <Actions>
-          <Button onClick={handleSubmit(submit)} type="button">
+          <Button onClick={handleSubmit(onSubmit)} type="button">
             {isEditMode ? t`project.update` : t`project.create`}
           </Button>
         </Actions>

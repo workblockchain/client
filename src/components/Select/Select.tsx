@@ -44,6 +44,7 @@ interface SelectProps {
   isSearchable?: boolean
   isMulti?: boolean
   size?: "x-small" | "small" | "medium" | "large"
+  width?: number
   placeholder?: string
   align?: "start" | "center" | "end"
 }
@@ -108,6 +109,7 @@ export const Select = (props: SelectProps) => {
     isSearchable = false,
     isMulti = false,
     size = "medium",
+    width,
     placeholder,
     align = "start",
   } = props
@@ -143,7 +145,11 @@ export const Select = (props: SelectProps) => {
           isSearchable={isSearchable}
           isMulti={isMulti}
           hideSelectedOptions={false}
-          styles={customStyles({...sizeConfig[size], align})}
+          styles={customStyles({
+            ...sizeConfig[size],
+            width: width ?? sizeConfig[size].width,
+            align,
+          })}
           components={{Option, SingleValue: SingleValueComponent}}
           placeholder={placeholder}
           aria-label="选择框"
