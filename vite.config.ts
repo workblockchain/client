@@ -1,4 +1,4 @@
-import react from "@vitejs/plugin-react-swc"
+import react from "@vitejs/plugin-react"
 import {fileURLToPath, URL} from "node:url"
 import {defineConfig} from "vite"
 import svgr from "vite-plugin-svgr"
@@ -7,7 +7,17 @@ import svgr from "vite-plugin-svgr"
 export default defineConfig({
   plugins: [
     react({
-      plugins: [["@swc/plugin-styled-components", {}]],
+      babel: {
+        plugins: [
+          [
+            "babel-plugin-styled-components",
+            {
+              displayName: true,
+              ssr: false,
+            },
+          ],
+        ],
+      },
     }),
     svgr(),
   ],
