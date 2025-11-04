@@ -233,7 +233,7 @@ export const usePackRecord = create<packStore>((set, get) => ({
   localBlockKeys: [],
   packed: {},
   packIn: async () => {
-    let signedRecords = useSignedRecord.getState().signedRecords
+    const signedRecords = useSignedRecord.getState().signedRecords
 
     const {packed, localBlockKeys} = get()
     const {publicKey, secretKey} = useUserProfile.getState()
