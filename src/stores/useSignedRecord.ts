@@ -14,12 +14,12 @@
 // See the Mulan PubL v2 for more details.
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
-
 import {ChainBlock} from "@/interfaces"
 import {packInBlock, signRecord} from "@/utils/cryptos"
 import {t} from "i18next"
 import {toast} from "react-toastify"
 import {create} from "zustand"
+import {persist} from "zustand/middleware"
 import {
   ProjectData,
   RequirementData,
@@ -28,6 +28,21 @@ import {
   Record as WorkRecord,
 } from "../interfaces/records"
 import {useUserProfile} from "./useUserProfile"
+
+interface packStore {
+  // block chain
+  packed: Record<string, ChainBlock> // 已经打包的数据
+  packIn: () => Promise<string>
+  localBlockKeys: string[] // timestamp_hash
+  loadPacked: (keys: string[]) => void
+}
+
+interface StateShape {
+  workRecords: WorkData[]
+  requirementRecords: RequirementData[]
+  projectRecords: ProjectData[]
+  signedRecords: SignedRecord[]
+}
 
 interface SignedRecordStore {
   workRecords: WorkData[]
@@ -61,197 +76,166 @@ interface SignedRecordStore {
   updateProjectRecord: (id: string, updates: Partial<ProjectData>) => void
   deleteProjectRecord: (id: string) => void
 
+  setAll: (updater: (state: StateShape) => Partial<StateShape>) => void
   // Persistence
-  save: () => void
-  load: () => void
+  // save: () => void
+  // load: () => void
   clear: () => void
-
-  // block chain
-  packed: Record<string, ChainBlock> // 已经打包的数据
-  packIn: () => Promise<string>
-  localBlockKeys: string[] // timestamp_hash
-  loadPacked: (keys: string[]) => void
 }
 
 const STASHED_RECORD_KEY = "RECORDS" as const
 const SIGNED_RECORD_KEY = "SIGNED_RECORDS" as const
 const LOCAL_BLOCK_KEY = "LOCAL_BLOCK_KEYS" as const
 
-export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
-  // records not signed yet
-  workRecords: [],
-  requirementRecords: [],
-  projectRecords: [],
-  signedRecords: [], // records not packed yet
-
-  createRecord: async (id, message) => {
-    const {publicKey, secretKey} = useUserProfile.getState()
-    if (!publicKey) {
-      toast.error(t`record.noPublicKey`)
-      throw new Error("No public key available")
-    }
-    if (!secretKey) {
-      toast.error(t`record.noSecretKey`)
-      throw new Error("No secret key available")
-    }
-    const record: WorkRecord = {
-      id,
-      // TODO: message事实上是对WorkRecord的JSON字符串化，浪费了存储空间
-      // 这是因为设计时，假设了Record可以是任意类型的JSON对象，希望囊括
-      // workData, requirementData, projectData等
-      // 如果能够直接使用上述三个对象的引用，就不需要再存储一份JSON字符串了
-      // 但这样会导致签名验证时需要额外的转换逻辑
-      data: message,
-      createdBy: publicKey,
-      createdAt: Date.now(),
-    }
-    const signed = await signRecord(record, secretKey)
-    get().signedRecords.push(signed)
-    get().save()
-    return signed
-  },
-
-  // WorkRecord methods
-  addWorkRecord: (workRecord) => {
-    set((state) => ({
-      workRecords: [...state.workRecords, workRecord],
-    }))
-    get().save()
-  },
-
-  getWorkRecord: (wid) => get().workRecords.find((w) => w.wid === wid),
-
-  updateWorkRecord: (userId, updates) =>
-    set((state) => ({
-      workRecords: state.workRecords.map((w) =>
-        w.userId === userId ? {...w, ...updates} : w
-      ),
-    })),
-
-  deleteWorkRecord: (userId) =>
-    set((state) => ({
-      workRecords: state.workRecords.filter((w) => w.userId !== userId),
-    })),
-
-  setWorkSigned: (wid, isSigned) => {
-    set((state) => ({
-      workRecords: state.workRecords.map((w) =>
-        w.wid === wid ? {...w, isSigned} : w
-      ),
-    }))
-    get().save()
-  },
-
-  // RequirementRecord methods
-  addRequirementRecord: (requirementRecord) =>
-    set((state) => ({
-      requirementRecords: [...state.requirementRecords, requirementRecord],
-    })),
-
-  drawRequirementId: (prefix = "Req-") => {
-    const existingIds = get().requirementRecords.map((r) => r.rid)
-    // 找到当前相同前缀的最大id
-    // 过滤出相同前缀的ID并提取数字部分
-    const prefixRegex = new RegExp(`^${prefix}(\\d+)$`)
-    const numbers = existingIds
-      .map((id) => {
-        const match = id.match(prefixRegex)
-        return match ? parseInt(match[1], 10) : 0
-      })
-      .filter((n) => !isNaN(n))
-
-    // 计算下一个ID，如果没有匹配项则从0开始
-    const maxNumber = numbers.length > 0 ? Math.max(...numbers) : -1
-    const next = maxNumber + 1
-    const newId = `${prefix}${String(next).padStart(3, "0")}`
-    return newId
-  },
-
-  getRequirementRecord: (rid) =>
-    get().requirementRecords.find((r) => r.rid === rid),
-
-  updateRequirementRecord: (rid, updates) =>
-    set((state) => ({
-      requirementRecords: state.requirementRecords.map((r) =>
-        r.rid === rid ? {...r, ...updates} : r
-      ),
-    })),
-
-  deleteRequirementRecord: (rid) =>
-    set((state) => ({
-      requirementRecords: state.requirementRecords.filter((r) => r.rid !== rid),
-    })),
-
-  // ProjectRecord methods
-  addProjectRecord: (projectRecord) =>
-    set((state) => ({
-      projectRecords: [...state.projectRecords, projectRecord],
-    })),
-
-  getProjectRecord: (pid) => get().projectRecords.find((p) => p.pid === pid),
-
-  updateProjectRecord: (pid, updates) =>
-    set((state) => ({
-      projectRecords: state.projectRecords.map((p) =>
-        p.pid === pid ? {...p, ...updates} : p
-      ),
-    })),
-
-  deleteProjectRecord: (pid) =>
-    set((state) => ({
-      projectRecords: state.projectRecords.filter((p) => p.pid !== pid),
-    })),
-
-  // Persistence methods
-  // TODO: optimize this to only save changed records
-  // use IndexedDB for better performance
-  save: () => {
-    const {workRecords, requirementRecords, projectRecords, signedRecords} =
-      get()
-    localStorage.setItem(
-      STASHED_RECORD_KEY,
-      JSON.stringify({
-        workRecords,
-        requirementRecords,
-        projectRecords,
-        signedRecords,
-      })
-    )
-  },
-
-  // TODO: optimize loading, it could take a long time if there are many records
-  // 1. load only the latest records
-  // 2. load records in chunks
-  // 3. use a web worker to load records in the background
-  // 4. use IndexedDB for better performance
-  load: () => {
-    const dataStr = localStorage.getItem(STASHED_RECORD_KEY)
-    if (dataStr) {
-      const {workRecords, requirementRecords, projectRecords, signedRecords} =
-        JSON.parse(dataStr)
-      set({workRecords, requirementRecords, projectRecords, signedRecords})
-    }
-
-    const localBlockKeysStr = localStorage.getItem(LOCAL_BLOCK_KEY)
-    if (localBlockKeysStr) {
-      const localBlockKeys = JSON.parse(localBlockKeysStr)
-      set({localBlockKeys})
-    }
-  },
-
-  clear: () => {
-    // localStorage.removeItem(STASHED_RECORD_KEY)
-    set({
+export const useSignedRecord = create<SignedRecordStore>()(
+  persist(
+    (set, get) => ({
       workRecords: [],
       requirementRecords: [],
       projectRecords: [],
-    })
-  },
+      signedRecords: [],
 
+      createRecord: async (id, message) => {
+        const {publicKey, secretKey} = useUserProfile.getState()
+        if (!publicKey) {
+          toast.error(t`record.noPublicKey`)
+          throw new Error("No public key available")
+        }
+        if (!secretKey) {
+          toast.error(t`record.noSecretKey`)
+          throw new Error("No secret key available")
+        }
+        const record: WorkRecord = {
+          id,
+          // TODO: message事实上是对WorkRecord的JSON字符串化，浪费了存储空间
+          // 这是因为设计时，假设了Record可以是任意类型的JSON对象，希望囊括
+          // workData, requirementData, projectData等
+          // 如果能够直接使用上述三个对象的引用，就不需要再存储一份JSON字符串了
+          // 但这样会导致签名验证时需要额外的转换逻辑
+          data: message,
+          createdBy: publicKey,
+          createdAt: Date.now(),
+        }
+        const signed = await signRecord(record, secretKey)
+        get().signedRecords.push(signed)
+        return signed
+      },
+      setAll: (updater) => set(updater),
+
+      // WorkRecord methods
+      addWorkRecord: (workRecord) => {
+        set((state) => ({
+          workRecords: [...state.workRecords, workRecord],
+        }))
+      },
+
+      getWorkRecord: (wid) => get().workRecords.find((w) => w.wid === wid),
+
+      updateWorkRecord: (userId, updates) =>
+        set((state) => ({
+          workRecords: state.workRecords.map((w) =>
+            w.userId === userId ? {...w, ...updates} : w
+          ),
+        })),
+
+      deleteWorkRecord: (userId) =>
+        set((state) => ({
+          workRecords: state.workRecords.filter((w) => w.userId !== userId),
+        })),
+
+      setWorkSigned: (wid, isSigned) => {
+        set((state) => ({
+          workRecords: state.workRecords.map((w) =>
+            w.wid === wid ? {...w, isSigned} : w
+          ),
+        }))
+      },
+
+      // RequirementRecord methods
+      addRequirementRecord: (requirementRecord) =>
+        set({
+          requirementRecords: [...get().requirementRecords, requirementRecord],
+        }),
+
+      drawRequirementId: (prefix = "Req-") => {
+        const existingIds = get().requirementRecords.map((r) => r.rid)
+        // 找到当前相同前缀的最大id
+        // 过滤出相同前缀的ID并提取数字部分
+        const prefixRegex = new RegExp(`^${prefix}(\\d+)$`)
+        const numbers = existingIds
+          .map((id) => {
+            const match = id.match(prefixRegex)
+            return match ? parseInt(match[1], 10) : 0
+          })
+          .filter((n) => !isNaN(n))
+
+        // 计算下一个ID，如果没有匹配项则从0开始
+        const maxNumber = numbers.length > 0 ? Math.max(...numbers) : -1
+        const next = maxNumber + 1
+        const newId = `${prefix}${String(next).padStart(3, "0")}`
+        return newId
+      },
+
+      getRequirementRecord: (rid) =>
+        get().requirementRecords.find((r) => r.rid === rid),
+
+      updateRequirementRecord: (rid, updates) =>
+        set({
+          requirementRecords: get().requirementRecords.map((r) =>
+            r.rid === rid ? {...r, ...updates} : r
+          ),
+        }),
+
+      deleteRequirementRecord: (rid) =>
+        set((state) => ({
+          requirementRecords: state.requirementRecords.filter(
+            (r) => r.rid !== rid
+          ),
+        })),
+
+      // ProjectRecord methods
+      addProjectRecord: (projectRecord) =>
+        set((state) => ({
+          projectRecords: [...state.projectRecords, projectRecord],
+        })),
+
+      getProjectRecord: (pid) =>
+        get().projectRecords.find((p) => p.pid === pid),
+
+      updateProjectRecord: (pid, updates) =>
+        set((state) => ({
+          projectRecords: state.projectRecords.map((p) =>
+            p.pid === pid ? {...p, ...updates} : p
+          ),
+        })),
+
+      deleteProjectRecord: (pid) =>
+        set((state) => ({
+          projectRecords: state.projectRecords.filter((p) => p.pid !== pid),
+        })),
+      clear: () => {
+        // localStorage.removeItem(STASHED_RECORD_KEY)
+        set({
+          workRecords: [],
+          requirementRecords: [],
+          projectRecords: [],
+        })
+      },
+    }),
+
+    {
+      name: STASHED_RECORD_KEY,
+    }
+  )
+)
+
+export const usePackRecord = create<packStore>((set, get) => ({
   localBlockKeys: [],
   packed: {},
   packIn: async () => {
-    const {signedRecords, packed, localBlockKeys} = get()
+    let signedRecords = useSignedRecord.getState().signedRecords
+
+    const {packed, localBlockKeys} = get()
     const {publicKey, secretKey} = useUserProfile.getState()
 
     // calculate Merkle root
@@ -288,7 +272,8 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
     localStorage.setItem(LOCAL_BLOCK_KEY, JSON.stringify(localBlockKeys))
     // Clear packed workRecords from array workRecords
     const packedIds = signedRecords.map((r) => r.id)
-    set((state) => ({
+
+    useSignedRecord.getState().setAll((state) => ({
       workRecords: state.workRecords.filter((w) => !packedIds.includes(w.wid)),
       requirementRecords: state.requirementRecords.filter(
         (r) => !packedIds.includes(r.rid)
@@ -296,10 +281,8 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
       projectRecords: state.projectRecords.filter(
         (p) => !packedIds.includes(p.pid)
       ),
+      signedRecords: [],
     }))
-    set({signedRecords: []}) // Clear after packing
-
-    get().save() // remove signed records from local storage
 
     return blockHeader.hash
   },

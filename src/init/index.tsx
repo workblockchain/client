@@ -35,7 +35,7 @@ async function initUserProfile() {
 async function initRecords() {
   // 初始化工作记录
   return new Promise<void>((resolve) => {
-    useSignedRecord.getState().load()
+    useSignedRecord.persist.rehydrate()
     resolve()
   })
 }
@@ -90,7 +90,6 @@ function Initializer({children}: {children: React.ReactNode}) {
       .catch((error) => {
         console.error("Initialization failed:", error)
       })
-    return clear
   }, [])
   if (!isInit) {
     return null

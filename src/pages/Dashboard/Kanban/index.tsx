@@ -35,13 +35,11 @@ export function KanbanContainer() {
   const update = useSignedRecord((state) => state.updateRequirementRecord)
   const add = useSignedRecord((state) => state.addRequirementRecord)
   const remove = useSignedRecord((state) => state.deleteRequirementRecord)
-  const save = useSignedRecord((state) => state.save)
 
   // 处理添加卡片
   const handleAddCard = (state: RequirementStatusType, cardData: StoryCard) => {
     const newReq = convertToRequirementData(state, cardData)
     add(newReq)
-    save()
   }
 
   // 处理更新卡片
@@ -51,17 +49,14 @@ export function KanbanContainer() {
     cardData: StoryCard
   ) => {
     update(cardId, convertToRequirementData(state, cardData))
-    save()
   }
 
   const handleDelete = (id: string) => {
     remove(id)
-    save()
   }
 
   const handleMoveCard = (cardId: string, state: RequirementStatusType) => {
     update(cardId, {status: state})
-    save()
   }
 
   // 构建看板列数据
