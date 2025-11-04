@@ -17,7 +17,6 @@
 
 import usePomodoroStore from "@/pages/Home/usePomodoroStore"
 import {useConfig} from "@/stores/useConfig"
-import {useSignedRecord} from "@/stores/useSignedRecord"
 import {handleTauriSignals} from "@/stores/useTauriSignals"
 import {isTauri} from "@tauri-apps/api/core"
 import {useEffect, useState} from "react"
@@ -28,14 +27,6 @@ async function initUserProfile() {
   // 非响应式直接访问store实例
   return new Promise<void>((resolve) => {
     useUserProfile.getState().load()
-    resolve()
-  })
-}
-
-async function initRecords() {
-  // 初始化工作记录
-  return new Promise<void>((resolve) => {
-    useSignedRecord.persist.rehydrate()
     resolve()
   })
 }
@@ -68,7 +59,6 @@ async function initTauri() {
 async function init() {
   await Promise.all([
     initUserProfile(),
-    initRecords(),
     loadConfig(),
     initPomodoroStore(),
     initTauri(),
