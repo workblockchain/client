@@ -75,10 +75,6 @@ async function init() {
   ])
 }
 
-function clear() {
-  useSignedRecord.getState().clear()
-}
-
 function Initializer({children}: {children: React.ReactNode}) {
   const [isInit, setIsInit] = useState(false)
   useEffect(() => {
