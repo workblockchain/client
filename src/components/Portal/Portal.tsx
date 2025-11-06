@@ -21,6 +21,7 @@ import {createPortal} from "react-dom"
 type PortalProps = {
   id?: string
   children: React.ReactNode
+  __debuggingDisabled?: boolean // debugging
 }
 
 function getRootContainer() {
@@ -37,7 +38,12 @@ function getRootContainer() {
   return root
 }
 
-export const Portal = ({id = PORTAL_CONTAINER_ID, children}: PortalProps) => {
+export const Portal = ({
+  id = PORTAL_CONTAINER_ID,
+  children,
+  __debuggingDisabled,
+}: PortalProps) => {
+  if (__debuggingDisabled) return <>{children}</>
   const [container, setContainer] = useState<HTMLElement | null>(null)
 
   useEffect(() => {
