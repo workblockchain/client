@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {Input, Textarea, TextInput} from "@/components"
+import {InputWithUnit, Textarea, TextInput} from "@/components"
 import {Button} from "@/components/Button"
 import {DividerVertical} from "@/components/Divider"
 import {FixedModal} from "@/components/Modal"
@@ -99,7 +99,7 @@ export function WorkRecordFormModal({
               )}
             />
           </Detail>
-          <DividerVertical style={{height: "unset", flexShrink: 0}} />
+          <DividerVertical style={{height: "auto", flexShrink: 0}} />
           <Info>
             <Controller
               key="userId"
@@ -128,10 +128,12 @@ export function WorkRecordFormModal({
               name="duration"
               control={control}
               render={({field: {value, onChange}}) => (
-                <Input
+                <InputWithUnit
                   value={value}
                   onChange={onChange}
                   placeholder={fields.find((f) => f.key === "duration")?.label}
+                  unit="小时"
+                  $size="medium"
                 />
               )}
             />
@@ -165,12 +167,10 @@ const Detail = styled.div`
   flex-direction: column;
   gap: 16px;
   width: 100%;
-  height: 480px;
   padding: 4px;
 `
 const Info = styled.div`
   width: 160px;
-  height: 480px;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;

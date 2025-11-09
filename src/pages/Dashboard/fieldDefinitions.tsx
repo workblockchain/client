@@ -207,7 +207,7 @@ export const requirementRecordFieldDefinitions: FieldDefinition[] = [
     cellRenderer: (value?: string) => {
       if (!value) return "-"
       const users = useTeam.getState().users
-      return users[value]?.info.username || value
+      return <UserInfo pubkey={users[value].publicKey} />
     },
   },
   {
@@ -247,7 +247,6 @@ export const requirementRecordFieldDefinitions: FieldDefinition[] = [
     label: t("project.progress"),
     type: "number",
     size: 80,
-    cellRenderer: (value?: number) => (value ? `${value}%` : "0%"),
   },
   {
     key: "contributors",
@@ -258,7 +257,7 @@ export const requirementRecordFieldDefinitions: FieldDefinition[] = [
     cellRenderer: (value?: string[]) => {
       if (!value || value.length === 0) return "-"
       const users = useTeam.getState().users
-      return value.map((v) => users[v]?.info.username || v).join(", ")
+      return value.map((v) => <UserInfo pubkey={users[v].publicKey} />)
     },
   },
   {
@@ -326,7 +325,7 @@ export const projectRecordFieldDefinitions: FieldDefinition[] = [
     cellRenderer: (value?: string) => {
       if (!value) return "-"
       const users = useTeam.getState().users
-      return users[value]?.info.username || value
+      return <UserInfo pubkey={users[value].publicKey} />
     },
   },
   {
@@ -334,7 +333,6 @@ export const projectRecordFieldDefinitions: FieldDefinition[] = [
     label: t("project.progress"),
     type: "number",
     size: 80,
-    cellRenderer: (value?: number) => (value ? `${value}%` : "0%"),
   },
   {
     key: "contributors",
@@ -344,7 +342,7 @@ export const projectRecordFieldDefinitions: FieldDefinition[] = [
     cellRenderer: (value?: string[]) => {
       if (!value || value.length === 0) return "-"
       const users = useTeam.getState().users
-      return value.map((v) => users[v]?.info.username || v).join(", ")
+      return value.map((v) => <UserInfo pubkey={users[v].publicKey} />)
     },
   },
   {

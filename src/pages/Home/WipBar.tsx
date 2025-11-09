@@ -81,7 +81,6 @@ const ReqList = () => {
     (state) => state.setCurrentRequirementId
   )
   const reqs = useSignedRecord((state) => state.requirementRecords)
-  console.log("reqs", reqs)
   const wip = useMemo(
     () => reqs.filter((r) => r.data.status === "doing"),
     [reqs]
