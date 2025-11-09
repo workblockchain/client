@@ -17,10 +17,11 @@
 
 import CrossIcon from "@/assets/cross.svg?react"
 import {zIndex} from "@/styles/zIndex"
-import {ReactElement, ReactNode, useCallback} from "react"
+import {ReactNode, ReactSVGElement, useCallback, useContext} from "react"
 import styled from "styled-components"
 import {Button} from "../Button"
 import {Portal} from "../Portal"
+import DebuggingContext from "./DebuggingContext"
 
 export interface ModalProps {
   isOpen: boolean
@@ -28,7 +29,7 @@ export interface ModalProps {
   children: ReactNode
   title?: string
   style?: React.CSSProperties
-  bodyComponent?: (children?: ReactNode) => ReactElement
+  bodyComponent?: (children?: ReactNode) => ReactSVGElement
 }
 
 export const Modal = ({
@@ -39,6 +40,7 @@ export const Modal = ({
   style,
   bodyComponent,
 }: ModalProps) => {
+  const __debug = useContext(DebuggingContext)
   const handleOverlayClick = useCallback(
     (e: React.MouseEvent) => {
       if (e.target === e.currentTarget) onClose()
@@ -49,7 +51,7 @@ export const Modal = ({
   if (!isOpen) return null
 
   return (
-    <Portal>
+    <Portal __debuggingDisabled={__debug}>
       <ModalOverlay onClick={handleOverlayClick}>
         <ModalContent style={style}>
           <ModalHeader>

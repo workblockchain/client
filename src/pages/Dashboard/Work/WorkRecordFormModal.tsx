@@ -15,15 +15,19 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {InputWithUnit, Textarea, TextInput} from "@/components"
 import {Button} from "@/components/Button"
-import {FormField} from "@/components/DataFormDrawer/FormField"
+import {DividerVertical} from "@/components/Divider"
 import {FixedModal} from "@/components/Modal"
+import {Select} from "@/components/Select"
 import {t} from "i18next"
 import {useEffect} from "react"
 import {Controller, useForm} from "react-hook-form"
 import styled from "styled-components"
-import {FieldDefinition, WorkRecord} from "../interfaces"
-import {fieldDefinitionToHookFormDefinition} from "../workRecordUtils"
+import {useDynamicFieldOptions} from "../dynamicFieldOptions"
+import {FieldDefinition} from "../fieldDefinitions"
+import {WorkRecord} from "../interfaces"
+import {UserInfo} from "../Team/UserInfo"
 
 interface WorkRecordFormModalProps {
   submit: (data: WorkRecord) => void
@@ -43,6 +47,7 @@ export function WorkRecordFormModal({
   onClose,
 }: WorkRecordFormModalProps) {
   const {control, handleSubmit, reset} = useForm()
+  const dynamicFields = useDynamicFieldOptions(fields)
 
   // 当 initialData 变化时，重置表单值
   useEffect(() => {
@@ -51,6 +56,12 @@ export function WorkRecordFormModal({
     }
   }, [initialData, reset])
 
+  function onSubmit(user: WorkRecord) {
+    submit(user)
+    reset()
+    onClose()
+  }
+
   return (
     <FixedModal
       isOpen={isOpen}
@@ -58,32 +69,79 @@ export function WorkRecordFormModal({
       title={isEditMode ? t`work.edit` : t`work.create`}
     >
       <Container>
-        <Form onSubmit={handleSubmit(submit)}>
-          {fields.map((field) => (
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Detail>
             <Controller
-              key={field.key}
-              name={field.key}
+              key="outcome"
+              name="outcome"
               control={control}
-              rules={getValidationRules(field)}
-              render={({
-                field: {value, onChange, onBlur},
-                fieldState: {error},
-              }) => (
-                <FormField
-                  field={fieldDefinitionToHookFormDefinition(field)}
-                  value={value ?? getDefaultValueForField(field)}
+              render={({field: {value, onChange}}) => (
+                <TextInput
+                  value={value}
                   onChange={onChange}
-                  onBlur={onBlur}
-                  error={error?.message}
-                  loading={false}
+                  placeholder={fields.find((f) => f.key === "outcome")?.label}
                 />
               )}
             />
-          ))}
+            <Controller
+              key="description"
+              name="description"
+              control={control}
+              render={({field: {value, onChange}}) => (
+                <Textarea
+                  value={value}
+                  onChange={onChange}
+                  $variant="borderless"
+                  placeholder={
+                    fields.find((f) => f.key === "description")?.label
+                  }
+                />
+              )}
+            />
+          </Detail>
+          <DividerVertical style={{height: "auto", flexShrink: 0}} />
+          <Info>
+            <Controller
+              key="userId"
+              name="userId"
+              control={control}
+              render={({field: {value, onChange}}) => {
+                const users = dynamicFields.find((f) => f.key === "userId")
+                return (
+                  <Select
+                    value={value}
+                    width={156}
+                    renderValue={(val) =>
+                      val ? <UserInfo pubkey={val as string} /> : null
+                    }
+                    onChange={onChange}
+                    options={users?.options ?? []}
+                    renderOption={(option) =>
+                      option ? <UserInfo pubkey={option} /> : null
+                    }
+                  />
+                )
+              }}
+            />
+            <Controller
+              key="duration"
+              name="duration"
+              control={control}
+              render={({field: {value, onChange}}) => (
+                <InputWithUnit
+                  value={value}
+                  onChange={onChange}
+                  placeholder={fields.find((f) => f.key === "duration")?.label}
+                  unit="小时"
+                  $size="medium"
+                />
+              )}
+            />
+          </Info>
         </Form>
 
         <Actions>
-          <Button onClick={handleSubmit(submit)} type="button">
+          <Button onClick={handleSubmit(onSubmit)} type="button">
             {isEditMode ? t`work.update` : t`work.create`}
           </Button>
         </Actions>
@@ -96,86 +154,33 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 500px;
-  margin: 0 auto;
+  max-width: 560px;
 `
 
 const Form = styled.form`
   display: flex;
+  height: 100%;
+  gap: 16px;
+`
+const Detail = styled.div`
+  display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
+  padding: 4px;
+`
+const Info = styled.div`
+  width: 160px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 16px;
+  padding: 4px 4px 0 0;
 `
 
 const Actions = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+  flex-shrink: 0;
 `
-
-/**
- * 获取字段的默认值
- */
-function getDefaultValueForField(
-  field: any
-): string | number | boolean | string[] {
-  if (field.defaultValue !== undefined) {
-    return field.defaultValue
-  }
-
-  switch (field.type) {
-    case "number":
-      return 0
-    case "checkbox":
-      return false
-    case "text":
-    case "textarea":
-    case "date":
-    case "select":
-    default:
-      return ""
-  }
-}
-
-/**
- * 将字段验证规则转换为 react-hook-form 验证规则
- */
-function getValidationRules(field: any) {
-  const rules: Record<string, unknown> = {}
-
-  if (field.required) {
-    rules.required = `${field.label}是必填项`
-  }
-
-  if (field.validation) {
-    const {validation} = field
-
-    if (validation.min !== undefined) {
-      rules.min = {
-        value: validation.min,
-        message: `${field.label}不能小于${validation.min}`,
-      }
-    }
-
-    if (validation.max !== undefined) {
-      rules.max = {
-        value: validation.max,
-        message: `${field.label}不能大于${validation.max}`,
-      }
-    }
-
-    if (validation.pattern) {
-      rules.pattern = {
-        value: validation.pattern,
-        message: `${field.label}格式不正确`,
-      }
-    }
-
-    if (validation.custom) {
-      rules.validate = {
-        custom: (value: string | number | boolean) => validation.custom!(value),
-      }
-    }
-  }
-
-  return rules
-}

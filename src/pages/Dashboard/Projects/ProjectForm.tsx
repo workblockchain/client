@@ -17,10 +17,8 @@
 
 import {DataFormDrawer} from "@/components/DataFormDrawer"
 import {t} from "i18next"
-import {
-  ProjectRecord,
-  projectRecordFieldDefinitions as fields,
-} from "../interfaces"
+import {projectRecordFieldDefinitions as fields} from "../fieldDefinitions"
+import {ProjectRecord} from "../interfaces"
 import {fieldDefinitionToHookFormDefinition} from "../workRecordUtils"
 import {ProjectFormModal} from "./ProjectFormModal"
 

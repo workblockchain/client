@@ -28,6 +28,7 @@ export interface TeamUser {
 
 interface TeamProps {
   publicKeys: string[]
+  // <pubkey, user>
   users: Record<string, TeamUser>
 }
 
@@ -38,23 +39,24 @@ interface TeamStore extends TeamProps {
   removeUser: (uid: string) => void
   updateUser: (uid: string, updates: Partial<TeamUser>) => void
   clearTeam: () => void
+  getOptions: () => {value: string; label: string}[]
 }
 
 export const useTeam = create<TeamStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       publicKeys: [],
       users: {},
       setPublicKeys: (publicKeys) => set({publicKeys}),
       setUsers: (users) => set({users}),
       addUser: (user) =>
         set((state) => ({
-          users: {...state.users, [user.uid]: user},
+          users: {...state.users, [user.publicKey]: user},
           publicKeys: [...new Set([...state.publicKeys, user.publicKey])],
         })),
-      removeUser: (uid) =>
+      removeUser: (pubkey) =>
         set((state) => {
-          const {[uid]: removed, ...remainingUsers} = state.users
+          const {[pubkey]: removed, ...remainingUsers} = state.users
           return {
             users: remainingUsers,
             publicKeys: state.publicKeys.filter(
@@ -70,6 +72,13 @@ export const useTeam = create<TeamStore>()(
           },
         })),
       clearTeam: () => set({publicKeys: [], users: {}}),
+      getOptions: () => {
+        const {users} = get()
+        return Object.values(users).map((user) => ({
+          value: user.uid,
+          label: user.info.username || user.uid,
+        }))
+      },
     }),
     {
       name: PERSIST_KEYS.TEAM_PROFILE,

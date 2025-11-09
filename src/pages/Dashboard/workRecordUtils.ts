@@ -19,7 +19,8 @@ import {ConditionDefinition} from "@/components/DataConditionBuilder/types"
 import type {HookFormFieldDefinition} from "@/components/DataFormDrawer/types"
 import {ColumnDef} from "@tanstack/react-table"
 import {t} from "i18next"
-import {FieldDefinition, WorkRecord} from "./interfaces"
+import {FieldDefinition} from "./fieldDefinitions"
+import {WorkRecord} from "./interfaces"
 
 /**
  * 将 WorkRecordFieldDefinition 转换为 ColumnDef
@@ -188,9 +189,6 @@ export function fieldDefinitionToHookFormDefinition(
   // 处理类型映射
   let mappedType: HookFormFieldDefinition["type"]
   switch (fieldDef.type) {
-    case "multi-select":
-      mappedType = "select"
-      break
     case "boolean":
       mappedType = "checkbox"
       break
@@ -205,11 +203,36 @@ export function fieldDefinitionToHookFormDefinition(
     placeholder: fieldDef.placeholder,
   }
 
+  // 添加选项（对于 select 和 multi-select 类型很重要）
+  if (fieldDef.options) {
+    baseField.options = fieldDef.options
+  }
+
+  // 添加隐藏状态
+  if (fieldDef.hidden) {
+    baseField.hidden = fieldDef.hidden
+  }
+
   // 添加验证规则
   if (fieldDef.key === "duration") {
     baseField.validation = {
       min: 0,
     }
+  }
+
+  // 对于 boolean 类型，设置默认值
+  if (fieldDef.type === "boolean") {
+    baseField.defaultValue = false
+  }
+
+  if (fieldDef.cellRenderer) {
+    baseField.render = fieldDef.cellRenderer
+  }
+
+  if (fieldDef.optionRenderer) {
+    baseField.renderOption = fieldDef.optionRenderer
+  } else if (!fieldDef.optionRenderer && fieldDef.cellRenderer) {
+    baseField.renderOption = fieldDef.cellRenderer
   }
 
   return baseField
@@ -254,4 +277,72 @@ export function createGroupSort<T>(
     const sort = groupConditions.find((c) => c.field === key)
     return sort?.condition === "desc" ? -res : res
   }
+}
+
+/**
+ * 获取表单字段的默认值
+ */
+export function getDefaultValueForField(
+  field: HookFormFieldDefinition | any
+): string | number | boolean | string[] {
+  if (field.defaultValue !== undefined) {
+    return field.defaultValue
+  }
+
+  switch (field.type) {
+    case "number":
+      return 0
+    case "checkbox":
+      return false
+    case "text":
+    case "textarea":
+    case "date":
+    case "select":
+    default:
+      return ""
+  }
+}
+
+/**
+ * 将字段验证规则转换为 react-hook-form 验证规则
+ */
+export function getValidationRules(field: HookFormFieldDefinition | any) {
+  const rules: Record<string, unknown> = {}
+
+  if (field.required) {
+    rules.required = `${field.label}是必填项`
+  }
+
+  if (field.validation) {
+    const {validation} = field
+
+    if (validation.min !== undefined) {
+      rules.min = {
+        value: validation.min,
+        message: `${field.label}不能小于${validation.min}`,
+      }
+    }
+
+    if (validation.max !== undefined) {
+      rules.max = {
+        value: validation.max,
+        message: `${field.label}不能大于${validation.max}`,
+      }
+    }
+
+    if (validation.pattern) {
+      rules.pattern = {
+        value: validation.pattern,
+        message: `${field.label}格式不正确`,
+      }
+    }
+
+    if (validation.custom) {
+      rules.validate = {
+        custom: (value: string | number | boolean) => validation.custom!(value),
+      }
+    }
+  }
+
+  return rules
 }

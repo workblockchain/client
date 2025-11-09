@@ -26,9 +26,6 @@ const meta: Meta<typeof Input> = {
     placeholder: {
       control: "text",
     },
-    disabled: {
-      control: "boolean",
-    },
     $size: {
       control: "select",
       options: ["x-small", "small", "medium", "large"],
@@ -43,36 +40,13 @@ const meta: Meta<typeof Input> = {
 export default meta
 type Story = StoryObj<typeof Input>
 
-export const Default: Story = {
-  args: {
-    placeholder: "请输入内容...",
-  },
-}
-
-export const Disabled: Story = {
-  args: {
-    placeholder: "禁用状态",
-    disabled: true,
-  },
-}
-
 export const Sizes: Story = {
   render: () => (
     <div style={{display: "flex", flexDirection: "column", gap: "16px"}}>
       <Input placeholder="x-small 尺寸" $size="x-small" />
-      <Input placeholder="small 尺寸" $size="small" />
-      <Input placeholder="medium 尺寸" $size="medium" />
-      <Input placeholder="large 尺寸" $size="large" />
-    </div>
-  ),
-}
-
-export const Alignments: Story = {
-  render: () => (
-    <div style={{display: "flex", flexDirection: "column", gap: "16px"}}>
-      <Input placeholder="左对齐 (start)" $align="start" />
-      <Input placeholder="居中 (center)" $align="center" />
-      <Input placeholder="右对齐 (end)" $align="end" />
+      <Input placeholder="small 尺寸" $size="small" $align="start" />
+      <Input placeholder="medium 尺寸" $size="medium" $align="center" />
+      <Input placeholder="large 尺寸" $size="large" $align="end" />
     </div>
   ),
 }

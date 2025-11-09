@@ -17,10 +17,8 @@
 
 import {DataFormDrawer} from "@/components/DataFormDrawer"
 import {t} from "i18next"
-import {
-  RequirementRecord,
-  requirementRecordFieldDefinitions as fields,
-} from "../interfaces"
+import {requirementRecordFieldDefinitions as fields} from "../fieldDefinitions"
+import {RequirementRecord} from "../interfaces"
 import {fieldDefinitionToHookFormDefinition} from "../workRecordUtils"
 import {RequirementFormModal} from "./RequirementFormModal"
 
