@@ -17,7 +17,7 @@
 
 import CrossIcon from "@/assets/cross.svg?react"
 import {zIndex} from "@/styles/zIndex"
-import {ReactNode, ReactSVGElement, useCallback, useContext} from "react"
+import {ReactNode, useCallback, useContext} from "react"
 import styled from "styled-components"
 import {Button} from "../Button"
 import {Portal} from "../Portal"
@@ -29,7 +29,7 @@ export interface ModalProps {
   children: ReactNode
   title?: string
   style?: React.CSSProperties
-  bodyComponent?: (children?: ReactNode) => ReactSVGElement
+  bodyComponent?: (children?: ReactNode) => ReactNode
 }
 
 export const Modal = ({
