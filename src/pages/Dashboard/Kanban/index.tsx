@@ -59,11 +59,6 @@ export function KanbanContainer() {
     save()
   }
 
-  const handleMoveCard = (cardId: string, state: RequirementStatusType) => {
-    update(cardId, {status: state})
-    save()
-  }
-
   // 构建看板列数据
   const kanbanColumns: ColumnProps[] = requirementStatusList.map((status) => ({
     id: status,
@@ -81,7 +76,6 @@ export function KanbanContainer() {
       column={kanbanColumns}
       addCard={handleAddCard}
       deleteCard={handleDelete}
-      moveCard={handleMoveCard}
       updateCard={handleUpdateCard}
     />
   )

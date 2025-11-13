@@ -15,54 +15,33 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {CardProps, DropItem} from "@/interfaces/kanban"
-import {memo, useRef} from "react"
-import {useDrag, useDrop} from "react-dnd"
+import {DropItem, StoryCardWithCid} from "@/interfaces/kanban"
+import {useDraggable} from "@dnd-kit/core"
+import {CSS} from "@dnd-kit/utilities"
+import {forwardRef, memo} from "react"
 import StoryCard from "../StoryCard"
-import {ItemTypes} from "./types"
+export interface Props extends DropItem {
+  onClick?: (content: StoryCardWithCid) => void
+}
 
-export const KanbanCard = memo((props: CardProps) => {
-  const ref = useRef<HTMLDivElement>(null)
-  // 拖拽源配置
-  const [{isDragging}, drag] = useDrag({
-    type: ItemTypes.CARD,
-    item: props as DropItem,
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  })
+export const KanbanCard = memo(
+  forwardRef<HTMLDivElement, Props>(({onClick, content}) => {
+    const {attributes, listeners, setNodeRef, transform} = useDraggable({
+      id: "StoryCard-" + content.cid,
+    })
 
-  // 放置目标配置
-  const [_, drop] = useDrop({
-    accept: ItemTypes.CARD,
-
-    drop: (item: DropItem) => {
-      if (
-        !ref.current ||
-        (item.index === props.index && item.state === props.state)
-      )
-        return
-      props.moveCard?.(item.content.cid)
-    },
-  })
-
-  drag(drop(ref))
-
-  return (
-    <>
+    const style = {
+      transform: CSS.Translate.toString(transform),
+    }
+    return (
       <StoryCard
-        draggable
-        isDragging={isDragging}
-        ref={ref}
-        onClick={() =>
-          props.clickCard
-            ? props.clickCard(props)
-            : console.log("openCard is not defined")
-        }
-        {...props.content}
-      >
-        {props.content.children}
-      </StoryCard>
-    </>
-  )
-})
+        style={style}
+        {...listeners}
+        {...attributes}
+        ref={setNodeRef}
+        onClick={() => onClick?.(content)}
+        {...content}
+      />
+    )
+  })
+)

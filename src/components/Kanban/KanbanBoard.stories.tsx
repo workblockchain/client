@@ -29,6 +29,7 @@ export default meta
 type Story = StoryObj<BoardProps>
 
 const kanbanData: BoardProps = {
+  title: "123",
   id: "board1",
   column: [
     {

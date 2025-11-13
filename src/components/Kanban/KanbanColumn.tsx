@@ -15,45 +15,30 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {ColumnProps, DropItem} from "@/interfaces"
-import {memo, useRef} from "react"
-import {useDrop} from "react-dnd"
+import {RequirementStatusType, StoryCardWithCid} from "@/interfaces"
+import {useDroppable} from "@dnd-kit/core"
+import {memo} from "react"
 import styled from "styled-components"
 import {svgIcons} from "../Icons/svgIcons"
 import {KanbanCard} from "./KanbanCard"
-import {ItemTypes} from "./types"
+
+export interface Props {
+  id: RequirementStatusType
+  columnTitle: string
+  cards: StoryCardWithCid[]
+  addCard?: (state: RequirementStatusType) => void
+  clickCard?: (type: RequirementStatusType, content: StoryCardWithCid) => void
+}
 
 // 主组件
 export const KanbanColumn = memo(
-  ({
-    id,
-    cards,
-    columnTitle,
-    addCard,
-    moveCard,
-    openDrawer,
-    clickCard,
-  }: ColumnProps) => {
-    const ref = useRef<HTMLDivElement>(null)
-
-    // 作为放置目标
-    const [_, drop] = useDrop({
-      accept: ItemTypes.CARD,
-
-      drop: (item: DropItem, monitor) => {
-        // 如果是当前列表
-        if (item.state === id) return
-
-        // 如果被其他可拖拽的元素覆盖
-        if (!monitor.isOver({shallow: true})) return
-        moveCard?.(item.content.cid, id)
-      },
+  ({id, cards, columnTitle, addCard, clickCard}: Props) => {
+    const {isOver, setNodeRef} = useDroppable({
+      id: "KanbanColumn-" + id,
     })
 
-    drop(ref)
-
     return (
-      <Container ref={ref}>
+      <Container ref={setNodeRef}>
         <Header>
           <Title>{columnTitle}</Title>
           <CardCount>{cards.length} 张卡片</CardCount>
@@ -62,30 +47,18 @@ export const KanbanColumn = memo(
           {cards.map((card, index) => (
             <KanbanCard
               key={index}
-              index={index}
-              state={id}
               content={card}
-              moveCard={(cardId) =>
-                moveCard
-                  ? moveCard(cardId, id)
-                  : console.log("moveCard is undefined")
-              }
-              clickCard={clickCard}
+              state={id}
+              onClick={(content) => clickCard?.(id, content)}
             />
           ))}
         </CardList>
-        {addCard ? (
-          <AddCard
-            onClick={() =>
-              openDrawer
-                ? openDrawer(id)
-                : console.log("openDrawer is undefined")
-            }
-          >
+        {addCard && (
+          <AddCard onClick={() => addCard(id)}>
             <svgIcons.Plus width={20} height={20} />
             <span>添加卡片</span>
           </AddCard>
-        ) : null}
+        )}
       </Container>
     )
   }

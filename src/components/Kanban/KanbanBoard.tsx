@@ -16,31 +16,46 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {
-  DropItem,
-  BoardProps as Props,
+  ColumnProps,
   RequirementStatusType,
   StoryCardWithCid,
 } from "@/interfaces"
+import {DndContext, DragEndEvent} from "@dnd-kit/core"
 import {useCallback, useState} from "react"
-import {DndProvider} from "react-dnd"
-import {HTML5Backend} from "react-dnd-html5-backend"
 import styled from "styled-components"
 import {Drawer} from "../Drawer"
 import {KanbanColumn} from "./KanbanColumn"
 import {KanbanForm} from "./KanbanForm"
+
+export interface Props {
+  id: string
+  title?: string
+  column: ColumnProps[]
+  isLoading?: boolean
+  addCard?: (state: RequirementStatusType, cardData: StoryCardWithCid) => void
+  deleteCard?: (id: string) => void
+  updateCard?: (
+    cardId: string,
+    state: RequirementStatusType,
+    cardData: StoryCardWithCid
+  ) => void
+}
 
 export const KanbanBoard = ({
   title,
   column,
   isLoading,
   addCard,
-  moveCard,
   deleteCard,
   updateCard,
 }: Props) => {
+  // 点击卡片弹出的模态框
   const [isOpen, setIsOpen] = useState(false)
+  // 操作的看板类型
   const [state, setState] = useState<RequirementStatusType>("todo")
-  const [cardData, setCardData] = useState<DropItem>()
+  // 操作的卡片数据
+  const [card, setCard] = useState<StoryCardWithCid>()
+  // 模态框编辑状态
   const [mode, setMode] = useState<"create" | "edit">("create")
 
   const callback = useCallback(
@@ -48,62 +63,70 @@ export const KanbanBoard = ({
       if (type === "create") {
         addCard?.(state, data)
       } else {
-        if (!cardData) {
-          console.log("cardData is null", cardData)
+        if (!card) {
+          console.log("cardData is null", card)
           return
         }
-        updateCard?.(data.cid, cardData.state, data)
+        updateCard?.(data.cid, state, data)
       }
       setIsOpen(false)
-      setCardData(undefined)
+      setCard(undefined)
     },
-    [state, cardData, addCard, updateCard]
+    [state, card, addCard, updateCard]
   )
 
+  function handleDragEnd(event: DragEndEvent) {}
+
+  function handleAddCard(type: RequirementStatusType) {
+    setState(type)
+    setMode("create")
+    setIsOpen(true)
+  }
+
+  function handleOpenCard(
+    type: RequirementStatusType,
+    content: StoryCardWithCid
+  ) {
+    setState(type)
+    setMode("edit")
+    setCard(content)
+    setIsOpen(true)
+  }
+
   return (
-    <DndProvider backend={HTML5Backend}>
-      {title ? <Title>{title}</Title> : null}
-      {isLoading ? (
-        "正在加载"
-      ) : (
-        <>
-          <Container>
-            {column.map(({id, columnTitle, cards}, index) => (
-              <KanbanColumn
-                key={index}
-                id={id}
-                columnTitle={columnTitle}
-                cards={cards}
-                addCard={addCard}
-                moveCard={moveCard}
-                deleteCard={deleteCard}
-                openDrawer={(state) => {
-                  setState(state)
-                  setMode("create")
-                  setIsOpen(!isOpen)
-                }}
-                clickCard={(data) => {
-                  setCardData(data)
-                  setMode("edit")
-                  setIsOpen(!isOpen)
-                }}
+    <>
+      <DndContext onDragEnd={handleDragEnd}>
+        {title ? <Title>{title}</Title> : null}
+
+        {isLoading ? "正在加载" : null}
+
+        {!isLoading ? (
+          <>
+            <Container>
+              {column.map(({id, columnTitle, cards}) => (
+                <KanbanColumn
+                  key={id}
+                  id={id}
+                  columnTitle={columnTitle}
+                  cards={cards}
+                  addCard={(type) => handleAddCard(type)}
+                  clickCard={(type, content) => handleOpenCard(type, content)}
+                />
+              ))}
+            </Container>
+            <Drawer isOpen={isOpen} onClose={() => setIsOpen(false)}>
+              <KanbanForm
+                mode={mode}
+                onCancel={() => setIsOpen(false)}
+                initData={card}
+                deleteCard={(card) => deleteCard?.(card)}
+                callback={callback}
               />
-            ))}
-          </Container>
-          <Drawer isOpen={isOpen} onClose={() => setIsOpen(!isOpen)}>
-            <KanbanForm
-              mode={mode}
-              onCancel={() => {
-                setIsOpen(!isOpen)
-              }}
-              initData={cardData?.content}
-              callback={callback}
-              deleteCard={() => deleteCard?.(cardData?.content.cid!)}
-            />
-          </Drawer>
-        </>
-      )}
-    </DndProvider>
+            </Drawer>
+          </>
+        ) : null}
+      </DndContext>
+    </>
   )
 }
 

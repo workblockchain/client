@@ -33,27 +33,9 @@ export interface Props extends HTMLAttributes<HTMLDivElement> {
 }
 
 const StoryCard = forwardRef<HTMLDivElement, Props>(
-  (
-    {
-      tags,
-      subTasks,
-      draggable,
-      isDragging,
-      children,
-      cid,
-      assignee,
-      size,
-      ...props
-    },
-    ref
-  ) => {
+  ({tags, subTasks, children, cid, assignee, size, ...props}, ref) => {
     return (
-      <Container
-        $draggable={draggable}
-        $isDragging={!!isDragging}
-        ref={ref}
-        {...props}
-      >
+      <Container ref={ref} {...props}>
         <Content $size={size}>{children}</Content>
         {size !== "small" && !!subTasks?.length && (
           <SubTasks>
@@ -184,29 +166,11 @@ const SmallLine = styled.div`
   }
 `
 
-const Container = styled(CardContainer)<{
-  $isDragging: boolean
-  $draggable?: boolean
-}>`
-  ${({$draggable, $isDragging}) => {
-    if ($draggable) {
-      return css`
-        cursor: ${$isDragging ? "move" : "grab"};
-        opacity: ${$isDragging ? 0.4 : 1};
-        &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        &:active {
-          transform: translateY(0);
-        }
-      `
-    }
-    return css`
-      cursor: pointer;
-    `
-  }}
-  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+const Container = styled(CardContainer)`
+  &:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  cursor: pointer;
   position: relative;
   color: ${colors.Neutral800};
 `
