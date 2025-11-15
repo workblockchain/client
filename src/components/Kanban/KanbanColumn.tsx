@@ -17,23 +17,24 @@
 
 import {RequirementStatusType, StoryCardWithCid} from "@/interfaces"
 import {useDroppable} from "@dnd-kit/core"
+import {SortableContext, verticalListSortingStrategy} from "@dnd-kit/sortable"
 import {memo} from "react"
 import styled from "styled-components"
 import {svgIcons} from "../Icons/svgIcons"
 import {KanbanCard} from "./KanbanCard"
-
 export interface Props {
   id: RequirementStatusType
   columnTitle: string
   cards: StoryCardWithCid[]
   addCard?: (state: RequirementStatusType) => void
   clickCard?: (type: RequirementStatusType, content: StoryCardWithCid) => void
+  items?: any
 }
 
 // 主组件
 export const KanbanColumn = memo(
-  ({id, cards, columnTitle, addCard, clickCard}: Props) => {
-    const {isOver, setNodeRef} = useDroppable({
+  ({id, cards, columnTitle, addCard, clickCard, items}: Props) => {
+    const {setNodeRef} = useDroppable({
       id: "KanbanColumn-" + id,
     })
 
@@ -44,14 +45,19 @@ export const KanbanColumn = memo(
           <CardCount>{cards.length} 张卡片</CardCount>
         </Header>
         <CardList>
-          {cards.map((card, index) => (
-            <KanbanCard
-              key={index}
-              content={card}
-              state={id}
-              onClick={(content) => clickCard?.(id, content)}
-            />
-          ))}
+          <SortableContext items={items} strategy={verticalListSortingStrategy}>
+            {cards
+              .filter((card) => items.includes(card.cid)) // 按 columnIndex 过滤
+              .sort((a, b) => items.indexOf(a.cid) - items.indexOf(b.cid)) // 按 columnIndex 排序
+              .map((card) => (
+                <KanbanCard
+                  key={card.cid}
+                  content={card}
+                  state={id}
+                  onClick={(content) => clickCard?.(id, content)}
+                />
+              ))}
+          </SortableContext>
         </CardList>
         {addCard && (
           <AddCard onClick={() => addCard(id)}>

@@ -15,33 +15,46 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {DropItem, StoryCardWithCid} from "@/interfaces/kanban"
-import {useDraggable} from "@dnd-kit/core"
+import {RequirementStatusType} from "@/interfaces"
+import {StoryCardWithCid} from "@/interfaces/kanban"
+import {useSortable} from "@dnd-kit/sortable"
 import {CSS} from "@dnd-kit/utilities"
-import {forwardRef, memo} from "react"
+import {memo} from "react"
 import StoryCard from "../StoryCard"
-export interface Props extends DropItem {
+export interface Props {
   onClick?: (content: StoryCardWithCid) => void
+  content: StoryCardWithCid
+  state: RequirementStatusType
 }
 
-export const KanbanCard = memo(
-  forwardRef<HTMLDivElement, Props>(({onClick, content}) => {
-    const {attributes, listeners, setNodeRef, transform} = useDraggable({
-      id: "StoryCard-" + content.cid,
-    })
+export interface DndData {
+  content: StoryCardWithCid
+  state: RequirementStatusType
+}
 
-    const style = {
-      transform: CSS.Translate.toString(transform),
-    }
-    return (
-      <StoryCard
-        style={style}
-        {...listeners}
-        {...attributes}
-        ref={setNodeRef}
-        onClick={() => onClick?.(content)}
-        {...content}
-      />
-    )
-  })
-)
+export const KanbanCard = memo<Props>(({onClick, content, state}) => {
+  const {attributes, listeners, setNodeRef, transform, transition, isDragging} =
+    useSortable({
+      id: content.cid,
+      data: {
+        content: content,
+        state: state,
+      } as DndData,
+    })
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
+
+  return (
+    <StoryCard
+      style={style}
+      isDragging={isDragging}
+      {...listeners}
+      {...attributes}
+      ref={setNodeRef}
+      onClick={() => onClick?.(content)}
+      {...content}
+    />
+  )
+})

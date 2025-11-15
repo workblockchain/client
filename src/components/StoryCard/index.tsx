@@ -33,9 +33,12 @@ export interface Props extends HTMLAttributes<HTMLDivElement> {
 }
 
 const StoryCard = forwardRef<HTMLDivElement, Props>(
-  ({tags, subTasks, children, cid, assignee, size, ...props}, ref) => {
+  (
+    {tags, subTasks, children, cid, assignee, size, isDragging, ...props},
+    ref
+  ) => {
     return (
-      <Container ref={ref} {...props}>
+      <Container ref={ref} {...props} $isDragging={!!isDragging}>
         <Content $size={size}>{children}</Content>
         {size !== "small" && !!subTasks?.length && (
           <SubTasks>
@@ -166,10 +169,15 @@ const SmallLine = styled.div`
   }
 `
 
-const Container = styled(CardContainer)`
+const Container = styled(CardContainer)<{$isDragging: boolean}>`
   &:hover {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
+  ${({$isDragging}) => {
+    return css`
+      opacity: ${$isDragging ? 0.4 : 1};
+    `
+  }}
   cursor: pointer;
   position: relative;
   color: ${colors.Neutral800};

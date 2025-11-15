@@ -34,6 +34,7 @@ interface SignedRecordStore {
   requirementRecords: RequirementData[]
   projectRecords: ProjectData[]
   signedRecords: SignedRecord[]
+  cardIndex: string[][]
 
   // Record operations
   createRecord: (id: string, message: string) => Promise<SignedRecord>
@@ -66,6 +67,8 @@ interface SignedRecordStore {
   load: () => void
   clear: () => void
 
+  setIndex: (index: string[][]) => void
+
   // block chain
   packed: Record<string, ChainBlock> // 已经打包的数据
   packIn: () => Promise<string>
@@ -76,6 +79,7 @@ interface SignedRecordStore {
 const STASHED_RECORD_KEY = "RECORDS" as const
 const SIGNED_RECORD_KEY = "SIGNED_RECORDS" as const
 const LOCAL_BLOCK_KEY = "LOCAL_BLOCK_KEYS" as const
+const SORT_KEY = "SORT_KEY" as const
 
 export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
   // records not signed yet
@@ -83,7 +87,7 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
   requirementRecords: [],
   projectRecords: [],
   signedRecords: [], // records not packed yet
-
+  cardIndex: [],
   createRecord: async (id, message) => {
     const {publicKey, secretKey} = useUserProfile.getState()
     if (!publicKey) {
@@ -140,6 +144,10 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
       ),
     }))
     get().save()
+  },
+  setIndex: (index: string[][]) => {
+    set({cardIndex: index})
+    localStorage.setItem(SORT_KEY, JSON.stringify({cardIndex: index}))
   },
 
   // RequirementRecord methods
@@ -217,6 +225,14 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
         signedRecords,
       })
     )
+
+    const {cardIndex} = get()
+    localStorage.setItem(
+      SORT_KEY,
+      JSON.stringify({
+        cardIndex,
+      })
+    )
   },
 
   // TODO: optimize loading, it could take a long time if there are many records
@@ -237,6 +253,18 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
       const localBlockKeys = JSON.parse(localBlockKeysStr)
       set({localBlockKeys})
     }
+
+    const indexData = localStorage.getItem(SORT_KEY)
+    if (indexData) {
+      try {
+        const {cardIndex} = JSON.parse(indexData)
+        if (Array.isArray(cardIndex)) {
+          set({cardIndex})
+        }
+      } catch (e) {
+        console.warn("加载 Kanban 排序失败", e)
+      }
+    }
   },
 
   clear: () => {
@@ -245,6 +273,7 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
       workRecords: [],
       requirementRecords: [],
       projectRecords: [],
+      cardIndex: [],
     })
   },
 
