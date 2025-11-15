@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {BoardProps} from "@/interfaces/kanban"
+import {Props as BoardProps} from "@/components/Kanban/KanbanBoard"
 import {create} from "zustand"
 
 // FIXME: unused

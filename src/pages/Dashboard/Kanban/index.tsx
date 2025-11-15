@@ -16,8 +16,8 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {KanbanBoard} from "@/components/Kanban/KanbanBoard"
+import {Props as ColumnProps} from "@/components/Kanban/KanbanColumn"
 import {Props as StoryCard} from "@/components/StoryCard"
-import {ColumnProps} from "@/interfaces"
 import {
   RequirementData,
   requirementStatusList,
