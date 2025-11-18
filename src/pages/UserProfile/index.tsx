@@ -19,7 +19,7 @@ import {AvatarRow} from "@/components/Avatar/AvatarRow"
 import {Button} from "@/components/Button"
 import {ConfigContainer} from "@/components/CommonLayout"
 import {DividerHorizontal} from "@/components/Divider"
-import {TextInputWithLabel} from "@/components/Input"
+import {Input, TextInputWithLabel} from "@/components/Input"
 import {Modal} from "@/components/Modal"
 import {SubDescription} from "@/components/Typographies"
 import {UserInfoProps} from "@/interfaces"
@@ -43,6 +43,8 @@ export function UserProfile() {
     uid,
   } = useUserProfile()
   const [isGenerating, setIsGenerating] = useState(false)
+  const [isDeleteDisabled, setIsDeleteDisabled] = useState<boolean>(true)
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const [draft, setDraft] = useState<Partial<UserInfoProps>>(userInfo)
   const [draftUid, setDraftUid] = useState<string>(uid.split("#")[0])
 
@@ -79,11 +81,15 @@ export function UserProfile() {
   const onConfirmDelete = () => {
     setIsConfirmOpen(false)
     setDraftUid("")
+    setIsDeleteDisabled(true)
+    setIsConfirmingDelete(false)
     clear()
   }
 
   const onCancelDelete = () => {
     setIsConfirmOpen(false)
+    setIsDeleteDisabled(true)
+    setIsConfirmingDelete(false)
   }
 
   const handleGenerateKeys = async () => {
@@ -186,14 +192,49 @@ export function UserProfile() {
         </Button>
       </ActionSection>
       {/* TODO: 危险操作，需要在后续的用户设计中让用户不那么容易做到 */}
-      <Modal isOpen={isConfirmOpen} onClose={onCancelDelete} title="确认操作">
+      <Modal
+        isOpen={isConfirmOpen && !isConfirmingDelete}
+        onClose={onCancelDelete}
+        title="确认操作"
+      >
         确定要删除当前账户信息吗？此操作将清除所有本地存储的身份数据。
         <ActionSection style={{marginTop: "1rem"}}>
           <Button $variant="outline" onClick={onCancelDelete}>
             取消
           </Button>
-          <Button $variant="solid" onClick={onConfirmDelete}>
+          <Button
+            $variant="solid"
+            onClick={() => {
+              setIsConfirmingDelete(true)
+            }}
+          >
             确定
+          </Button>
+        </ActionSection>
+      </Modal>
+      <Modal
+        isOpen={isConfirmingDelete}
+        onClose={onCancelDelete}
+        title="再次确认"
+      >
+        删除不可恢复，请输入“我确认删除”
+        <ActionSection style={{marginTop: "1rem"}}>
+          <Input
+            onChange={(e) => {
+              console.log(isDeleteDisabled)
+              if (e.target.value == "我确认删除") {
+                setIsDeleteDisabled(false)
+              }
+            }}
+          ></Input>
+          <Button
+            $variant="solid"
+            disabled={isDeleteDisabled}
+            onClick={() => {
+              onConfirmDelete()
+            }}
+          >
+            删除
           </Button>
         </ActionSection>
       </Modal>
