@@ -17,6 +17,7 @@
 
 import {colors} from "@/styles"
 import {forwardRef, HTMLAttributes} from "react"
+import Markdown from "react-markdown"
 import styled, {css} from "styled-components"
 import Avatar from "../Avatar/AvatarPreview"
 import Tag from "../Tag"
@@ -54,7 +55,13 @@ const StoryCard = forwardRef<HTMLDivElement, Props>(
         ref={ref}
         {...props}
       >
-        <Content $size={size}>{children}</Content>
+        <Content $size={size}>
+          {typeof children == "string" ? (
+            <Markdown>{children}</Markdown>
+          ) : (
+            children
+          )}
+        </Content>
         {size !== "small" && !!subTasks?.length && (
           <SubTasks>
             <h5 style={{margin: "5px 0", color: colors.Neutral400}}>子任务</h5>
