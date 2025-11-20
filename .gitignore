@@ -12,7 +12,7 @@ node_modules/
 # Tauri.
 src-tauri/target/
 src-tauri/gen/schemas
-/target/rust-analyzer/flycheck*/
+/target
 # Compilation output.
 dist/
 dist-ssr/
@@ -20,6 +20,3 @@ storybook-static/
 
 *.ttf
 .swc
-
-
-
