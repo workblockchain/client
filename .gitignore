@@ -20,3 +20,12 @@ storybook-static/
 
 *.ttf
 .swc
+target/
+
+
+# local doc files
+
+.roomodes
+.bmad-core
+web-bundles
+docs
