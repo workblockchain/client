@@ -41,11 +41,11 @@ function WipBar() {
         <Title
           onClick={() => (requirement ? setCardOpen(true) : setListOpen(true))}
         >
-          {requirement?.description ?? t`pomodoro.wipBar.noReq`}
+          {requirement?.data.description ?? t`pomodoro.wipBar.noReq`}
         </Title>
         <Action onClick={() => setListOpen(true)} />
       </Container>
-      {requirement && <ReqCard req={requirement} />}
+      {requirement && <ReqCard req={requirement.data} />}
       <ReqList />
     </>
   )
@@ -81,28 +81,34 @@ const ReqList = () => {
     (state) => state.setCurrentRequirementId
   )
   const reqs = useSignedRecord((state) => state.requirementRecords)
-  const wip = useMemo(() => reqs.filter((r) => r.status === "doing"), [reqs])
+  const wip = useMemo(
+    () => reqs.filter((r) => r.data.status === "doing"),
+    [reqs]
+  )
 
   // const wip = [] as RequirementData[]
 
   return (
     <ReqListContainer $open={isOpen} onClick={() => setIsOpen(false)}>
-      {wip.map((r) => (
-        <StoryCard
-          id={r.rid}
-          key={r.rid}
-          tags={r.tags}
-          cid={r.rid}
-          assignee={r.assignedTo}
-          size="small"
-          onClick={() => {
-            setCurrentRequirementId(r.rid)
-            setIsOpen(false)
-          }}
-        >
-          {r.description}
-        </StoryCard>
-      ))}
+      {wip.map((req) => {
+        const r = req.data
+        return (
+          <StoryCard
+            id={r.rid}
+            key={r.rid}
+            tags={r.tags}
+            cid={r.rid}
+            assignee={r.assignedTo}
+            size="small"
+            onClick={() => {
+              setCurrentRequirementId(r.rid)
+              setIsOpen(false)
+            }}
+          >
+            {r.description}
+          </StoryCard>
+        )
+      })}
     </ReqListContainer>
   )
 }

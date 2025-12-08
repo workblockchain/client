@@ -19,10 +19,12 @@ import {ChainBlock} from "@/interfaces"
 import {packInBlock, signRecord} from "@/utils/cryptos"
 import {t} from "i18next"
 import {toast} from "react-toastify"
+import {v4} from "uuid"
 import {create} from "zustand"
 import {
   ProjectData,
   RequirementData,
+  RuntimeRecord,
   SignedRecord,
   WorkData,
   Record as WorkRecord,
@@ -30,26 +32,27 @@ import {
 import {useUserProfile} from "./useUserProfile"
 
 interface SignedRecordStore {
-  workRecords: WorkData[]
-  requirementRecords: RequirementData[]
-  projectRecords: ProjectData[]
+  workRecords: RuntimeRecord<WorkData>[]
+  requirementRecords: RuntimeRecord<RequirementData>[]
+  projectRecords: RuntimeRecord<ProjectData>[]
   signedRecords: SignedRecord[]
   cardIndex: string[][]
 
   // Record operations
-  createRecord: (id: string, message: string) => Promise<SignedRecord>
+  signWorkRecord: (id: string) => Promise<SignedRecord>
 
   // WorkRecord operations
-  addWorkRecord: (workRecord: WorkData) => void
-  getWorkRecord: (id: string) => WorkData | undefined
+  addWorkRecord: (workRecord: Omit<WorkData, "wid">) => string
+  getWorkRecord: (id: string) => RuntimeRecord<WorkData> | undefined
   updateWorkRecord: (id: string, updates: Partial<WorkData>) => void
-  setWorkSigned: (id: string, isSigned: boolean) => void
   deleteWorkRecord: (id: string) => void
 
   // RequirementRecord operations
   addRequirementRecord: (requirementRecord: RequirementData) => void
   drawRequirementId: (prefix?: string) => string
-  getRequirementRecord: (id: string) => RequirementData | undefined
+  getRequirementRecord: (
+    id: string
+  ) => RuntimeRecord<RequirementData> | undefined
   updateRequirementRecord: (
     id: string,
     updates: Partial<RequirementData>
@@ -58,7 +61,7 @@ interface SignedRecordStore {
 
   // ProjectRecord operations
   addProjectRecord: (projectRecord: ProjectData) => void
-  getProjectRecord: (id: string) => ProjectData | undefined
+  getProjectRecord: (id: string) => RuntimeRecord<ProjectData> | undefined
   updateProjectRecord: (id: string, updates: Partial<ProjectData>) => void
   deleteProjectRecord: (id: string) => void
 
@@ -88,7 +91,7 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
   projectRecords: [],
   signedRecords: [], // records not packed yet
   cardIndex: [],
-  createRecord: async (id, message) => {
+  signWorkRecord: async (id) => {
     const {publicKey, secretKey} = useUserProfile.getState()
     if (!publicKey) {
       toast.error(t`record.noPublicKey`)
@@ -98,7 +101,14 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
       toast.error(t`record.noSecretKey`)
       throw new Error("No secret key available")
     }
+    const unsignedRecord = get().getWorkRecord(id)
+    if (!unsignedRecord) {
+      toast.error(t`record.noData`)
+      throw new Error("No data available")
+    }
+    const message = JSON.stringify(unsignedRecord.data)
     const record: WorkRecord = {
+      // TODO: 需要生成一个新的id，使用打包算法，保证id的唯一。目前暂时使用旧id
       id,
       // TODO: message事实上是对WorkRecord的JSON字符串化，浪费了存储空间
       // 这是因为设计时，假设了Record可以是任意类型的JSON对象，希望囊括
@@ -111,53 +121,57 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
     }
     const signed = await signRecord(record, secretKey)
     get().signedRecords.push(signed)
+    unsignedRecord.isSigned = true
     get().save()
     return signed
   },
 
   // WorkRecord methods
   addWorkRecord: (workRecord) => {
+    const {publicKey} = useUserProfile.getState()
+    const runtimeRecord: RuntimeRecord<WorkData> = {
+      id: v4(),
+      data: {...workRecord, wid: `work-${Date.now()}`},
+      createdBy: publicKey || "",
+      createdAt: Date.now(),
+    }
     set((state) => ({
-      workRecords: [...state.workRecords, workRecord],
+      workRecords: [...state.workRecords, runtimeRecord],
     }))
     get().save()
+    return runtimeRecord.id
   },
 
-  getWorkRecord: (wid) => get().workRecords.find((w) => w.wid === wid),
+  getWorkRecord: (id) => get().workRecords.find((w) => w.id === id),
 
-  updateWorkRecord: (userId, updates) =>
+  updateWorkRecord: (id, updates) =>
     set((state) => ({
       workRecords: state.workRecords.map((w) =>
-        w.userId === userId ? {...w, ...updates} : w
+        w.id === id ? {...w, data: {...w.data, ...updates}} : w
       ),
     })),
 
-  deleteWorkRecord: (userId) =>
+  deleteWorkRecord: (id) =>
     set((state) => ({
-      workRecords: state.workRecords.filter((w) => w.userId !== userId),
+      workRecords: state.workRecords.filter((w) => w.id !== id),
     })),
-
-  setWorkSigned: (wid, isSigned) => {
-    set((state) => ({
-      workRecords: state.workRecords.map((w) =>
-        w.wid === wid ? {...w, isSigned} : w
-      ),
-    }))
-    get().save()
-  },
-  setIndex: (index: string[][]) => {
-    set({cardIndex: index})
-    localStorage.setItem(SORT_KEY, JSON.stringify({cardIndex: index}))
-  },
 
   // RequirementRecord methods
-  addRequirementRecord: (requirementRecord) =>
+  addRequirementRecord: (requirementRecord) => {
+    const {publicKey} = useUserProfile.getState()
+    const runtimeRecord: RuntimeRecord<RequirementData> = {
+      id: requirementRecord.rid,
+      data: requirementRecord,
+      createdBy: publicKey || "",
+      createdAt: Date.now(),
+    }
     set((state) => ({
-      requirementRecords: [...state.requirementRecords, requirementRecord],
-    })),
+      requirementRecords: [...state.requirementRecords, runtimeRecord],
+    }))
+  },
 
   drawRequirementId: (prefix = "Req-") => {
-    const existingIds = get().requirementRecords.map((r) => r.rid)
+    const existingIds = get().requirementRecords.map((r) => r.data.rid)
     // 找到当前相同前缀的最大id
     // 过滤出相同前缀的ID并提取数字部分
     const prefixRegex = new RegExp(`^${prefix}(\\d+)$`)
@@ -175,40 +189,52 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
     return newId
   },
 
-  getRequirementRecord: (rid) =>
-    get().requirementRecords.find((r) => r.rid === rid),
+  getRequirementRecord: (id) =>
+    get().requirementRecords.find((r) => r.id === id),
 
   updateRequirementRecord: (rid, updates) =>
     set((state) => ({
       requirementRecords: state.requirementRecords.map((r) =>
-        r.rid === rid ? {...r, ...updates} : r
+        r.id === rid ? {...r, data: {...r.data, ...updates}} : r
       ),
     })),
 
   deleteRequirementRecord: (rid) =>
     set((state) => ({
-      requirementRecords: state.requirementRecords.filter((r) => r.rid !== rid),
+      requirementRecords: state.requirementRecords.filter((r) => r.id !== rid),
     })),
 
   // ProjectRecord methods
-  addProjectRecord: (projectRecord) =>
+  addProjectRecord: (projectRecord) => {
+    const {publicKey} = useUserProfile.getState()
+    const runtimeRecord: RuntimeRecord<ProjectData> = {
+      id: projectRecord.pid,
+      data: projectRecord,
+      createdBy: publicKey || "",
+      createdAt: Date.now(),
+    }
     set((state) => ({
-      projectRecords: [...state.projectRecords, projectRecord],
-    })),
+      projectRecords: [...state.projectRecords, runtimeRecord],
+    }))
+  },
 
-  getProjectRecord: (pid) => get().projectRecords.find((p) => p.pid === pid),
+  getProjectRecord: (id) => get().projectRecords.find((p) => p.id === id),
 
   updateProjectRecord: (pid, updates) =>
     set((state) => ({
       projectRecords: state.projectRecords.map((p) =>
-        p.pid === pid ? {...p, ...updates} : p
+        p.id === pid ? {...p, data: {...p.data, ...updates}} : p
       ),
     })),
 
   deleteProjectRecord: (pid) =>
     set((state) => ({
-      projectRecords: state.projectRecords.filter((p) => p.pid !== pid),
+      projectRecords: state.projectRecords.filter((p) => p.id !== pid),
     })),
+  setIndex: (index: string[][]) => {
+    set({cardIndex: index})
+    localStorage.setItem(SORT_KEY, JSON.stringify({cardIndex: index}))
+  },
 
   // Persistence methods
   // TODO: optimize this to only save changed records
@@ -308,24 +334,13 @@ export const useSignedRecord = create<SignedRecordStore>((set, get) => ({
       const [bTimestamp] = b.split("_").map(Number)
       return bTimestamp - aTimestamp // Sort by timestamp descending
     })
-    // TODO: replace with online packing logic
+    // TODO: replace with zustand persist, use online packing logic
     // store the packed records in localStorage
     localStorage.setItem(
       `${SIGNED_RECORD_KEY}_${blockHeader.hash}`,
       JSON.stringify(packed[blockHeader.hash])
     )
     localStorage.setItem(LOCAL_BLOCK_KEY, JSON.stringify(localBlockKeys))
-    // Clear packed workRecords from array workRecords
-    const packedIds = signedRecords.map((r) => r.id)
-    set((state) => ({
-      workRecords: state.workRecords.filter((w) => !packedIds.includes(w.wid)),
-      requirementRecords: state.requirementRecords.filter(
-        (r) => !packedIds.includes(r.rid)
-      ),
-      projectRecords: state.projectRecords.filter(
-        (p) => !packedIds.includes(p.pid)
-      ),
-    }))
     set({signedRecords: []}) // Clear after packing
 
     get().save() // remove signed records from local storage

@@ -19,22 +19,18 @@ import {Button} from "@/components"
 import {Flex} from "@/components/CommonLayout"
 import {svgIcons} from "@/components/Icons"
 import {Table} from "@/components/Table/Table"
-import {
-  ProjectRecord,
-  projectRecordFieldDefinitions,
-} from "@/pages/Dashboard/interfaces"
-import {applyConditions} from "@/pages/Dashboard/recordUtils"
-import {
-  createGroupSort,
-  fieldDefinitionsToColumnDefs,
-} from "@/pages/Dashboard/workRecordUtils"
+import {ProjectData} from "@/interfaces"
 import {useSignedRecord} from "@/stores/useSignedRecord"
 import {ColumnDef} from "@tanstack/react-table"
 import {t} from "i18next"
 import {useMemo, useState} from "react"
 import styled from "styled-components"
 import DataConditionRow from "../DataConditionRow"
+import {projectRecordFieldDefinitions} from "../fieldDefinitions"
+import {ProjectRecord} from "../interfaces"
+import {applyConditions} from "../recordUtils"
 import {useViewPreference} from "../useDashboardPreference"
+import {createGroupSort, fieldDefinitionsToColumnDefs} from "../workRecordUtils"
 import {ProjectForm} from "./ProjectForm"
 
 // 使用新的字段定义系统生成 columns
@@ -44,6 +40,7 @@ const columns: ColumnDef<ProjectRecord>[] =
 function ProjectsContainer() {
   const projectRecords = useSignedRecord((state) => state.projectRecords)
   const [isFormOpen, setIsFormOpen] = useState(false)
+  const [editingRecord, setEditingRecord] = useState<ProjectRecord>()
 
   const filterConditions = useViewPreference((state) => state.filterConditions)
   const groupConditions = useViewPreference((state) => state.groupConditions)
@@ -51,32 +48,58 @@ function ProjectsContainer() {
 
   // 应用筛选和排序条件
   const conditionedRecords = useMemo(() => {
-    return applyConditions(projectRecords, filterConditions, sortConditions)
+    const records = projectRecords.map((r) => ({
+      ...r.data,
+      createdAt: r.createdAt,
+    })) as ProjectRecord[]
+    return applyConditions(records, filterConditions, sortConditions)
   }, [projectRecords, filterConditions, sortConditions])
 
-  const handleRowClick = (row: any) => {
+  const handleRowClick = (row: ProjectRecord) => {
     console.log("Project clicked:", row)
+    setEditingRecord(row)
+    setIsFormOpen(true)
   }
 
   const handleFormSubmit = (data: ProjectRecord) => {
-    console.log("Form submitted:", data)
-    // TODO: 实现实际的提交逻辑
+    const isEditMode = Boolean(editingRecord?.pid)
+
+    if (isEditMode) {
+      // 编辑模式：更新现有记录
+      if (data.pid) {
+        useSignedRecord.getState().updateProjectRecord(data.pid, data)
+      }
+    } else {
+      // 创建模式：添加新记录
+      // 生成唯一的pid
+      const pid = `project-${Date.now()}`
+      const projectData = {
+        ...data,
+        pid,
+        createdAt: Date.now(),
+      } as ProjectData
+      useSignedRecord.getState().addProjectRecord(projectData)
+    }
+
     setIsFormOpen(false)
   }
 
-  const handleOpenForm = () => {
+  // 通过创建按钮打开表单
+  const handleOpenCreateForm = () => {
+    setEditingRecord(undefined)
     setIsFormOpen(true)
   }
 
   const handleCloseForm = () => {
     setIsFormOpen(false)
+    setEditingRecord(undefined)
   }
 
   return (
     <Container>
       <Flex>
         <DataConditionRow fieldDefinitions={projectRecordFieldDefinitions} />
-        <Button $variant="text" onClick={handleOpenForm}>
+        <Button $variant="text" onClick={handleOpenCreateForm}>
           <svgIcons.Plus />
           <span>{t`project.create`}</span>
         </Button>
@@ -102,6 +125,7 @@ function ProjectsContainer() {
         submit={handleFormSubmit}
         isOpen={isFormOpen}
         onClose={handleCloseForm}
+        initialData={editingRecord}
       />
     </Container>
   )

@@ -16,63 +16,64 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {DataFormDrawer} from "@/components/DataFormDrawer"
-import {
-  WorkRecord,
-  workRecordFieldDefinitions,
-} from "@/pages/Dashboard/interfaces"
-import {fieldDefinitionsToFormFieldDefinitions} from "@/pages/Dashboard/workRecordUtils"
+import {useUserProfile} from "@/stores/useUserProfile"
 import {t} from "i18next"
-import {useMemo} from "react"
+import {workRecordFieldDefinitions as fields} from "../fieldDefinitions"
+import {WorkRecord} from "../interfaces"
+import {fieldDefinitionToHookFormDefinition} from "../workRecordUtils"
+import {WorkRecordFormModal} from "./WorkRecordFormModal"
 
 export function WorkRecordForm({
   submit,
   isOpen,
   initialData,
   onClose,
+  useDrawer,
 }: {
   submit: (data: WorkRecord) => void
   isOpen: boolean
   initialData?: WorkRecord
   onClose: () => void
+  useDrawer?: boolean
 }) {
-  // 使用工具函数转换字段定义
-  const formFields = useMemo(() => {
-    return fieldDefinitionsToFormFieldDefinitions(workRecordFieldDefinitions)
-  }, [])
+  const uid = useUserProfile((state) => state.uid)
 
-  const defaultValues = useMemo(() => {
-    const workRecord: WorkRecord = {
-      wid: "",
-      outcome: "",
-      duration: 0,
-      ...initialData,
-    }
-    return workRecord
-  }, [])
+  const isEditMode = Boolean(initialData?.wid)
 
   // 处理表单提交
   const handleSubmit = (data: unknown) => {
     const value = data as Partial<WorkRecord>
     const workRecord: WorkRecord = {
-      wid: defaultValues.wid,
-      userId: defaultValues.userId,
       ...initialData,
-      outcome: value.outcome,
-      duration: value.duration,
+      ...value,
+      createdAt: isEditMode ? initialData?.createdAt : Date.now(),
     }
     submit(workRecord)
   }
 
+  if (useDrawer) {
+    return (
+      <DataFormDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        onSubmit={handleSubmit}
+        title={isEditMode ? t`work.edit` : t`work.create`}
+        mode={isEditMode ? "edit" : "create"}
+        fields={fields.map(fieldDefinitionToHookFormDefinition)}
+        initialData={{...initialData, userId: uid}}
+        submitText={isEditMode ? t`work.edit` : t`work.create`}
+      />
+    )
+  }
+
   return (
-    <DataFormDrawer
+    <WorkRecordFormModal
+      submit={submit}
       isOpen={isOpen}
+      fields={fields}
+      isEditMode={isEditMode}
+      initialData={initialData}
       onClose={onClose}
-      onSubmit={handleSubmit}
-      title={t`work.create`}
-      mode="create"
-      fields={formFields}
-      initialData={defaultValues}
-      submitText={t`work.create`}
     />
   )
 }

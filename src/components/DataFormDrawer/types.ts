@@ -15,6 +15,8 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
+import {ReactNode} from "react"
+
 /**
  * 表单字段验证规则
  */
@@ -29,17 +31,27 @@ export interface FieldValidation {
 /**
  * 表单字段定义
  */
-export interface FormFieldDefinition {
+export interface HookFormFieldDefinition {
   /** 字段键名 */
   key: string
   /** 字段标签 */
   label: string
+  /** 字段值渲染函数 */
+  render?: (value?: unknown) => ReactNode
   /** 字段类型 */
-  type: "text" | "number" | "textarea" | "select" | "date" | "checkbox"
+  type:
+    | "text"
+    | "number"
+    | "textarea"
+    | "select"
+    | "multi-select"
+    | "date"
+    | "checkbox"
   /** 是否必填 */
   required?: boolean
   /** 选择器选项（仅select类型需要） */
   options?: {value: string; label: string}[]
+  renderOption?: (value?: string, label?: string) => ReactNode
   /** 占位符文本 */
   placeholder?: string
   /** 默认值 */
@@ -61,7 +73,7 @@ export interface DataFormDrawerProps {
   /** 表单模式：创建或编辑 */
   mode: "create" | "edit"
   /** 表单字段定义 */
-  fields: FormFieldDefinition[]
+  fields: HookFormFieldDefinition[]
   /** 表单初始数据 */
   initialData?: unknown
   /** 提交回调函数 */

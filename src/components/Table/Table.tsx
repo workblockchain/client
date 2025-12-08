@@ -23,7 +23,7 @@ import {
   type ColumnDef,
   type Row,
 } from "@tanstack/react-table"
-import {useMemo} from "react"
+import {ReactNode, useMemo} from "react"
 import styled, {css, type CSSProperties} from "styled-components"
 import {colors} from "../../styles/colors"
 import {zIndex} from "../../styles/zIndex"
@@ -64,7 +64,7 @@ export interface TableProps<TData extends Record<string, unknown>> {
    * 分组字段
    */
   groupBy?: string[]
-  groupValueRender?: (key: string, value: unknown) => string
+  groupValueRender?: (key: string, value: unknown) => ReactNode
   groupSort?: (key: string, a: TData, b: TData) => number
 }
 
@@ -137,7 +137,7 @@ function NestedGroup<TData>({
   clickRow,
 }: {
   rows: Row<TData>[]
-  renderer?: (key: string, value: unknown) => string
+  renderer?: (key: string, value: unknown) => ReactNode
   groupSort?: (key: string, a: TData, b: TData) => number
   groupBy: string[]
   clickRow?: (record: TData) => void

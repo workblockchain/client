@@ -18,7 +18,6 @@
 import {svgIcons} from "@/components/Icons"
 import {Navigation} from "@/components/Navigation/Navigation"
 import {Portal} from "@/components/Portal"
-import {WorkData} from "@/interfaces"
 import {paths} from "@/router"
 import {useConditionalNavigation} from "@/router/useConditionalNavigation"
 import {useConfig} from "@/stores/useConfig"
@@ -31,7 +30,6 @@ import {POMODORO_BREAK, POMODORO_WORK} from "@/utils/supportTags"
 import {useState} from "react"
 import {toast} from "react-toastify"
 import styled from "styled-components"
-import {v4} from "uuid"
 import {CommitLayout} from "./CommitLayout"
 import {TimerLayout} from "./TimerLayout"
 import usePomodoroStore from "./usePomodoroStore"
@@ -126,8 +124,7 @@ const PomodoroLayout = () => {
   const uid = useUserProfile((state) => state.uid)
   const curRid = usePomodoroStore((state) => state.currentRequirementId)
   const addWorkRecord = useSignedRecord((state) => state.addWorkRecord)
-  const createRecord = useSignedRecord((state) => state.createRecord)
-  const setWorkSigned = useSignedRecord((state) => state.setWorkSigned)
+  const signWorkRecord = useSignedRecord((state) => state.signWorkRecord)
   const autoSign = useConfig((state) => state.autoSign)
   const setAutoSign = useConfig((state) => state.setAutoSign)
 
@@ -136,9 +133,9 @@ const PomodoroLayout = () => {
       const message = `${
         isWork ? "工作" : "休息"
       }${description ? `: ${description}` : ""}`
+      setDescription("")
       const now = Date.now()
-      const work: WorkData = {
-        wid: v4(),
+      const work = {
         startTime: now - timePassed() * 1000, // timestamp in milliseconds
         endTime: now,
         duration: timePassed(), // duration in seconds
@@ -149,16 +146,12 @@ const PomodoroLayout = () => {
         projectIds: [],
         description: message,
       }
-      addWorkRecord(work)
+      const id = addWorkRecord(work)
       if (autoSign) {
-        const record = await createRecord(work.wid, JSON.stringify(work))
-        setWorkSigned(work.wid, true)
+        const record = await signWorkRecord(id)
         toast.success(`记录已保存: #${record.id.slice(0, 8)}`)
-        setDescription("")
         return
-      }
-      toast.success(`记录暂存`)
-      setDescription("")
+      } else toast.success(`记录暂存: #${id.slice(0, 8)}`)
     } catch (error) {
       toast.error("记录保存失败")
       console.error("记录保存失败:", error)

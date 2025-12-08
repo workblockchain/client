@@ -69,6 +69,12 @@ export const routerData: Record<string, RouteMeta> = {
     showInMenu: true,
     showInBreadcrumb: true,
   },
+  [paths.home + paths.dashboard + "/team"]: {
+    label: "团队管理",
+    icon: <svgIcons.People />,
+    showInMenu: true,
+    showInBreadcrumb: true,
+  },
 }
 
 export default routerData

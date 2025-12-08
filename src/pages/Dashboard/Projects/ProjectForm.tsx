@@ -16,71 +16,62 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {DataFormDrawer} from "@/components/DataFormDrawer"
-import {
-  ProjectRecord,
-  projectRecordFieldDefinitions,
-} from "@/pages/Dashboard/interfaces"
-import {fieldDefinitionsToFormFieldDefinitions} from "@/pages/Dashboard/workRecordUtils"
 import {t} from "i18next"
-import {useMemo} from "react"
+import {projectRecordFieldDefinitions as fields} from "../fieldDefinitions"
+import {ProjectRecord} from "../interfaces"
+import {fieldDefinitionToHookFormDefinition} from "../workRecordUtils"
+import {ProjectFormModal} from "./ProjectFormModal"
 
 export function ProjectForm({
   submit,
   isOpen,
+  initialData,
   onClose,
+  useDrawer,
 }: {
   submit: (data: ProjectRecord) => void
   isOpen: boolean
+  initialData?: ProjectRecord
   onClose: () => void
+  useDrawer?: boolean
 }) {
-  // 使用工具函数转换字段定义
-  const formFields = useMemo(() => {
-    return fieldDefinitionsToFormFieldDefinitions(projectRecordFieldDefinitions)
-  }, [])
-
-  const defaultValues: ProjectRecord = {
-    pid: "",
-    name: "",
-    description: "",
-    projectType: "",
-    status: "active",
-    assignedTo: "",
-    progress: 0,
-    contributors: [],
-    requirementIds: [],
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
-  }
+  const isEditMode = Boolean(initialData?.pid)
 
   // 处理表单提交
-  const handleSubmit = (value: unknown) => {
-    const data = value as Partial<ProjectRecord>
+  const handleSubmit = (data: unknown) => {
+    const value = data as Partial<ProjectRecord>
     const projectRecord: ProjectRecord = {
-      pid: defaultValues.pid as string,
-      name: data.name as string,
-      description: data.description as string,
-      projectType: data.projectType as string,
-      status: data.status as string,
-      assignedTo: data.assignedTo as string,
-      progress: data.progress as number,
-      contributors: data.contributors as string[],
-      requirementIds: data.requirementIds as string[],
-      createdAt: defaultValues.createdAt as number,
+      ...initialData,
+      ...value,
+      createdAt: isEditMode ? initialData?.createdAt : Date.now(),
       updatedAt: Date.now(),
     }
     submit(projectRecord)
   }
 
+  if (useDrawer) {
+    return (
+      <DataFormDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        onSubmit={handleSubmit}
+        title={isEditMode ? t`project.edit` : t`project.create`}
+        mode={isEditMode ? "edit" : "create"}
+        fields={fields.map(fieldDefinitionToHookFormDefinition)}
+        initialData={initialData}
+        submitText={isEditMode ? t`project.update` : t`project.create`}
+      />
+    )
+  }
+
   return (
-    <DataFormDrawer
+    <ProjectFormModal
+      submit={submit}
       isOpen={isOpen}
+      fields={fields}
+      isEditMode={isEditMode}
+      initialData={initialData}
       onClose={onClose}
-      onSubmit={handleSubmit}
-      title={t`project.create`}
-      mode="create"
-      fields={formFields}
-      initialData={defaultValues}
-      submitText={t`project.create`}
     />
   )
 }

@@ -15,15 +15,8 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import styled from "styled-components"
-import {styledCommon} from "../../styles/common"
-import {inputCommon, type InputVariantType} from "./common.styles"
+import {createContext} from "react"
 
-export const Textarea = styled.textarea<InputVariantType>`
-  ${styledCommon.base}
-  ${(p) => inputCommon(p)}
-  height: 108px;
-  padding: 8px;
-  border-radius: 8px;
-  resize: none;
-`
+const DebuggingContext = createContext(false)
+
+export default DebuggingContext
