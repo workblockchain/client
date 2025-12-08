@@ -156,8 +156,7 @@ const TextInputUnit = styled(Unit)`
   min-width: fit-content;
 `
 
-export interface InputWithUnitProps
-  extends InputHTMLAttributes<HTMLInputElement> {
+export interface InputWithUnitProps extends InputHTMLAttributes<HTMLInputElement> {
   unit: string
   $variant?: "primary" | "borderless"
   $size?: SizeType
@@ -186,8 +185,7 @@ export function InputWithUnit({
   )
 }
 
-export interface TextInputWithUnitProps
-  extends InputHTMLAttributes<HTMLInputElement> {
+export interface TextInputWithUnitProps extends InputHTMLAttributes<HTMLInputElement> {
   unit: string
   $size?: SizeType
   $align?: AlignType
@@ -209,8 +207,7 @@ export function TextInputWithUnit({
   )
 }
 
-export interface TextInputWithLabelProps
-  extends InputHTMLAttributes<HTMLInputElement> {
+export interface TextInputWithLabelProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string | ReactElement
   containerStyle?: CSSProperties
   inputSize?: SizeType

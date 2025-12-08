@@ -36,7 +36,7 @@ export function KanbanContainer() {
   const add = useSignedRecord((state) => state.addRequirementRecord)
   const remove = useSignedRecord((state) => state.deleteRequirementRecord)
   const save = useSignedRecord((state) => state.save)
-
+  const {cardIndex: storeIndex, setIndex} = useSignedRecord()
   // 处理添加卡片
   const handleAddCard = (state: RequirementStatusType, cardData: StoryCard) => {
     const newReq = convertToRequirementData(state, cardData)
@@ -73,6 +73,10 @@ export function KanbanContainer() {
     <KanbanBoard
       id="kanban-container"
       title={t`dashboard.kanban`}
+      storeIndex={
+        storeIndex ?? kanbanColumns.map((col) => col.cards.map((c) => c.cid))
+      }
+      setIndex={setIndex}
       column={kanbanColumns}
       addCard={handleAddCard}
       deleteCard={handleDelete}

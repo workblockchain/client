@@ -28,9 +28,8 @@ import {
   useSensors,
 } from "@dnd-kit/core"
 
-import {useSignedRecord} from "@/stores/useSignedRecord"
 import {sortableKeyboardCoordinates} from "@dnd-kit/sortable"
-import {useCallback, useEffect, useMemo, useState} from "react"
+import {useCallback, useEffect, useState} from "react"
 import styled from "styled-components"
 import {Drawer} from "../Drawer"
 import StoryCard from "../StoryCard"
@@ -49,6 +48,8 @@ export interface Props {
   title?: string
   column: ColumnProps[]
   isLoading?: boolean
+  storeIndex?: string[][]
+  setIndex?: (index: string[][]) => void
   addCard?: (state: RequirementStatusType, cardData: StoryCardWithCid) => void
   deleteCard?: (id: string) => void
   updateCard?: (
@@ -65,16 +66,12 @@ export const KanbanBoard = ({
   addCard,
   deleteCard,
   updateCard,
+  storeIndex,
+  setIndex,
 }: Props) => {
-  const {cardIndex: storeIndex, setIndex} = useSignedRecord()
-  const initialColumns = useMemo(() => {
-    if (storeIndex.length > 0) {
-      return storeIndex
-    }
-    return column.map((col) => col.cards.map((c) => c.cid))
-  }, [column, storeIndex])
-
-  const [columnIndex, setColumnIndex] = useState<string[][]>(initialColumns)
+  const [columnIndex, setColumnIndex] = useState<string[][]>(
+    storeIndex ?? column.map((col) => col.cards.map((c) => c.cid))
+  )
   const [activeCard, setActiveCard] = useState<StoryCardWithCid | null>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [state, setState] = useState<RequirementStatusType>("todo")
@@ -88,7 +85,7 @@ export const KanbanBoard = ({
   )
 
   useEffect(() => {
-    setIndex(columnIndex)
+    setIndex?.(columnIndex)
   }, [columnIndex, setIndex])
 
   const callback = useCallback(

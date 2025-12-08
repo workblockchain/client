@@ -45,7 +45,6 @@ function RequirementsContainer() {
   )
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingRecord, setEditingRecord] = useState<RequirementRecord>()
-
   const filterConditions = useViewPreference((state) => state.filterConditions)
   const groupConditions = useViewPreference((state) => state.groupConditions)
   const sortConditions = useViewPreference((state) => state.sortConditions)
