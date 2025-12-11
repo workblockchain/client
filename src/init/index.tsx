@@ -18,8 +18,6 @@
 import usePomodoroStore from "@/pages/Home/usePomodoroStore"
 import {useConfig} from "@/stores/useConfig"
 import {useSignedRecord} from "@/stores/useSignedRecord"
-import {handleTauriSignals} from "@/stores/useTauriSignals"
-import {isTauri} from "@tauri-apps/api/core"
 import {useEffect, useState} from "react"
 import {useUserProfile} from "../stores/useUserProfile"
 
@@ -55,23 +53,12 @@ async function initPomodoroStore() {
   })
 }
 
-async function initTauri() {
-  if (!isTauri()) {
-    return
-  }
-  return new Promise<void>((resolve) => {
-    handleTauriSignals.getState().initListener()
-    resolve()
-  })
-}
-
 async function init() {
   await Promise.all([
     initUserProfile(),
     initRecords(),
     loadConfig(),
     initPomodoroStore(),
-    initTauri(),
   ])
 }
 
