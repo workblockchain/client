@@ -19,7 +19,6 @@ import * as ed from "@noble/ed25519"
 import {create} from "zustand"
 import {UserInfoProps} from "../interfaces/userInfo"
 import {fromBase64, toBase64} from "../utils"
-import {handleAccountUpdatedSync} from "./useTauriSignals"
 
 interface UserProfile {
   userInfo: UserInfoProps
@@ -92,9 +91,6 @@ export const useUserProfile = create<UserProfileStore>((set, get) => ({
   save: () => {
     const userProfile = get().exportUserProfile()
     localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(userProfile))
-    // FIXME: circular dependency issue
-    // This is a workaround to avoid circular dependency issues
-    handleAccountUpdatedSync.accountUpdatedSync()
   },
 
   load: () => {
@@ -109,9 +105,6 @@ export const useUserProfile = create<UserProfileStore>((set, get) => ({
   clear: () => {
     localStorage.removeItem(USER_PROFILE_KEY)
     set(emptyState)
-    // FIXME: circular dependency issue
-    // This is a workaround to avoid circular dependency issues
-    handleAccountUpdatedSync.accountUpdatedSync()
   },
 }))
 
