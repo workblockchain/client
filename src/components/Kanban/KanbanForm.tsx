@@ -24,15 +24,17 @@ import {
   useForm,
 } from "react-hook-form"
 import styled from "styled-components"
+import {v4} from "uuid"
 import {Button} from "../Button"
 import {Textarea} from "../Input/Textarea"
 import Tag from "../Tag"
+
 export interface KanbanFormProps {
   callback: (type: "create" | "edit", data: StoryCardWithCid) => void
   initData?: StoryCardWithCid
   onCancel: () => void
   mode?: "create" | "edit"
-  deleteCard?: () => void
+  deleteCard?: (id: string) => void
 }
 
 export const KanbanForm = React.memo(
@@ -43,6 +45,10 @@ export const KanbanForm = React.memo(
     callback,
     deleteCard,
   }: KanbanFormProps) => {
+    if (!initData) {
+      initData = {cid: v4()}
+    }
+
     const {register, control, handleSubmit, reset} = useForm<StoryCardWithCid>({
       defaultValues: mode === "create" ? {} : initData,
     })
@@ -55,6 +61,7 @@ export const KanbanForm = React.memo(
       callback(mode, data)
       reset()
     }
+
     return (
       <Form onSubmit={handleSubmit(onSubmit)}>
         <FormGroup>
@@ -102,32 +109,42 @@ export const KanbanForm = React.memo(
                 }
               }}
             >
-              {/* TODO: refactor Editable tag to a component, using <svgIcons.Plus
-                style={{width: 16, height: 16, color: colors.Neutral500}}
-              /> to replace + char*/}
               +
             </EditableTag>
           </TagGroup>
         </FormGroup>
 
         <ButtonGroup>
-          <Button
-            type="button"
-            onClick={() => {
-              onCancel()
-              deleteCard?.()
-            }}
-          >
-            删除
-          </Button>
-          {mode === "create" ? (
-            <Button type="submit" color="primary">
-              创建卡片
-            </Button>
-          ) : (
-            <Button type="submit" color="primary">
-              保存卡片
-            </Button>
+          {mode === "create" && (
+            <>
+              <Button
+                type="button"
+                onClick={() => {
+                  onCancel()
+                }}
+              >
+                取消
+              </Button>
+              <Button type="submit" color="primary">
+                创建卡片
+              </Button>
+            </>
+          )}
+          {mode === "edit" && (
+            <>
+              <Button
+                type="button"
+                onClick={() => {
+                  onCancel()
+                  deleteCard?.(initData.cid)
+                }}
+              >
+                删除
+              </Button>
+              <Button type="submit" color="primary">
+                保存卡片
+              </Button>
+            </>
           )}
         </ButtonGroup>
       </Form>

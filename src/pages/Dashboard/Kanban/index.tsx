@@ -16,8 +16,8 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {KanbanBoard} from "@/components/Kanban/KanbanBoard"
+import {Props as ColumnProps} from "@/components/Kanban/KanbanColumn"
 import {Props as StoryCard} from "@/components/StoryCard"
-import {ColumnProps} from "@/interfaces"
 import {
   RequirementData,
   requirementStatusList,
@@ -36,7 +36,7 @@ export function KanbanContainer() {
   const add = useSignedRecord((state) => state.addRequirementRecord)
   const remove = useSignedRecord((state) => state.deleteRequirementRecord)
   const save = useSignedRecord((state) => state.save)
-
+  const {cardIndex: storeIndex, setIndex} = useSignedRecord()
   // 处理添加卡片
   const handleAddCard = (state: RequirementStatusType, cardData: StoryCard) => {
     const newReq = convertToRequirementData(state, cardData)
@@ -59,11 +59,6 @@ export function KanbanContainer() {
     save()
   }
 
-  const handleMoveCard = (cardId: string, state: RequirementStatusType) => {
-    update(cardId, {status: state})
-    save()
-  }
-
   // 构建看板列数据
   const kanbanColumns: ColumnProps[] = requirementStatusList.map((status) => ({
     id: status,
@@ -78,10 +73,13 @@ export function KanbanContainer() {
     <KanbanBoard
       id="kanban-container"
       title={t`dashboard.kanban`}
+      storeIndex={
+        storeIndex ?? kanbanColumns.map((col) => col.cards.map((c) => c.cid))
+      }
+      setIndex={setIndex}
       column={kanbanColumns}
       addCard={handleAddCard}
       deleteCard={handleDelete}
-      moveCard={handleMoveCard}
       updateCard={handleUpdateCard}
     />
   )

@@ -16,44 +16,7 @@
 // === Auto generated, DO NOT EDIT ABOVE ===
 
 import {Props as StoryCard} from "../components/StoryCard"
-import {RequirementStatusType} from "./records"
 
 export interface StoryCardWithCid extends StoryCard {
   cid: string
-}
-export interface CardProps extends DropItem {
-  moveCard?: (cardId: string) => void
-  clickCard?: (data: DropItem) => void
-}
-
-export interface DropItem {
-  index: number
-  content: StoryCardWithCid
-  state: RequirementStatusType
-}
-
-export interface ColumnProps {
-  id: RequirementStatusType
-  columnTitle: string
-  cards: StoryCardWithCid[]
-  addCard?: (state: RequirementStatusType, cardData: StoryCardWithCid) => void
-  moveCard?: (cardId: string, state: RequirementStatusType) => void
-  deleteCard?: (id: string) => void
-  openDrawer?: (state: RequirementStatusType) => void
-  clickCard?: (data: DropItem) => void
-}
-
-export interface BoardProps {
-  id: string
-  title?: string
-  column: ColumnProps[]
-  isLoading?: boolean
-  addCard?: (state: RequirementStatusType, cardData: StoryCardWithCid) => void
-  moveCard?: (cardId: string, state: RequirementStatusType) => void
-  deleteCard?: (id: string) => void
-  updateCard?: (
-    cardId: string,
-    state: RequirementStatusType,
-    cardData: StoryCardWithCid
-  ) => void
 }

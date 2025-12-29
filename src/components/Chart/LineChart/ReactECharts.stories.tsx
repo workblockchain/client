@@ -15,6 +15,33 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-export const ItemTypes = {
-  CARD: "card",
+import {Meta, StoryObj} from "@storybook/react-vite"
+import {LineChart} from "./index"
+
+const meta: Meta<typeof LineChart> = {
+  title: "Components/LineChart",
+  component: LineChart,
+  tags: ["autodocs"],
+  argTypes: {},
+}
+
+export default meta
+
+type Story = StoryObj<typeof LineChart>
+
+export const Primary: Story = {
+  args: {
+    title: "LineChart",
+    xAxis: ["10:00", "10:01", "10:02"],
+    series: [
+      {
+        name: "星期一",
+        data: [1, 2, 10],
+      },
+      {
+        name: "星期二",
+        data: [4, 5, 6],
+      },
+    ],
+  },
 }
