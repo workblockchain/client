@@ -68,7 +68,7 @@ interface AvatarEditorModalProps {
   width?: number
   height?: number
   border?: number
-  color?: number[]
+  color?: [number, number, number, (number | undefined)?]
   scale?: number
   rotate?: number
 }

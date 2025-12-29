@@ -15,54 +15,46 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {CardProps, DropItem} from "@/interfaces/kanban"
-import {memo, useRef} from "react"
-import {useDrag, useDrop} from "react-dnd"
+import {RequirementStatusType} from "@/interfaces"
+import {StoryCardWithCid} from "@/interfaces/kanban"
+import {useSortable} from "@dnd-kit/sortable"
+import {CSS} from "@dnd-kit/utilities"
+import {memo} from "react"
 import StoryCard from "../StoryCard"
-import {ItemTypes} from "./types"
+export interface Props {
+  onClick?: (content: StoryCardWithCid) => void
+  content: StoryCardWithCid
+  state: RequirementStatusType
+}
 
-export const KanbanCard = memo((props: CardProps) => {
-  const ref = useRef<HTMLDivElement>(null)
-  // 拖拽源配置
-  const [{isDragging}, drag] = useDrag({
-    type: ItemTypes.CARD,
-    item: props as DropItem,
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  })
+export interface DndData {
+  content: StoryCardWithCid
+  state: RequirementStatusType
+}
 
-  // 放置目标配置
-  const [_, drop] = useDrop({
-    accept: ItemTypes.CARD,
-
-    drop: (item: DropItem) => {
-      if (
-        !ref.current ||
-        (item.index === props.index && item.state === props.state)
-      )
-        return
-      props.moveCard?.(item.content.cid)
-    },
-  })
-
-  drag(drop(ref))
+export const KanbanCard = memo<Props>(({onClick, content, state}) => {
+  const {attributes, listeners, setNodeRef, transform, transition, isDragging} =
+    useSortable({
+      id: content.cid,
+      data: {
+        content: content,
+        state: state,
+      } as DndData,
+    })
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
 
   return (
-    <>
-      <StoryCard
-        draggable
-        isDragging={isDragging}
-        ref={ref}
-        onClick={() =>
-          props.clickCard
-            ? props.clickCard(props)
-            : console.log("openCard is not defined")
-        }
-        {...props.content}
-      >
-        {props.content.children}
-      </StoryCard>
-    </>
+    <StoryCard
+      style={style}
+      isDragging={isDragging}
+      {...listeners}
+      {...attributes}
+      ref={setNodeRef}
+      onClick={() => onClick?.(content)}
+      {...content}
+    />
   )
 })

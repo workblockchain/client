@@ -51,5 +51,6 @@
     "wechat",
     "workblockchain",
     "workchain"
-  ]
+  ],
+  "i18n-ally.localesPaths": ["src/i18n"]
 }

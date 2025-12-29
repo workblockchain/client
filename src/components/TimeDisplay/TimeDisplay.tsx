@@ -15,7 +15,7 @@
 //
 // === Auto generated, DO NOT EDIT ABOVE ===
 
-import {CSSProperties, styled} from "styled-components"
+import {styled, type CSSProperties} from "styled-components"
 import {styledCommon} from "../../styles/common"
 import {secondToHMS} from "../../utils/secondToHMS"
 
